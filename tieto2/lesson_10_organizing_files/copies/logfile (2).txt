@@ -1,0 +1,23 @@
+Copying samp* recursively from tree rooted in 
+D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\samples
+to
+D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\copies
+
+copied: samp01.txt
+    to: samp01 (3).txt
+copied: samp02.txt
+    to: samp02 (3).txt
+copied: samp03.txt
+    to: samp03 (2).txt
+copied: samp04.txt
+    to: samp04 (2).txt
+copied: sample01.txt
+    to: sample01 (2).txt
+copied: sample02.txt
+    to: sample02 (2).txt
+copied: sample03.txt
+    to: sample03 (2).txt
+copied: subsamples\samp01.txt
+    to: samp01 (4).txt
+copied: subsamples\samp02.txt
+    to: samp02 (4).txt

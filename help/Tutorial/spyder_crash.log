@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "C:\Programming\Anaconda3\lib\site-packages\spyder\app\mainwindow.py", line 3099, in main
+    mainwindow = run_spyder(app, options, args)
+  File "C:\Programming\Anaconda3\lib\site-packages\spyder\app\mainwindow.py", line 3001, in run_spyder
+    main.setup()
+  File "C:\Programming\Anaconda3\lib\site-packages\spyder\app\mainwindow.py", line 830, in setup
+    self.workingdirectory = WorkingDirectory(self, self.init_workdir, main=self)
+  File "C:\Programming\Anaconda3\lib\site-packages\spyder\plugins\workingdirectory.py", line 151, in __init__
+    wdhistory = self.load_wdhistory(workdir)
+  File "C:\Programming\Anaconda3\lib\site-packages\spyder\plugins\workingdirectory.py", line 223, in load_wdhistory
+    wdhistory = [name for name in wdhistory if os.path.isdir(name)]
+  File "C:\Programming\Anaconda3\lib\site-packages\spyder\plugins\workingdirectory.py", line 223, in <listcomp>
+    wdhistory = [name for name in wdhistory if os.path.isdir(name)]
+ValueError: _isdir: embedded null character in path

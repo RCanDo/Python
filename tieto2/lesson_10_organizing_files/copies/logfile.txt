@@ -1,0 +1,16 @@
+Copying *.abc recursively from tree rooted in 
+D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\samples
+to
+D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\copies
+
+copied: qq01.abc
+copied: qq02.abc
+copied: qq03.abc
+copied: qq04.abc
+copied: subsamples\qq03.abc
+    to: qq03 (2).abc
+copied: subsamples\qq04.abc
+    to: qq04 (2).abc
+copied: subsamples\qq05.abc
+copied: subsamples\qq06.abc
+copied: subsamples\qq07.abc

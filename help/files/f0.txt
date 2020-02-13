@@ -1,0 +1,12 @@
+
+lin 1
+lin 2
+another line
+yet another line
+...
+it never ends
+
+[it was empty line]
+ough!!
+1234
+    fallaout...

@@ -1,0 +1,10 @@
+D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\copies\qq01.abc copied.
+D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\copies\qq02.abc copied.
+D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\copies\qq03.abc copied.
+D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\copies\qq04.abc copied.
+D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\samples\subsamples\qq01.abc copied to
+ D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\copies\qq01 (2).abc.
+D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\samples\subsamples\qq02.abc copied to
+ D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\copies\qq02 (2).abc.
+D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\samples\subsamples\qq03.abc copied to
+ D:\ROBOCZY\Python\tieto2\lesson_10_organizing_files\copies\qq03 (2).abc.

@@ -1,0 +1,206 @@
+Name         nr_of     
+-----------  ----------
+Iron Maiden  21        
+Led Zeppeli  14        
+Deep Purple  11        
+Metallica    10        
+U2           10        
+Ozzy Osbour  6         
+Pearl Jam    5         
+Faith No Mo  4         
+Foo Fighter  4         
+Lost         4         
+Van Halen    4         
+Various Art  4         
+Audioslave   3         
+Berliner Ph  3         
+Eugene Orma  3         
+Gilberto Gi  3         
+Guns N' Ros  3         
+Jamiroquai   3         
+Miles Davis  3         
+Os Paralama  3         
+Queen        3         
+R.E.M.       3         
+Red Hot Chi  3         
+Santana      3         
+The Office   3         
+The Rolling  3         
+AC/DC        2         
+Accept       2         
+Amy Winehou  2         
+Antônio Car  2         
+Battlestar   2         
+Black Label  2         
+Black Sabba  2         
+Caetano Vel  2         
+Chico Scien  2         
+Cidade Negr  2         
+Creedence C  2         
+Cássia Elle  2         
+Djavan       2         
+English Con  2         
+Eric Clapto  2         
+Green Day    2         
+Kiss         2         
+Legião Urba  2         
+Lulu Santos  2         
+Michael Til  2         
+Milton Nasc  2         
+Nirvana      2         
+Skank        2         
+Smashing Pu  2         
+Spyro Gyra   2         
+The Black C  2         
+The Cult     2         
+The Tea Par  2         
+Tim Maia     2         
+Titãs        2         
+Aaron Copla  1         
+Aaron Goldb  1         
+Academy of   1         
+Academy of   1         
+Academy of   1         
+Academy of   1         
+Adrian Leap  1         
+Aerosmith    1         
+Aisha Duo    1         
+Alanis Mori  1         
+Alberto Tur  1         
+Alice In Ch  1         
+Anne-Sophie  1         
+Antal Dorát  1         
+Apocalyptic  1         
+Aquaman      1         
+BackBeat     1         
+Barry Words  1         
+Battlestar   1         
+Berliner Ph  1         
+Berliner Ph  1         
+Billy Cobha  1         
+Body Count   1         
+Boston Symp  1         
+Britten Sin  1         
+Bruce Dicki  1         
+Buddy Guy    1         
+C. Montever  1         
+Cake         1         
+Calexico     1         
+Charles Dut  1         
+Chicago Sym  1         
+Chicago Sym  1         
+Chico Buarq  1         
+Choir Of We  1         
+Chor der Wi  1         
+Chris Corne  1         
+Christopher  1         
+Cláudio Zol  1         
+David Cover  1         
+Def Leppard  1         
+Dennis Cham  1         
+Dread Zeppe  1         
+Ed Motta     1         
+Edo de Waar  1         
+Elis Regina  1         
+Emanuel Ax,  1         
+Emerson Str  1         
+Equale Bras  1         
+Falamansa    1         
+Felix Schmi  1         
+Frank Sinat  1         
+Frank Zappa  1         
+Fretwork     1         
+Funk Como L  1         
+Gene Krupa   1         
+Gerald Moor  1         
+Godsmack     1         
+Gonzaguinha  1         
+Gustav Mahl  1         
+Göteborgs S  1         
+Habib Koité  1         
+Herbert Von  1         
+Heroes       1         
+Hilary Hahn  1         
+House Of Pa  1         
+Incognito    1         
+Itzhak Perl  1         
+JET          1         
+James Brown  1         
+James Levin  1         
+Jimi Hendri  1         
+Joe Satrian  1         
+Jorge Ben    1         
+Jota Quest   1         
+João Suplic  1         
+Judas Pries  1         
+Julian Brea  1         
+Karsh Kale   1         
+Kent Nagano  1         
+Lenny Kravi  1         
+Leonard Ber  1         
+Les Arts Fl  1         
+London Symp  1         
+Luciana Sou  1         
+Luciano Pav  1         
+Marcos Vall  1         
+Marillion    1         
+Marisa Mont  1         
+Martin Rosc  1         
+Marvin Gaye  1         
+Maurizio Po  1         
+Mela Tenenb  1         
+Men At Work  1         
+Michele Cam  1         
+Motörhead    1         
+Mônica Mari  1         
+Mötley Crüe  1         
+Nash Ensemb  1         
+Nicolaus Es  1         
+O Rappa      1         
+O Terço      1         
+Olodum       1         
+Orchestra o  1         
+Orchestre R  1         
+Os Mutantes  1         
+Otto Klempe  1         
+Page & Plan  1         
+Passengers   1         
+Paul D'Iann  1         
+Philharmoni  1         
+Philip Glas  1         
+Pink Floyd   1         
+Planet Hemp  1         
+R.E.M. Feat  1         
+Raimundos    1         
+Raul Seixas  1         
+Richard Mar  1         
+Roger Norri  1         
+Royal Philh  1         
+Rush         1         
+Scholars Ba  1         
+Scorpions    1         
+Sergei Prok  1         
+Sir Georg S  1         
+Sir Georg S  1         
+Soundgarden  1         
+Stevie Ray   1         
+Stone Templ  1         
+System Of A  1         
+Temple of t  1         
+Terry Bozzi  1         
+The 12 Cell  1         
+The Clash    1         
+The Doors    1         
+The King's   1         
+The Police   1         
+The Posies   1         
+The Who      1         
+Ton Koopman  1         
+Toquinho &   1         
+UB40         1         
+Velvet Revo  1         
+Vinícius De  1         
+Wilhelm Kem  1         
+Yehudi Menu  1         
+Yo-Yo Ma     1         
+Zeca Pagodi  1         

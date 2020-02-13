@@ -1,0 +1,48 @@
+Copying *.txt recursively from tree rooted in 
+D:\ROBOCZY\Python\tieto2\lesson_11_argparse_and_math\samples
+to
+D:\ROBOCZY\Python\tieto2\lesson_11_argparse_and_math\copies
+
+copied: file.txt
+copied: file01.txt
+copied: file02.txt
+copied: file03.txt
+copied: file04.txt
+copied: samp001.txt
+copied: samp002.txt
+copied: samp003.txt
+copied: samp004.txt
+copied: samp005.txt
+copied: samp006.txt
+copied: samp007.txt
+copied: samp008.txt
+copied: samp009.txt
+copied: samp01.txt
+copied: samp011.txt
+copied: samp013.txt
+copied: samp02.txt
+copied: samp03.txt
+copied: samp04.txt
+copied: samp1.txt
+copied: samp2.txt
+copied: sample01.txt
+copied: sample02.txt
+copied: sample03.txt
+copied: sample06.txt
+copied: spam001.txt
+copied: spam002.txt
+copied: spam003.txt
+copied: spam004.txt
+copied: spam005.txt
+copied: subsamples\egg0001.txt
+copied: subsamples\egg0003.txt
+copied: subsamples\egg0004.txt
+copied: subsamples\egg0005.txt
+copied: subsamples\file01.txt
+    to: file01 (2).txt
+copied: subsamples\file03.txt
+    to: file03 (2).txt
+copied: subsamples\samp01.txt
+    to: samp01 (2).txt
+copied: subsamples\samp02.txt
+    to: samp02 (2).txt
