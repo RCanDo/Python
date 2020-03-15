@@ -6,13 +6,9 @@
 # !!! YAML message always begin with ---
 
 title: Numpy Array Tutorial
-subtitle:
 version: 1.0
 type: tutorial
 keywords: [array, numpy]
-description: |
-remarks:
-todo:
 sources:
     - title: Python Numpy Array Tutorial
       chapter:
@@ -24,7 +20,7 @@ file:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
     name: "array_tutorial.py"
-    path: "D:/ROBOCZY/Python/help/Numpy/"
+    path: "~/Works/Python/Numpy/"
     date: 2019-11-27
     authors:
         - nick: rcando
@@ -35,7 +31,8 @@ file:
 """
 #%%
 pwd
-cd D:/ROBOCZY/Python/help/Numpy/
+cd D:/ROBOCZY/Python/Numpy/
+cd ~/Works/Python/Numpy/
 ls
 
 #%%
@@ -44,7 +41,7 @@ import numpy as np
 #%% help
 print(np.lookfor("mean"))
 np.info(np.ndarray.dtype)
-np.info(mean)
+np.info('mean')
 
 #%%
 arr1d = np.array([1, 2, 3, 4, 5])
@@ -95,7 +92,7 @@ randarr = np.random.randint(0, 10, (3, 4), dtype=np.float64) #! TypeError: Unsup
 
 #%%
 np.ones((2, 3))
-np.ones((2, 3)).dtype  # float64 !!!  this is the default (nut we've seen above that not always...)
+np.ones((2, 3)).dtype  # float64 !!!  this is the default (but we've seen above that not always...)
 np.ones((2, 3, 4))
 
 np.zeros((2, 3))
@@ -109,7 +106,7 @@ np.empty((3, 2))  # these values are very random collections from memory
 
 np.full((2, 3), 2222)
 
-np.arange(-2, 2, .5) # array from -2 to 2 with step .5 ()
+np.arange(-2, 2, .5) # array from -2 to 2 with step .5 (ending 2 EXcluded!)
 
 np.linspace(-2, 2, 9) # array of 9 elements evenly spaced from -2 to 2 (included!!!)
 
@@ -129,7 +126,7 @@ np.identity(3)
 
 # Import your data
 x, y, z = np.loadtxt('data.txt', skiprows=1, unpack=True,
-                     delimiter=',',    # default
+                     delimiter=None,    # default
                      dtype='float64'   # defult?
                      )
 """
@@ -137,6 +134,9 @@ you skip the first row,
 and you return the columns as separate arrays with  `unpack=TRUE`.
 This means that the values in column Value1 will be put in x, and so on.
 """
+x
+y
+z
 #%%
 # Your data in the text file
 # Value1  Value2  Value3
@@ -146,7 +146,8 @@ This means that the values in column Value1 will be put in x, and so on.
 # MISSING 0.5801  0.2038
 # 0.5993  0.4357  0.7410
 
-my_array2 = np.genfromtxt('data2.txt', skip_header=1, filling_values=-999)
+my_array2 = np.genfromtxt('data2.txt', skip_header=1,
+                          missing_values='MISSING', filling_values=-999)
 # https://docs.scipy.org/doc/numpy/reference/generated/numpy.genfromtxt.html#numpy.genfromtxt
 
 """
@@ -160,7 +161,7 @@ using genfromtxt(), such as the
 - the option to automatically strip white spaces from variables.
 """
 #%%
-x = np.arange(0.0,5.0,1.0)
+x = np.arange(0.0, 5.0, 1.0)
 np.savetxt('test.out', x, delimiter=',')
 ls
 
@@ -223,6 +224,8 @@ y
 x + y
 # IT WORKS!!!
 # That is because the dimensions are _compatible_ in all dimensions:
+x.shape
+y.shape
 
 #%% How Do Array Mathematics Work?
 x = np.random.randint(-10, 10, (2, 3))
@@ -417,6 +420,7 @@ np.split(z, [2], axis=1)
 
 np.hsplit(z, 1)
 np.hsplit(z, 2)  #! ValueError: array split does not result in an equal division
+np.hsplit(z, 5)
 
 #%%
 #%%  How To Visualize NumPy Arrays

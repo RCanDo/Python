@@ -24,7 +24,7 @@ file:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
     name: "fancy_indexing.py"
-    path: "D:/ROBOCZY/Python/help/Numpy/"
+    path: "~/Works/Python/Numpy/"
     date: 2019-11-26
     authors:
         - nick: rcando
@@ -35,7 +35,8 @@ file:
 """
 #%%
 pwd
-cd D:/ROBOCZY/Python/help/Numpy/
+cd D:/ROBOCZY/Python/Numpy/
+cd ~/Works/Python/Numpy/
 ls
 
 #%%
@@ -169,6 +170,7 @@ np.add.reduceat(x, i)   # NOT in-place !
 # ???
 x
 
+
 #%% Example: Binning Data & histograms
 np.random.seed(42)
 x = np.random.randn(100)
@@ -176,7 +178,7 @@ x
 
 # compute a histogram by hand
 bins = np.linspace(-5, 5, 21)
-counts = np.zeros_like(bins)
+counts = np.zeros_like(bins)            #!!!
 counts
 
 # find the appropriate bin for each x

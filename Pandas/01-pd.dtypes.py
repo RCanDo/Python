@@ -12,6 +12,7 @@ type: examples
 keywords: [dtype, DataFrame, np.array, NumPy, Pandas]
 description: |
 remarks:
+    - see also next file  02-negation.py
 todo:
 sources:
 file:
@@ -154,7 +155,7 @@ nr       object
 value    object
 label    object
 """
-# the best way to set the proper tyes is to write some loop:
+# the best way to set the proper types is to write some loop:
 types = ['datetime64', 'int', 'float', 'str']
 for c, t in zip(df.columns, types):
     df[c] = df[c].astype(t)
@@ -193,21 +194,40 @@ arr
 
 #%% way 1. using np.array
 
-#! this doesn't work
-df = pd.DataFrame(arr , dtype=pd.Int16Dtype())
-    #! ValueError: failed to cast to 'Int32' (Exception was: data type not understood)
-
 df = pd.DataFrame(arr, columns=list('ABC'))
 df
 df.dtypes  # float32 what is quite innacurate...
 # unfortunatelly one cannot change dtypes for all columns at once...
+df.dtype = pd.Int16Dtype()
+df.dtypes   # no chenges
 # only in a loop (see above)
 
 for c in df.columns: df[c] = df[c].astype(pd.Int16Dtype())
 df.dtypes
 df
 
-#%% way 2. column y column
+#%%
+df.iloc[3, 0]  # <NA>
+type(df.iloc[3, 0])  # pandas._libs.missing.NAType
+df.iloc[3, 0].dtype  # 'NAType' object has no attribute 'dtype'
+dir(df.iloc[3, 0])   # only hiddens
+
+dir(pd._libs.missing)
+
+#%% at defnition
+
+#! this didn't work but now it works!
+df = pd.DataFrame(arr, dtype='Int16')
+# old:  #! ValueError: failed to cast to 'Int16' (Exception was: data type not understood)
+df
+df.dtypes
+
+# more canonic form
+df = pd.DataFrame(arr, dtype=pd.Int16Dtype())
+df
+df.dtypes
+
+#%% way 2. column by column
 df = pd.DataFrame(
         {'A': pd.Series(np.random.randint(0, 100, 10), dtype=pd.Int16Dtype()),
          'B': pd.Series(np.random.randint(0, 100, 10), dtype=pd.Int16Dtype()),
