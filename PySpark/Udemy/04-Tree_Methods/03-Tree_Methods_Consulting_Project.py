@@ -6,7 +6,7 @@
 # !!! YAML message always begin with ---
 
 title: Decision Trees And Random Forest
-subtitle: Consulting Project - 
+subtitle: Consulting Project - Dog Food Preservatives
 version: 1.0
 type: course
 keywords: [Gradient Boosted Trees, Decision Trees, Random Forest, Big Data, PySpark]
@@ -53,7 +53,11 @@ data_raw.count()   # 490
 data_raw.printSchema()
 data_raw.show()
 
+data_raw.describe().show()
+data_raw.groupBy('Spoiled').sum().show()     #! why? - nothing to sum!
+data_raw.groupBy('Spoiled').count().show()
 
+#%%
 #%% digression about types in Spark
 from pyspark.sql.functions import col   # convienient reference to column
 data_raw.withColumn('A', col('A').cast('float')).printSchema()
@@ -66,12 +70,30 @@ data_raw.withColumn('A', col('A').cast(IntegerType())).printSchema()
 
 #%%
 from pyspark.sql import types 
+dir(types)
 
 for t in ['BinaryType', 'BooleanType', 'ByteType', 'DateType', 
           'DecimalType', 'DoubleType', 'FloatType', 'IntegerType', 
            'LongType', 'ShortType', 'StringType', 'TimestampType']:
     print(f"{t}: {getattr(types, t)().simpleString()}")
-    
+   
+#%% digression from digression about finding out strings
+dir(types)[:30]
+[s for s in dir(types) if s.endswith('Type')]
+
+#%% hence
+for t in [s for s in dir(types) if s.endswith('Type')]:
+    try:
+        print(f"{t}: {getattr(types, t)().simpleString()}")
+    except Exception as ex:
+        print(ex)
+list(filter(lambda s: s.endswith('Type'), dir(types)))
+        
+#%% using regexp
+import re
+list(filter(lambda s: re.search('Type$', s), dir(types)))
+
+#%%
 #%%
 from pyspark.ml import Transformer
 
@@ -120,14 +142,14 @@ data = pipeline.fit(data_raw).transform(data_raw)
 
 data.show()
 
+#%% not necessary here
 data_train, data_test = data.randomSplit([.7, .3])
-print(f'{data_train.count()}, {data_test.count()}')   # 322, 168
+print(f'{data_train.count()}, {data_test.count()}')   # 335, 155
 
 #%%
 from pyspark.ml.classification import DecisionTreeClassifier, \
                                       RandomForestClassifier, \
                                       GBTClassifier
-
 
 est_dt = DecisionTreeClassifier(featuresCol='features', labelCol='SpoiledIdx')
 est_rf = RandomForestClassifier(featuresCol='features', labelCol='SpoiledIdx')
@@ -147,6 +169,7 @@ model_gb.featureImportances
 #%%                                  
 vv = model_gb.featureImportances
 dir(vv)
+type(vv)
 vv.values
 
 #%%
