@@ -41,9 +41,6 @@ import os
 
 PYWORKS = "D:/ROBOCZY/Python"
 
-"""
-os.chdir(PYWORKS + "/RCanDo/ak/")
-"""
 os.chdir(PYWORKS + "/Pandas/User Guide/")
 print(os.getcwd())
 
@@ -145,6 +142,7 @@ pd.concat([df1, df4], 1)
 pd.concat([df1, df4], 1, 'inner')
 pd.concat([df1, df4], axis=1, join='inner')
 pd.concat([df1, df4], axis=1, sort=False)       ## default in future versions
+pd.concat([df1, df4], axis=1, sort=True)
 
 #%% .reindex()
 pd.concat([df1, df4], axis=1).reindex(df1.index)
