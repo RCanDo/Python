@@ -133,6 +133,7 @@ result.loc['y']
 
 #%%
 df4 = data_frame(list('BDF'), [2, 3, 6, 7])
+df4.index = [1,2,3,4]
 df4
 pd.concat([df1, df4])
 pd.concat([df1, df4], axis=0)
@@ -140,14 +141,28 @@ pd.concat([df1, df4], axis=0, join='inner')
 pd.concat([df1, df4], axis=1)
 pd.concat([df1, df4], 1)
 pd.concat([df1, df4], 1, 'inner')
+pd.concat([df1, df4], 1, 'left') #! ValueError: Only can inner (intersect) or outer (union) join the other axis
 pd.concat([df1, df4], axis=1, join='inner')
 pd.concat([df1, df4], axis=1, sort=False)       ## default in future versions
 pd.concat([df1, df4], axis=1, sort=True)
 
-#%% .reindex()
-pd.concat([df1, df4], axis=1).reindex(df1.index)
-pd.concat([df1, df4.reindex(df1.index)], axis=1)
-df4.reindex(df1.index)
+#%% !!! .reindex(), .reindex_like()  vs  df.indx = new_index_labels
+
+df4.reindex(df1.index)   #!!!
+#!!! do not confuse .reindex() / .reindex_like()  with  df.index = new_index_labels
+# this is NOT replacing labels of index but aligning to the given one; thus NaNs appear!
+df4  # not changed
+df4.reindex([0, 1, 4, 5])
+df4.reindex_like(df1)   # works on both index and columns !
+
+pd.concat([df1, df4.reindex(df1.index)], axis=1)   # kind of a "left join"
+pd.concat([df1, df4], axis=1).reindex(df1.index)   # "
+
+# renaming
+df4.index = df1.index
+df4 # all vaues retained -- ony labels of index changed!
+# now
+pd.concat([df1, df4], 1)
 
 #%% .append() == .concat(., axis=0)
 df1.append(df2)

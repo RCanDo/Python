@@ -20,20 +20,19 @@ file:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
     name: "ex01-pd.dtypes.py"
-    path: "D:/ROBOCZY/Python/Pandas/"
+    path: ""~/Works/Python/Pandas/""
     date: 2019-11-24
     authors:
-        - nick: kasprark
+        - nick: rcando
           fullname: Arkadiusz Kasprzyk
           email:
-              - arek@staart.pl
-              - akasp666@google.com
+              - rcando@int.pl
 """
 #%%
 import numpy as np
 import pandas as pd
-from builtin import flatten, paste
-from nppd import data_frame
+from rcando.ak.builtin import flatten, paste
+from rcando.ak.nppd import data_frame
 
 #%%
 """Conclusion:
@@ -164,87 +163,4 @@ df.dtypes
 df
 
 #%%
-#%% Missing data
 #%%
-"""
-Notice the following problem with NaN.
-Create r x c tabe of random integers via np.
-and replace some random entries with NaN
-"""
-r=10; c=3; nnans=7
-arr = np.random.randint(0, r*c, (r, c))
-arr
-arr.dtype
-
-rows = np.random.randint(0, r, (nnans,))
-cols = np.random.randint(0, c, (nnans,))
-
-arr[rows, cols] = np.nan  # ValueError: cannot convert float NaN to integer
-
-"""
-https://stackoverflow.com/questions/11548005/numpy-or-pandas-keeping-array-type-as-integer-while-having-a-nan-value/11548224
-https://pandas.pydata.org/pandas-docs/stable/user_guide/gotchas.html#nan-integer-na-values-and-na-type-promotions
-https://pandas.pydata.org/pandas-docs/stable/user_guide/integer_na.html#integer-na
-"""
-arr = arr.astype("float32")  # float is really not an integer... but there's no choice!
-arr[rows, cols] = np.nan   # numpy fancy indexing
-arr
-
-#%% pd.DataFrame with NaNs...
-
-#%% way 1. using np.array
-
-df = pd.DataFrame(arr, columns=list('ABC'))
-df
-df.dtypes  # float32 what is quite innacurate...
-# unfortunatelly one cannot change dtypes for all columns at once...
-df.dtype = pd.Int16Dtype()
-df.dtypes   # no chenges
-# only in a loop (see above)
-
-for c in df.columns: df[c] = df[c].astype(pd.Int16Dtype())
-df.dtypes
-df
-
-#%%
-df.iloc[3, 0]  # <NA>
-type(df.iloc[3, 0])  # pandas._libs.missing.NAType
-df.iloc[3, 0].dtype  # 'NAType' object has no attribute 'dtype'
-dir(df.iloc[3, 0])   # only hiddens
-
-dir(pd._libs.missing)
-
-#%% at defnition
-
-#! this didn't work but now it works!
-df = pd.DataFrame(arr, dtype='Int16')
-# old:  #! ValueError: failed to cast to 'Int16' (Exception was: data type not understood)
-df
-df.dtypes
-
-# more canonic form
-df = pd.DataFrame(arr, dtype=pd.Int16Dtype())
-df
-df.dtypes
-
-#%% way 2. column by column
-df = pd.DataFrame(
-        {'A': pd.Series(np.random.randint(0, 100, 10), dtype=pd.Int16Dtype()),
-         'B': pd.Series(np.random.randint(0, 100, 10), dtype=pd.Int16Dtype()),
-         'C': pd.Series(np.random.randint(0, 100, 10), dtype=pd.Int16Dtype())
-        })
-df
-df.dtypes
-
-df.iloc[rows, cols] = np.nan
-df
-#! ooops... It doesn't work like numpy fancy indexing
-# let's recreate the matrix, and run sth more traditional
-
-for r, c in zip(rows, cols): df.iloc[r, c] = np.nan
-df
-#OK
-
-#%%
-
-

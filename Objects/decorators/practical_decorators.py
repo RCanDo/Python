@@ -70,14 +70,14 @@ def add(a, b):     # 1. decorated function
 def mydeco(func):  # 2. (1.)
     def wrapper(*args, **kwargs):
         return f'{func(*args, **kwargs)}!!!'
-   return wrapper  # 3.
+    return wrapper  # 3.
 
 
 #%% another perspective (in terms of time)
 def mydeco(func):  # executes once, when we decorate function
     def wrapper(*args, **kwargs):    # executes each time the decorated function runs
         return f'{func(*args, **kwargs)}!!!'
-   return wrapper
+    return wrapper
 
 """
 https://www.geeksforgeeks.org/scope-resolution-in-python-legb-rule/

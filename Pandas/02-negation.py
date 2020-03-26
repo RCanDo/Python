@@ -21,14 +21,13 @@ file:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
     name: "02-negation.py"
-    path: "D:/ROBOCZY/Python/Pandas/"
+    path: ""~/Works/Python/Pandas/""
     date: 2020-03-14
     authors:
-        - nick: kasprark
+        - nick: rcando
           fullname: Arkadiusz Kasprzyk
           email:
-              - arek@staart.pl
-              - akasp666@google.com
+              - rcando@int.pl
 """
 
 #%%
@@ -106,7 +105,7 @@ df.dtypes
 
 pd.to_numeric(df['A'])  # bool! ???
 ~pd.to_numeric(df['A'])  # OK but strange way
-# it' better to use .astype(col)
+# it's better to use .astype()
 
 pd.to_numeric(pd.to_numeric(df['A']))   # bool! ???
 # so you cannot cast bool to numeric using pd.to_numeric() ...
