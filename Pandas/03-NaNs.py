@@ -42,7 +42,156 @@ file:
 #%%
 import numpy as np
 import pandas as pd
-import math
+import math as m
+
+#%% Python's None (serving as NULL in e.g. SQL)
+
+None
+type(None)    # NoneType
+
+# None is singleton:
+None == None  # True
+None is None  # True
+
+a = None
+a is None     # True
+a == None     # True
+
+# or in Pandas
+pd.isnull(a)     # True
+# but nothing like this in math or numpy
+
+
+#%% Python's NaN is a float !!!
+
+nn = float('nan')
+type(nn)  # float
+
+# aliases
+float('NaN')
+float('NAN')
+
+# nan is NOT singleton
+nn is float('nan')  # False
+
+# moreover it is NOT equal to itself!
+nn == nn           # False
+nn != nn           # True
+
+# use math module to check for Python's NaN
+m.isnan(nn)  # True
+# but
+m.isnan(a)    #!  TypeError: must be real number, not NoneType
+
+#%%
+z = float('inf')
+
+z == z  # True
+z is z  # True
+
+m.isinf(z)  # True
+m.isfinite(z)  # False
+
+#%% there is also math's infinity
+m.inf
+m.log(0)    #! ValueError: math domain error  ... WHY NOT -inf ???
+infty = m.inf
+
+infty == infty   # True
+infty == m.inf   # True
+infty is m.inf   # True
+
+m.isinf(infty)
+
+m.isinf(a)        #! TypeError: must be real number, not NoneType
+m.isinf(nn)        # False  !!! NaN is NOT finite and NOT infinite !!!
+m.isinf(infty)     # True
+
+m.isfinite(a)     #! TypeError: must be real number, not NoneType
+m.isfinite(nn)     # False  !!! NaN is NOT finite and NOT infinite !!!
+m.isfinite(infty)  # False
+
+#%% the same things in numpy and pandas
+
+np.isnan(a)   #! TypeError: ...
+np.isnan(nn)  # True
+np.isnan(infty)  # False
+
+np.isinf(a)      #! TypeError: ...
+np.isinf(nn)     # False
+np.isinf(infty)  # True
+
+np.isfinite(a)    #! TypeError: ...
+np.isfinite(nn)    # False
+np.isfinite(infty) # False
+
+# in Pandas additional
+pd.isnull(a)     # True
+
+
+#%%
+#%% np.nan
+
+np.nan
+type(np.nan)   # float
+# aliases
+np.NaN
+np.NAN
+
+npnan = np.nan
+
+npnan == npnan   # False
+npnan is np.nan   # True
+npnan is npnan   # True
+
+np.isnan(npnan)  # True
+m.isnan(npnan)   # True
+np.isinf(npnan)  # False
+np.isfinite(npnan)  # false
+
+pd.isnull(npnan)    # True !!!
+
+#%%
+
+
+
+
+
+#%%
+#%%
+ss = pd.Series(range(3), dtype=int)
+ss
+
+ss[0] = None  # turned to NaN
+ss            # float32
+
+#%%
+ss = pd.Series([True, False, True])
+ss
+
+ss[0] = None # turned to  False !
+ss
+
+ss.isnull()
+ss.notnull()
+
+ss[1] = np.nan
+ss           # float32
+
+#%%
+ss = pd.Series([True, False, True])
+ss
+
+ss[0] = pd.NA
+ss          # object
+
+ss.isna()
+ss.notna()
+
+#%%
+# np.array() with NaNs see below
+
+
 
 #%%
 ss = pd.Series([True, False, None])
@@ -118,22 +267,6 @@ np.where(ss == 0)
 
 ss.astype('object') == 1   # ok
 
-#%%
-data0 = pd.read_csv('~/Projects/Kaggle/IEEE-CIS_Fraud_Detection/data/train_transaction.csv')
-
-#%%
-import math
-
-math.isnan(data0['M1'][1])
-math.isnan(data0['M1'])
-
-data0['M1']
-
-set(data0['M1'].unique()) == {'T', 'F', np.nan}   # True
-
-
-
-#%%
 
 
 
@@ -258,4 +391,17 @@ df.dtypes
 
 #%%
 
+
+#%%
+data0 = pd.read_csv('~/Projects/Kaggle/IEEE-CIS_Fraud_Detection/data/train_transaction.csv')
+
+#%%
+import math
+
+math.isnan(data0['M1'][1])
+math.isnan(data0['M1'])
+
+data0['M1']
+
+set(data0['M1'].unique()) == {'T', 'F', np.nan}   # True
 
