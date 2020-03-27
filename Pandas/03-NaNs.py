@@ -145,6 +145,7 @@ Notice the following problem with NaN.
 Create r x c tabe of random integers via np.
 and replace some random entries with NaN
 """
+np.random.seed(3)
 r=10; c=3; nnans=7
 arr = np.random.randint(0, r*c, (r, c))
 arr
@@ -191,7 +192,7 @@ dir(pd._libs.missing)
 #%% at defnition
 
 #! this didn't work but now it works!
-df = pd.DataFrame(arr, dtype='Int16')
+df = pd.DataFrame(arr, columns=list('ABC'), dtype='Int16')
 # old:  #! ValueError: failed to cast to 'Int16' (Exception was: data type not understood)
 df
 df.dtypes
@@ -204,11 +205,18 @@ df.dtypes
 #%% notice that one must use native Pandas integer type  `pd.Int16Dtype()`;
 # Python's `int` is not allowed, for the same reason as above:
 # NaNs are `float`s in basic Python as in NumPy (see `03-NaNs.py`):
-df = pd.DataFrame(arr, columns=list('ABC'))
-df
-df.dtypes
 
-for c in df.columns: df[c] = df[c].astype(int)  # ValueError: Cannot convert non-finite values (NA or inf) to integer
+df = pd.DataFrame(arr, columns=list('ABC'), dtype='int')  # works BUT
+df.dtypes   # int32  -- Pandas type  not Python's int
+
+# MOREOVER
+df = pd.DataFrame(arr, columns=list('ABC'))
+df.dtypes   # float32
+# which we cannot change this way:
+for c in df.columns: df[c] = df[c].astype(int)  #! ValueError: Cannot convert non-finite values (NA or inf) to integer
+# only this
+for c in df.columns: df[c] = df[c].astype(pd.Int16Dtype())
+df.dtypes   # int16
 
 
 #%% way 2. column by column
@@ -218,17 +226,19 @@ df = pd.DataFrame(
          'C': pd.Series(np.random.randint(0, 100, 10), dtype=pd.Int16Dtype())
         })
 df
+#%%
 df.dtypes
 
 df.iloc[rows, cols] = np.nan
 df
 #! ooops... It doesn't work like numpy fancy indexing
+
 # let's recreate the matrix, and run sth more traditional
 
 for r, c in zip(rows, cols): df.iloc[r, c] = np.nan
 df
 #OK
-df.dtypes
+df.dtypes   # int16
 # Notice that all columns remains int16 while we substituted np.nan which is float.
 type(df.iloc[1, 0])   # pandas._libs.missing.NAType
 
@@ -239,6 +249,12 @@ df
 df.dtypes
 # as above!
 # It's good but nevertheless there is huge mess with NaNs in Python/NumPy/Pandas
+
+# recreate again:
+for r, c in zip(rows, cols): df.iloc[r, c] = None
+df
+#OK
+df.dtypes
 
 #%%
 
