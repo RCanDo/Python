@@ -137,7 +137,7 @@ df['one']  #! KeyError: 'one'  -- level 1
 df['bar']['one']
 
 s
-s['quix']
+s['qux']
 
 # See 'Cross-section with hierarchical index' below
 # for how to select on a deeper level. e.g.
@@ -182,13 +182,90 @@ new_mi.levels
     
 #%% Data alignment and using reindex
 #%%
+"""
+Operations between differently-indexed objects having MultiIndex 
+on the axes will work as you expect; 
+data alignment will work the same as an Index of tuples:
+"""
+s
+s[:-2]
+s + s[:-2]
+s + s[::2]
 
-
+"""
+The reindex() method of Series/DataFrames can be called with another MultiIndex, 
+or even a list or array of tuples:
+"""
+index
+index[:3]
+s.reindex(index[:3])
+s.reindex([('foo', 'two'), ('bar', 'one'), ('qux', 'one'), ('baz', 'one')])
     
+#%% Advanced indexing with hierarchical index
 #%%
+df
+df = df.T
+df
+
+df.loc[('bar', 'two')]
+df.loc['bar', 'two']        #! this is shorthand which may lead to ambiguity !
+
+df.loc[('bar', 'two'), 'A']
+
+df.loc['bar']    # is a shorthand for
+df.loc['bar',]
+df.loc[('bar',),]
+
+df.loc['one']    #! KeyError: 'one'
+
+#!!! Again, as for columns:
+df.xs('one', level='second', axis=0)    # very complicated
+
+#??? HOW TO SWAP LEVELS within DF ???
+df.swaplevel(axis=0)
+df.swaplevel(axis=0).loc['one']
+
+#%%
+df.loc['baz':'foo']
+df.loc[('baz', 'two'):('qux', 'one')]
+df.loc[('baz', 'two'):'foo']            # all foos are taken!
+
+#!!! Passing a list of labels or tuples works similar to reindexing:
+df.loc[[('bar', 'two'), ('qux', 'one')]]
+df.loc[[('bar', 'two'), ('qux', 'one')]].index
+
+"""Note
+It is important to note that tuples and lists are not treated identically in pandas 
+when it comes to indexing. 
+Whereas a tuple is interpreted as one multi-level key, a list is used to specify several keys. 
+Or in other words, tuples go horizontally (traversing levels), 
+lists go vertically (scanning levels).
+
+???
+"""
+
+#%%
+"""
+Importantly, a list of tuples indexes several complete MultiIndex keys, 
+whereas a tuple of lists refer to several values within a level:
+"""
+s = pd.Series([1, 2, 3, 4, 5, 6],
+              index=pd.MultiIndex.from_product([["A", "B"], ["c", "d", "e"]]))
+s
+
+s.loc[[("A", "c"), ("B", "d")]]  # list of tuples
+
+s.loc[(["A", "B"], ["c", "d"])]  # tuple of lists
+
+#%%  Using slicers
+https://pandas.pydata.org/pandas-docs/stable/user_guide/advanced.html#using-slicers
+
+
 
 
 #%%
+
+
 
 
 #%%

@@ -89,6 +89,8 @@ frames = [df1, df2, df3]
 result = pd.concat(frames)
 result
 
+pd.concat(frames, axis=1)
+
 #%%%
 
 pd.concat(objs, axis=0, join='outer', ignore_index=False, keys=None,

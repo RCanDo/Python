@@ -83,6 +83,7 @@ dfg = df.groupby('order', axis='columns')
 dfg.sum()
 
 df.groupby(['class', 'order']).sum()
+df.groupby(['class', 'order']).count()
 
 #%%
 """
