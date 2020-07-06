@@ -48,8 +48,7 @@ file:
         - nick: rcando
           fullname: Arkadiusz Kasprzyk
           email:
-              - akasp666@google.com
-              - arek@staart.pl
+              - rcando@int.pl
 """
 
 #%% This is block delimiter very useful for interactive work like e.g. in Spyder (part of Anaconda)
@@ -60,31 +59,40 @@ import numpy as np
 #%% Block delimiters allows to run separated blocks of code by one key-stroke
 # e.g. Shift+Enter in Spyder
 
-""" choose one of the environment,
-i.e. run only one of the lines
-(place the cursor on the line and click black arrow in Spyder or F9)
 """
-env_nam = 'CartPole-v0'
-env_nam = 'MountainCar-v0'
-env_nam = 'MountainCarContinuous-v0'
-env_nam = 'CarRacing-v0'      # needs Box2D
-env_nam = 'MsPacman-v0'       # needs Atari
-env_nam = 'Hopper-v2'         # needs MuJoCo
+Created on Sat May  2 09:13:27 2020
 
-#%% However, some style checkers like Flake may complain on #%% - there should be space after #
+link: https://stackoverflow.com/questions/11707586/how-do-i-expand-the-output-display-to-see-more-columns-of-a-pandas-dataframe
+"""
+
+import pandas as pd
+
+pd.options.display.width = 0  # autodetects the size of your terminal window
+
+pd.set_option('display.max_rows', 500)
+pd.options.display.max_rows = 500         # the same
+pd.options.display.max_colwidth = 500         # the same
+
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
+
+pd.set_option('display.max_rows', 500)   #!!!
+
+
+# %% However, some style checkers like Flake may complain on #%% - there should be space after #
 
 """ run the whole block
 in Spyder: Shift+Enter or the icon: green arrow with red arrow
 """
 
-env = gym.make(env_nam)
-env.reset()
-for _ in range(1000):
-    env.render()
-    env.step(env.action_space.sample())  # take a random action
+pd.set_option('display.max_columns', None)
+pd.set_option('display.expand_frame_repr', False)
+pd.set_option('max_colwidth', -1)
+
+pd.set_option('display.precision', 2)
 
 
-#%%
+# %%
 
 """
 Interactive work style is very useful when debugging or learning.
