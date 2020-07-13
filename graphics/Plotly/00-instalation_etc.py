@@ -35,7 +35,7 @@ file:
               - rcando@int.pl
 """
 
-#%% 
+#%%
 cd "~/Works/Python/graphics/Plotly"
 
 #%%
@@ -68,7 +68,7 @@ fig
 
 #%% JupyterLab Support (Python 3.5+)
 """
-conda install jupyterlab "ipywidgets=7.5"
+conda install jupyterlab "ipywidgets>=7.5"
 
 #!!! the rest requires https://nodejs.org/en/ to be installed ... :(
 
@@ -90,9 +90,9 @@ fig.show()
 #%% Static Image Export Support
 """
 ...
-conda install -c plotly plotly-orca==1.2.1 psutil requests
+conda install -c plotly plotly-orca>=1.2.1 psutil requests
 
-# These packages contain everything you need to save figures 
+# These packages contain everything you need to save figures
 as static images.
 """
 import plotly.graph_objects as go
@@ -104,16 +104,15 @@ https://plotly.com/python/static-image-export/
 """
 #%% Extended Geo Support
 """
-conda install -c plotly plotly-geo=1.0.0
+conda install -c plotly plotly-geo>=1.0.0
 
-go to 
+for example go to
 https://plotly.com/python/county-choropleth/
-for example
 """
 
 #%% Chart Studio Support
 """
-The chart-studio package can be used to upload plotly figures 
+The chart-studio package can be used to upload plotly figures
 to Plotly's Chart Studio Cloud or On-Prem services.
 
 conda install -c plotly chart-studio=1.0.0
