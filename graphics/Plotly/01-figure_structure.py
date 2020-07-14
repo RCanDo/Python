@@ -37,18 +37,18 @@ file:
 """
 
 """
-Note: the recommended entry-point into the plotly package is the high-level 
-`plotly.express`  module, also known as Plotly Express, 
-which consists of Python functions which return fully-populated 
-`plotly.graph_objects.Figure`  objects. 
+Note: the recommended entry-point into the plotly package is the high-level
+`plotly.express`  module, also known as Plotly Express,
+which consists of Python functions which return fully-populated
+`plotly.graph_objects.Figure`  objects.
 
-This page exists to document the architecture of the data structure 
-that these objects represent, 
-for users who wish to understand more about how to customize them, 
+This page exists to document the architecture of the data structure
+that these objects represent,
+for users who wish to understand more about how to customize them,
 or assemble them from other  `plotly.graph_objects`  components.
 """
 
-#%% 
+#%%
 cd "~/Works/Python/graphics/Plotly"
 
 #%%
@@ -66,10 +66,10 @@ print(fig)
 fig.show()
 fig
 
-
 #%%
 #%% Figures as Trees of Attributes
 
+...
 
 
 #%%

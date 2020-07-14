@@ -9,7 +9,7 @@ title: Creating and Updating Figures
 subtitle:
 version: 1.0
 type: tutorial/examples
-keywords: [plotly, renderers]
+keywords: [plotly, figure updates]
 description: |
 remarks:
 todo:
