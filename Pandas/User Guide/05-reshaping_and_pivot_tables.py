@@ -44,6 +44,10 @@ ls
 import numpy as np
 import pandas as pd
 
+pd.set_option("display.max_columns", None)
+pd.set_option("display.max_rows", None)
+pd.set_option('display.max_seq_items', None)
+
 #%% Examples   https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#examples
 #%%
 """
@@ -124,13 +128,11 @@ df['values'].explode()  # -> Series
 df.explode('values')
 
 #%%
-
 s = pd.Series([[1, 2, 3], 'foo', [], ['a', 'b']])
 s
 s.explode()
 
 #%%
-
 df = pd.DataFrame([{'var1': 'a,b,c', 'var2': 1},
                    {'var1': 'd,e,f', 'var2': 2}])
 df
@@ -166,7 +168,6 @@ np.asarray(df.columns).repeat(N)
 np.tile(np.asarray(df.index), K)
 
 #%%
-
 def unpivot(df):
     N, K = df.shape
     data = {'value': df.to_numpy().ravel('F'),
@@ -177,7 +178,6 @@ def unpivot(df):
 # what the pandas' function ???
 
 #%%
-
 df0 = tm.makeTimeDataFrame()
 df0
 
@@ -186,7 +186,9 @@ df
 
 # NOTICE THE DIFFERENCE !!! (melt() and stack() described below)
 df0.melt()
+df0.melt().index
 df0.stack()
+df0.stack().index   # MultiIndex !
 
 #%%
 df[df['variable'] == 'A']
@@ -206,10 +208,11 @@ dfx
 # `values` are all other columns
 dfx_piv = dfx.pivot(index='date', columns='variable')
 dfx_piv
+dfx_piv.columns   # MultiIndex
 
 dfx_piv['X1']
 
-dfx.pivot(index='date', columns='variable', values=['value', 'time'])
+dfx.pivot(index='date', columns='variable', values=['value', 'X1'])
 
 #%%
 # but default `index` is row_number
@@ -218,17 +221,18 @@ df.pivot(columns='variable', values='value')  # strange...
 # while `columns` has no default
 df.pivot(index='date', values='value')        #!  KeyError: None
 
+# hence DO NOT RELY ON DEFAULTS !!!
 
 #%% BUT you cannot indicate more columns nor sth like multiIndex:
-dfx.pivot(index='date', columns=['variable'], values=['value', 'time'])
+dfx.pivot(index='date', columns=['variable'], values=['value', 'X1'])
 # KeyError: 'Level variable not found'
-dfx.pivot(index=['date'], columns='variable', values=['value', 'time'])
+dfx.pivot(index=['date'], columns='variable', values=['value', 'X1'])
 # ValueError: ...
 
 #%% try sth like multiIndex
 df
 df2 = df
-df2['time'] = np.random.randint(10, 13, 12)
+df2['time'] = np.random.randint(10, 13, 120)
 df2
 
 df2.pivot(index='date', columns='variable')  # Ok

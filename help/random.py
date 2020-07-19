@@ -24,8 +24,17 @@ np.random.randint(-5, 5)
 
 #%%
 
-x_sub, y_sub = zip(*random.sample(list(zip([1, 2, 3], [-1, -2, -3])), 2))
+x_sub, y_sub = zip(*np.random.sample(list(zip([1, 2, 3], [-1, -2, -3])), 2))
 
 x_sub
 y_sub
 
+#%%
+
+arr = [1,1,2,2,3,3]
+np.random.shuffle(arr)   #!!! in place !!!
+arr
+
+arr = [1,1,2,2,3,3]
+np.random.permutation(arr)   #! returns value ! OK!
+arr
