@@ -38,3 +38,25 @@ arr
 arr = [1,1,2,2,3,3]
 np.random.permutation(arr)   #! returns value ! OK!
 arr
+
+#%%
+dir(np.random)
+
+help(np.random.random_sample)
+
+#%%
+help(np.random.choice)
+
+np.random.choice(list('abc'), 10, replace=True)
+np.random.choice(['s1', 's2', 's3'], 10, replace=True)
+
+
+#%%
+
+
+
+
+#%%
+
+
+
