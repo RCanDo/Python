@@ -44,7 +44,7 @@ import numpy as np
 import pandas as pd
 import math as m
 
-#%% Python's None (serving as NULL in e.g. SQL)
+#%% Python's None (serving as NULL in e.g. SQL -- NO!!!)
 
 None
 type(None)    # NoneType
@@ -57,12 +57,14 @@ a = None
 a is None     # True
 a == None     # True
 
-# or in Pandas
+#!!! hence it is NOT like NULL !!!
+
+# in Pandas
 pd.isnull(a)     # True
 # but nothing like this in math or numpy
 
 
-#%% Python's NaN is a float !!!
+#%% Python's NaN is a float !!! -- it's almost like NULL in SQL
 
 nn = float('nan')
 type(nn)  # float
@@ -75,13 +77,16 @@ float('NAN')
 nn is float('nan')  # False
 
 # moreover it is NOT equal to itself!
-nn == nn           # False
-nn != nn           # True
+nn == nn           # False  -- like NULL 
+nn != nn           # True   -- NOT like NULL
+nn is nn           # True
 
 # use math module to check for Python's NaN
-m.isnan(nn)  # True
+m.isnan(nn)    # True
 # but
-m.isnan(a)    #!  TypeError: must be real number, not NoneType
+m.isnan(a)     #!  TypeError: must be real number, not NoneType
+
+pd.isnull(nn)  # True
 
 #%%
 z = float('inf')
@@ -101,7 +106,9 @@ infty == infty   # True
 infty == m.inf   # True
 infty is m.inf   # True
 
-m.isinf(infty)
+m.isinf(infty)   # True
+
+#! hence it's a singleton
 
 m.isinf(a)        #! TypeError: must be real number, not NoneType
 m.isinf(nn)        # False  !!! NaN is NOT finite and NOT infinite !!!
@@ -125,9 +132,6 @@ np.isfinite(a)    #! TypeError: ...
 np.isfinite(nn)    # False
 np.isfinite(infty) # False
 
-# in Pandas additional
-pd.isnull(a)     # True
-
 
 #%%
 #%% np.nan
@@ -140,19 +144,25 @@ np.NAN
 
 npnan = np.nan
 
-npnan == npnan   # False
+npnan == npnan   # False !
 npnan is np.nan   # True
 npnan is npnan   # True
+
+npnan == nn      # False
+npnan is nn      # False
 
 np.isnan(npnan)  # True
 m.isnan(npnan)   # True
 np.isinf(npnan)  # False
 np.isfinite(npnan)  # false
 
-pd.isnull(npnan)    # True !!!
 
 #%%
-
+# in Pandas additional
+pd.isnull(None)  # True
+pd.isnull(a)     # True
+pd.isnull(nn)    # True
+pd.isnull(npnan)    # True !!!
 
 
 
