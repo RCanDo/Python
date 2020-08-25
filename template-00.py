@@ -43,7 +43,7 @@ file:
         terminal: False     # if the file is intended to be run in a terminal
     name:
     path: D:/ROBOCZY/Python/...
-    date: 2019-04-
+    date: 2020-08-
     authors:
         - nick: rcando
           fullname: Arkadiusz Kasprzyk
