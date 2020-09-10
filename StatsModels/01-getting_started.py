@@ -55,9 +55,18 @@ print(os.getcwd())
 #%%
 import numpy as np
 import pandas as pd
-import statsmodels.api as sm
 from patsy import dmatrices
+import statsmodels.api as sm
 
+#%% REMARK
+"""
+There is quite a mess with  statsmodels  structure; e.g. acorr_ljungbox() 
+is available via:
+ statmodels.api.stats.acorr_ljungbox() 
+or
+ statmodels.stats.diagnostic.acorr_ljungbox()
+what is not easy visible from documentation...
+"""
 
 #%%
 
@@ -85,6 +94,8 @@ pd.set_option('max_colwidth', -1)
 
 pd.set_option('display.precision', 2)
 
+
+
 #%%
 #%% how to import from various formats
 # https://www.statsmodels.org/stable/iolib.html
@@ -107,7 +118,8 @@ df.count()
 df = df.dropna()
 df
 
-#%%
+#%% !!! R like formulas via  patsy  module !!!
+# https://patsy.readthedocs.io/en/latest/quickstart.html
 y, X = dmatrices('Lottery ~ Literacy + Wealth + Region', data=df, return_type='dataframe')
 y
 X

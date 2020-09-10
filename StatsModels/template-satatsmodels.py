@@ -41,8 +41,7 @@ file:
 """
 
 #%%
-from rcando.ak.builtin import flatten, paste
-from rcando.ak.nppd import data_frame
+import rcando as ak
 import os
 
 PYWORKS = "D:/ROBOCZY/Python"
@@ -58,7 +57,13 @@ import statsmodels.api as sm
 from patsy import dmatrices
 
 #%%
+pd.set_option("display.max_columns", None)
+pd.set_option("display.max_rows", None)
+pd.set_option('display.max_seq_items', None)
 
+pd.set_option('display.expand_frame_repr', False)
+
+#%%
 """
 link: https://stackoverflow.com/questions/11707586/how-do-i-expand-the-output-display-to-see-more-columns-of-a-pandas-dataframe
 """

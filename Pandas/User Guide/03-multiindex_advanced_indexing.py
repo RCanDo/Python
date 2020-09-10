@@ -118,6 +118,8 @@ pd.Series(np.random.randn(8), index=tuples)
 iterables = [['bar', 'baz', 'foo', 'qux'], ['one', 'two']]
 pd.MultiIndex.from_product(iterables, names=['first', 'second'])
 
+pd.MultiIndex.from_product([range(2), range(3), range(3)], names=['d', 'p', 'q'])
+
 #%% 'directly'
 midx = pd.MultiIndex(levels=[['zero', 'one'], ['x', 'y']],
                      codes=[[1, 1, 0, 0], [1, 0, 1, 0]])

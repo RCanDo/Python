@@ -29,8 +29,8 @@ file:
     usage:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
-    name: ts-01.py
-    path: D:/ROBOCZY/Python/TimeSeries/
+    name: 01-intro.py
+    path: D:/ROBOCZY/Python/TimeSeries/Classical/
     date: 2020-08-29
     authors:
         - nick: rcando

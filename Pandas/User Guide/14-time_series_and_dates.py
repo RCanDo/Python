@@ -39,10 +39,8 @@ from rcando.ak.builtin import flatten, paste
 from rcando.ak.nppd import data_frame
 import os
 
-"""
-PYWORKS = "D:/ROBOCZY/Python"
+#PYWORKS = "D:/ROBOCZY/Python"
 PYWORKS = "/home/arek/Works/Python"
-"""
 
 os.chdir(PYWORKS + "/Pandas/User Guide/")
 print(os.getcwd())
