@@ -5,45 +5,27 @@
 # This is YAML, see: https://yaml.org/spec/1.2/spec.html#Preview
 # !!! YAML message always begin with ---
 
-title:
+title: Geometric Brownian motion
 subtitle:
 version: 1.0
-type:          # possible values: ...
-keywords: [kw1, kw2, ..., kwn]   # there are always some keywords!
+type: example
+keywords: [Geometric Brownion Motion, Ito integral, Wiener process]
 description: |
-    Description of what is in the file.
-    Detailed but do not make lectures here!
-remarks:    # additional notes worth emphasising
-    - eg. work interactively (in Spyder)
-    - install PackageX first
-    - etc.
+remarks:
 todo:
-    - problem 1
-    - problem 2   # and so on...
-sources:   # there may be more sources
-    - title:     # title of the book or internet page
-      chapter:   # if necessary
-      pages:     # if necessary
-      link: https://the_page/../xxx.domain
-      date:    # date of issue or last edition of the page
-      authors:
-          - nick:
-            fullname:
-            email:
+sources:
+    - title: Geometric Brownian motion
+      link: https://en.wikipedia.org/wiki/Geometric_Brownian_motion
+      date: 2020-07-28
       usage: |
-          to what extent this source was used:
-          is the file just copy from the source?
-          or the main idea was taken from the source?
-          or only some minor details of the algorithm were borrowed from the source
-          (what details?)
-          be conscise!
+         Theoretical intro; code example.
 file:
     usage:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
-    name:
-    path: D:/ROBOCZY/Python/...
-    date: 2020-08-
+    name: geometric_brownian_motion.py
+    path: D:/ROBOCZY/Python/TimeSeries/Financial/
+    date: 2020-09-11
     authors:
         - nick: rcando
           fullname: Arkadiusz Kasprzyk
@@ -59,7 +41,7 @@ import os
 #PYWORKS = "D:/ROBOCZY/Python"
 PYWORKS = "/home/arek/Works/Python"
 
-os.chdir(PYWORKS + "/current_working_directory/")
+os.chdir(PYWORKS + "/TimeSeries/Financial/")
 print(os.getcwd())
 
 #%% Block delimiters allows to run separated blocks of code by one key-stroke
@@ -88,19 +70,54 @@ pd.set_option('max_colwidth', -1)
 #pd.options.display.max_colwidth = 500         # the same
 
 
-# %% However, some style checkers like Flake may complain on #%% - there should be space after #
-
-""" run the whole block
-in Spyder: Shift+Enter or the icon: green arrow with red arrow
+#%%
 """
 
-# %%
+dS_t = \mu S_t dt + \sigma S_t dW_t
+W_t - Wiener Process (Brownian motion)
 
-"""
-Interactive work style is very useful when debugging or learning.
+leeds to solution (Ito):
 
-Of course the block delimiters are allowed in Python (it's just the comment)
-thus the whole file may be smoothly run.
+S_t = S_0 \exp{ (\mu - \sigma^2 / 2 )t + \sigma W_t }
+
 """
 
 
+#%%
+# Python code for the plot
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+#%% relly random seed (from date)
+from datetime import datetime as dt
+now = dt.now()
+np.random.seed(int(np.log10(np.abs(np.prod(now.today().timetuple())))))
+
+#%%
+mu = 1
+n = 50
+dt = 0.1
+x0 = 100
+# np.random.seed(1)   # seed from source
+
+
+sigma = np.arange(0.8, 2, 0.2)
+
+x = np.exp(
+    (mu - sigma ** 2 / 2) * dt
+    + sigma * np.random.normal(0, np.sqrt(dt), size=(len(sigma), n)).T
+)
+x = np.vstack([np.ones(len(sigma)), x])
+x = x0 * x.cumprod(axis=0)
+
+plt.plot(x)
+plt.legend(np.round(sigma, 2))
+plt.xlabel("$t$")
+plt.ylabel("$x$")
+plt.title(
+    "Realizations of Geometric Brownian Motion with different variances\n $\mu=1$"
+)
+plt.show()
+
+#%%
