@@ -37,8 +37,8 @@ file:
 import rcando as ak
 import os
 
-PYWORKS = "D:/ROBOCZY/Python"
-#PYWORKS = "/home/arek/Works/Python"
+#PYWORKS = "D:/ROBOCZY/Python"
+PYWORKS = "/home/arek/Works/Python"
 
 os.chdir(PYWORKS + "/TimeSeries/Financial/")
 print(os.getcwd())
@@ -63,45 +63,46 @@ pd.set_option('max_colwidth', None)
 
 #%%
 #%%
-"""
+"""Geometric Brownian Motion
 
 dS_t = \mu S_t dt + \sigma S_t dW_t
-W_t - Wiener Process (Brownian motion)
+W_t - Wiener Process (Brownian motion) 
+dW_t ~ N(0, dt)   N(mean, variance)
 
 leeds to solution (Ito):
 
-S_t = S_0 \exp{ (\mu - \sigma^2 / 2 )t + \sigma W_t }
-
+S_T = S_0 \exp{ (\mu - \sigma^2 / 2 )T + \sigma W_T }
+    ~= S_0 \exp{ \Sigma_t^T (\mu - \sigma^2 / 2 )dt + \sigma dW_t }
+    ~= S_0 \Pi_t^T \exp{ (\mu - \sigma^2 / 2 )dt + \sigma dW_t }
 """
 
 #%%
-# Python code for the plot
-import numpy as np
 import matplotlib.pyplot as plt
 
-#%% really random seed (from date)
-from datetime import datetime as dt
-now = dt.now()
-np.random.seed(int(np.log10(np.abs(np.prod(now.today().timetuple())))))
+#%% seed 
+# np.random.seed(1)   # seed from source
+# really random seed (from date)
+np.random.seed(ak.htr(1e7))
 
 #%%
 mu = 1
 n = 50
 dt = 0.1
-x0 = 100
-# np.random.seed(1)   # seed from source
+S0 = 100
 
+n * dt  # == T
 
 sigma = np.arange(0.8, 2, 0.2)
 
-x = np.exp(
+# dt increments dSt
+dSt = np.exp(
     (mu - sigma ** 2 / 2) * dt
     + sigma * np.random.normal(0, np.sqrt(dt), size=(len(sigma), n)).T
 )
-x = np.vstack([np.ones(len(sigma)), x])
-x = x0 * x.cumprod(axis=0)
+dSt = np.vstack([np.ones(len(sigma)), dSt])
+ST = S0 * dSt.cumprod(axis=0)
 
-plt.plot(x)
+plt.plot(ST)
 plt.legend(np.round(sigma, 2))
 plt.xlabel("$t$")
 plt.ylabel("$x$")

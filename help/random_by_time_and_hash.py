@@ -127,11 +127,23 @@ plt.scatter(xx, yy, )
 
 #%%
 import hashlib
-def htrandint(max=100):
+def htr(max=100):
+    # hash-time-random (integer)
     N = int(max)
     hashtime = hashlib.sha224(str(time.time()).encode('ascii')).hexdigest()
     return int(hashtime, 16) % N
 
 #%%
-htrandint(10)
-htrandint(1e7)
+htr(10)
+htr(1e7)
+
+#%% BUT this function is already implemented:
+ak.htr(100)
+plt.scatter(range(100), [ak.htr(100) for k in range(100)])
+
+#%% aliases
+ak.htrandint(100)
+ak.hashtimerandint(100)
+ak.hashtimerandom(100)
+
+#%%
