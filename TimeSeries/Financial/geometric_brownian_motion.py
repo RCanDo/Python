@@ -33,26 +33,18 @@ file:
               - rcando@int.pl
 """
 
-#%% This is block delimiter very useful for interactive work like e.g. in Spyder (part of Anaconda)
-
+#%%
 import rcando as ak
 import os
 
-#PYWORKS = "D:/ROBOCZY/Python"
-PYWORKS = "/home/arek/Works/Python"
+PYWORKS = "D:/ROBOCZY/Python"
+#PYWORKS = "/home/arek/Works/Python"
 
 os.chdir(PYWORKS + "/TimeSeries/Financial/")
 print(os.getcwd())
 
-#%% Block delimiters allows to run separated blocks of code by one key-stroke
-# e.g. Shift+Enter in Spyder
-
-"""
-Created on Sat May  2 09:13:27 2020
-
-link: https://stackoverflow.com/questions/11707586/how-do-i-expand-the-output-display-to-see-more-columns-of-a-pandas-dataframe
-"""
-
+#%%
+import numpy as np
 import pandas as pd
 
 #pd.options.display.width = 0  # autodetects the size of your terminal window - does it work???
@@ -66,10 +58,10 @@ pd.set_option('display.precision', 3)
 
 #%% other df options
 pd.set_option('display.width', 1000)
-pd.set_option('max_colwidth', -1)
+pd.set_option('max_colwidth', None)
 #pd.options.display.max_colwidth = 500         # the same
 
-
+#%%
 #%%
 """
 
@@ -82,14 +74,12 @@ S_t = S_0 \exp{ (\mu - \sigma^2 / 2 )t + \sigma W_t }
 
 """
 
-
 #%%
 # Python code for the plot
-
 import numpy as np
 import matplotlib.pyplot as plt
 
-#%% relly random seed (from date)
+#%% really random seed (from date)
 from datetime import datetime as dt
 now = dt.now()
 np.random.seed(int(np.log10(np.abs(np.prod(now.today().timetuple())))))
