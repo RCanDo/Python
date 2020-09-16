@@ -173,6 +173,8 @@ for k in range(4):
     sim_k.S.plot()
 
 #%%
+#%% Euler-Maruyama Model
+    ...
 
 
 
