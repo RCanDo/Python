@@ -4,3 +4,4 @@ WorldModels/
 events*
 .idea/
 TensorFlow/Get Started/models/
+TensorFlow/Intro To Deep Learning/*.pickle
