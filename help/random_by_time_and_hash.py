@@ -6,7 +6,7 @@
 # !!! YAML message always begin with ---
 
 title: Random numbers by time and hashing function
-subtitle: 
+subtitle:
 version: 1.0
 type: help, examples
 keywords: [time, hashlib, ssh, random]
@@ -18,7 +18,7 @@ sources:
     - title: Python Get Current time
       link: https://www.programiz.com/python-programming/datetime/current-time
     - title: hashlib module
-      link: https://docs.python.org/3/library/hashlib.html  
+      link: https://docs.python.org/3/library/hashlib.html
 file:
     usage:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
@@ -60,15 +60,15 @@ import hashlib
 
 seed = hashlib.sha224(str(time.time()).encode('ascii')).hexdigest()
 seed   # hexadecimal
-seedint = int(seed, 16)   # decimal BUT:   
-# it's a very great number while 
+seedint = int(seed, 16)   # decimal BUT:
+# it's a very great number while
 np.random.seed(seed)   # ValueError: Seed must be between 0 and 2**32 - 1
 # hence we must lessen it anyhow, e.g.
 np.random.seed( sum(int(n) for n in str(seedint)) )    # small seeds
 # or
-np.random.seed( np.abs(np.prod([int(n)+1 for n in str(seedint)])) )   # big seeds 
-# still to big 
-np.random.seed( np.prod([int(n)+1 for n in str(seedint)[:10]]) )   # big seeds 
+np.random.seed( np.abs(np.prod([int(n)+1 for n in str(seedint)])) )   # big seeds
+# still to big
+np.random.seed( np.prod([int(n)+1 for n in str(seedint)[:10]]) )   # big seeds
 # or simpler
 np.random.seed(int(seed[:10], 16))   # still too much
 np.random.seed(int(seed[:8], 16))    # OK
@@ -105,8 +105,8 @@ plt.hist(yy)
 #%% NOTICE
 """
 We are takig modulo N from very large numbers thus any departure
-from a uniform distribution U[1, N] 
-should be neither visible nor even detectable 
+from a uniform distribution U[1, N]
+should be neither visible nor even detectable
 for any reasonable N, i.e. much smaller then  int(hash(time))).
 """
 
@@ -126,24 +126,14 @@ print(xx)
 plt.scatter(xx, yy, )
 
 #%%
-import hashlib
-def htr(max=100):
-    # hash-time-random (integer)
+import hashlib, time
+def htrandint(max=100):
     N = int(max)
     hashtime = hashlib.sha224(str(time.time()).encode('ascii')).hexdigest()
     return int(hashtime, 16) % N
 
 #%%
-htr(10)
-htr(1e7)
-
-#%% BUT this function is already implemented:
-ak.htr(100)
-plt.scatter(range(100), [ak.htr(100) for k in range(100)])
-
-#%% aliases
-ak.htrandint(100)
-ak.hashtimerandint(100)
-ak.hashtimerandom(100)
+htrandint(10)
+htrandint(1e7)
 
 #%%
