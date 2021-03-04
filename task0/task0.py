@@ -22,13 +22,12 @@ print(os.getcwd())
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', 500)
 #pd.set_option('display.width', 500)
+pd.set_option('display.max_seq_items', None)
 
 pd.set_option('display.expand_frame_repr', False)
 pd.set_option('max_colwidth', -1)
 
 pd.set_option('display.large_repr', 'truncate')
-
-pd.set_option('display.max_seq_items', None)
 
 pd.set_option('display.precision', 3)
 
@@ -66,7 +65,14 @@ data.dtypes[dense_cols]
 data.dtypes[sparse_cols]
 
 #%%
+data[dense_cols].count() 
+
+from sklearn.impute import SimpleImputer
+data[dense_cols] = SimpleImputer(strategy="constant", fill_value="NA").fit_transform(data[dense_cols])
+
 for n, c in data.iloc[:,0:3].iteritems(): print("{:s} : ".format(n)); print(c.value_counts())
+
+data.memory_usage().sum() / 1e6   ## 57.6 MB
 
 #%%
 #%% plots
@@ -108,18 +114,20 @@ plt.hist(x4, bins=100)
 plt.hist(x4[x4<2e5], bins=100)
 plt.boxplot(data.iloc[:, 4])
 
-#%%
-#%%
-data1 = data[sparse_cols]
-data_fsum = data1.notna().sum(axis=1)
-data_fsum.count()
-data_fsum.value_counts()
-data_fsum.value_counts()/data1.shape[0]
+## END PLOTS
 
 #%%
-(data1 < 0).sum(axis=0).sum()     # 0
-(data1 == 0).sum(axis=0).sum()    # 0
-(data1 > 0).sum(axis=0).sum()     # 150622
+#%%
+sdata = data[sparse_cols]
+sdata_fsum = sdata.notna().sum(axis=1)
+sdata_fsum.count()
+sdata_fsum.value_counts()
+sdata_fsum.value_counts()/sdata.shape[0]
+
+#%%
+(sdata < 0).sum(axis=0).sum()     # 0
+(sdata == 0).sum(axis=0).sum()    # 0
+(sdata > 0).sum(axis=0).sum()     # 150622
 
 #%%
 """
@@ -131,11 +139,13 @@ data2.notna().sum(axis=1).value_counts()   ## OK
 #%%
 
 data2 = data[dense_cols].copy()
-data2['factor'] = data1.apply(lambda r: r.index[r.notna()][0], axis=1)
-data2['value'] = data1.apply(lambda r: r[r.notna()][0], axis=1)
+data2['factor'] = sdata.apply(lambda r: r.index[r.notna()][0], axis=1)
+data2['value'] = sdata.apply(lambda r: r[r.notna()][0], axis=1)
 data2.head()
 
-data_oh = pd.get_dummies(data2, columns=['f0', 'f1', 'f3', 'factor'])
+data2.memory_usage().sum() / 1e6   ## 8.4 MB
+
+data_oh = pd.get_dummies(data2, columns=['f0', 'f1', 'factor'])
 data_oh.columns
 data_oh.shape
 
