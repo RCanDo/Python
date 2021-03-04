@@ -33,6 +33,8 @@ pd.set_option('display.precision', 3)
 
 #%%
 
+RANDSTATE = 11
+
 data = pd.read_csv("recruitment_task.csv")
 data.head()
 data.shape    # 150000, 48
@@ -47,6 +49,8 @@ Only first five columns are not 'sparse'
 data.count()
 
 #%%
+target_col = "group"
+
 """
 It's easy here to set the 'sparsity' threshold 
 """
@@ -56,7 +60,7 @@ def columns_sparsity(df, threshold=.5):
     dense_cols = df.columns.difference(sparse_cols).tolist()
     return dense_cols, sparse_cols
 
-dense_cols, sparse_cols = columns_sparsity(data)
+dense_cols, sparse_cols = columns_sparsity(data.drop(target_col, axis=1))
 print(dense_cols)
 print(sparse_cols)
 
@@ -138,21 +142,53 @@ data2.notna().sum(axis=1).value_counts()   ## OK
 
 #%%
 
-data2 = data[dense_cols].copy()
-data2['factor'] = sdata.apply(lambda r: r.index[r.notna()][0], axis=1)
-data2['value'] = sdata.apply(lambda r: r[r.notna()][0], axis=1)
-data2.head()
+X0 = data[dense_cols].copy()
+X0['factor'] = sdata.apply(lambda r: r.index[r.notna()][0], axis=1)
+X0['value'] = sdata.apply(lambda r: r[r.notna()][0], axis=1)
+X0.head()
 
-data2.memory_usage().sum() / 1e6   ## 8.4 MB
+X0.memory_usage().sum() / 1e6   ## 7.2 MB
 
-data_oh = pd.get_dummies(data2, columns=['f0', 'f1', 'factor'])
-data_oh.columns
-data_oh.shape
+X = pd.get_dummies(X0, columns=['f0', 'f1', 'factor'])
+X.columns
+X.shape       # (150000, 61)
+
+X.memory_usage().sum() / 1e6   ## 12.15 MB
+
+#%%
+y0 = data[target_col]
+y0.value_counts()
+
+from sklearn.preprocessing import LabelEncoder
+y = LabelEncoder().fit_transform(y0)
+np.array(np.unique(y, return_counts=True))
+
+#%%
+from sklearn.model_selection import train_test_split
+
+X_tr, X_ts, y_tr, y_ts = train_test_split(X, y, random_state=RANDSTATE)
+
+#%%
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.model_selection import cross_val_score
+
+dtc = DecisionTreeClassifier(random_state=RANDSTATE)
+cross_val_score(dtc, X_tr, y_tr, cv=10)
+
+
+
+# plot_tree(model_tree) # too large to plot !
+
+
 
 
 #%%
 #%%
-
+from sklearn.datasets import load_iris
+from sklearn import tree
+X, y = load_iris(return_X_y=True)
+clf = tree.DecisionTreeClassifier()
+clf = clf.fit(X, y)
 
 #%%
 
