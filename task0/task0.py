@@ -151,7 +151,7 @@ X0.memory_usage().sum() / 1e6   ## 7.2 MB
 
 X = pd.get_dummies(X0, columns=['f0', 'f1', 'factor'])
 X.columns
-X.shape       # (150000, 61)
+X.shape       # (150000, 60)
 
 X.memory_usage().sum() / 1e6   ## 12.15 MB
 
@@ -170,17 +170,44 @@ X_tr, X_ts, y_tr, y_ts = train_test_split(X, y, random_state=RANDSTATE)
 
 #%%
 from sklearn.tree import DecisionTreeClassifier, plot_tree
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_val_score, GridSearchCV
+from sklearn.metrics import accuracy_score, confusion_matrix, plot_confusion_matrix
 
+#%%
 dtc = DecisionTreeClassifier(random_state=RANDSTATE)
 cross_val_score(dtc, X_tr, y_tr, cv=10)
 
-
-
 # plot_tree(model_tree) # too large to plot !
 
+dtc.fit(X_tr, y_tr)
+accuracy_score(dtc.predict(X_ts), y_ts)
+confusion_matrix(dtc.predict(X_ts), y_ts)
 
+#%%
+from sklearn.ensemble import RandomForestClassifier
 
+rfc = RandomForestClassifier(random_state=RANDSTATE)
+rfc.fit(X_tr, y_tr)
+accuracy_score(rfc.predict(X_ts), y_ts)
+confusion_matrix(rfc.predict(X_ts), y_ts)
+
+plot_confusion_matrix(rfc, X_ts, y_ts)
+
+#%%
+from sklearn.svm import LinearSVC
+
+svc = LinearSVC(random_state=RANDSTATE)
+svc.fit(X_tr, y_tr)
+accuracy_score(svc.predict(X_ts), y_ts)
+confusion_matrix(svc.predict(X_ts), y_ts)   ## oops...
+
+#%% 
+from  sklearn.linear_model import LogisticRegression
+
+lr = LogisticRegression(random_state=RANDSTATE)
+lr.fit(X_tr, y_tr)
+accuracy_score(lr.predict(X_ts), y_ts)
+confusion_matrix(lr.predict(X_ts), y_ts) 
 
 #%%
 #%%
@@ -191,12 +218,26 @@ clf = tree.DecisionTreeClassifier()
 clf = clf.fit(X, y)
 
 #%%
+from sklearn import svm, datasets
+from sklearn.model_selection import GridSearchCV
+iris = datasets.load_iris()
+parameters = {'kernel':('linear', 'rbf'), 'C':[1, 10]}
 
+svc = svm.SVC()
+grid = GridSearchCV(svc, parameters)
+grid.fit(iris.data, iris.target)
+
+grid.cv_results_
+grid.best_estimator_
+grid.best_score_
+grid.best_index_
+
+from sklearn.metrics import accuracy_score, confusion_matrix
+accuracy_score(grid.predict(iris.data), iris.target)
+confusion_matrix(grid.predict(iris.data), iris.target)
 
 
 #%%
-
-
 
 #%%
 
