@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 import os
 
-#PYWORKS = "D:/ROBOCZY/Python"
+#PYWORKS = "E:/ROBOCZY/Python"
 PYWORKS = "/home/arek/Works/Python"
 
 os.chdir(PYWORKS + "/task0/")
@@ -49,82 +49,41 @@ Only first five columns are not 'sparse'
 data.count()
 
 #%%
-target_col = "group"
+target_var = "group"
 
 """
-It's easy here to set the 'sparsity' threshold 
+It's easy here to set the 'sparsity' threshold
 """
-def columns_sparsity(df, threshold=.5):
-    sparse_cols = df.apply(lambda col: col.isnull().sum() > df.shape[0] * threshold)
-    sparse_cols = sparse_cols.index[sparse_cols].tolist()
-    dense_cols = df.columns.difference(sparse_cols).tolist()
-    return dense_cols, sparse_cols
+def variables_sparsity(df, threshold=.5):
+    sparse_vars = df.apply(lambda col: col.isnull().sum() > df.shape[0] * threshold)
+    sparse_vars = sparse_vars.index[sparse_vars].tolist()
+    dense_vars = df.columns.difference(sparse_vars).tolist()
+    return dense_vars, sparse_vars
 
-dense_cols, sparse_cols = columns_sparsity(data.drop(target_col, axis=1))
-print(dense_cols)
-print(sparse_cols)
-
-#%%
-data.dtypes[dense_cols]
-data.dtypes[sparse_cols]
+dense_vars, sparse_vars = variables_sparsity(data.drop(target_var, axis=1))
+print(dense_vars)
+print(sparse_vars)
 
 #%%
-data[dense_cols].count() 
+data.dtypes[dense_vars]
+data.dtypes[sparse_vars]
+
+#%%
+data[dense_vars].count()
 
 from sklearn.impute import SimpleImputer
-data[dense_cols] = SimpleImputer(strategy="constant", fill_value="NA").fit_transform(data[dense_cols])
+data[dense_vars] = SimpleImputer(strategy="constant", fill_value="NA").fit_transform(data[dense_vars])
 
-for n, c in data.iloc[:,0:3].iteritems(): print("{:s} : ".format(n)); print(c.value_counts())
+for n, c in data.iloc[:,0:3].iteritems(): print(" {:s} :".format(n)); print(c.value_counts())
 
 data.memory_usage().sum() / 1e6   ## 57.6 MB
 
-#%%
-#%% plots
-group = data.iloc[:, 0]
-plt.hist(group)
- 
-x1 = data.iloc[:, 1]
-plt.hist(x1)
 
-plt.hist([x1[group=="A"], x1[group=="B"]], histtype="bar")
-
-plt.bar(data.iloc[:, 1])
-
-#%%
-gdata = data.groupby('group')
-gdc1 = gdata.f1.value_counts()
-gdc1[("A")]
-gdc1[("B")]
-
-plt.hist([gdc1[("A")], gdc1[("B")]], histtype='bar')
-
-#%%
-import plotly.express as px
-
-#%%
-x2 = data.iloc[:, 2]
-plt.hist(x2[x2.notna()]) 
-
-#%%
-
-x3 = data.iloc[:, 3]
-plt.plot(x3)
-plt.hist(x3, bins=50)
-plt.hist(x3[x3<50], bins=50)
-plt.boxplot(x3)
-
-x4 = data.iloc[:, 4]
-plt.hist(x4, bins=100)
-plt.hist(x4[x4<2e5], bins=100)
-plt.boxplot(data.iloc[:, 4])
-
-## END PLOTS
 
 #%%
 #%%
-sdata = data[sparse_cols]
+sdata = data[sparse_vars]
 sdata_fsum = sdata.notna().sum(axis=1)
-sdata_fsum.count()
 sdata_fsum.value_counts()
 sdata_fsum.value_counts()/sdata.shape[0]
 
@@ -142,26 +101,118 @@ data2.notna().sum(axis=1).value_counts()   ## OK
 
 #%%
 
-X0 = data[dense_cols].copy()
+X0 = data[dense_vars].copy()
 X0['factor'] = sdata.apply(lambda r: r.index[r.notna()][0], axis=1)
 X0['value'] = sdata.apply(lambda r: r[r.notna()][0], axis=1)
 X0.head()
 
 X0.memory_usage().sum() / 1e6   ## 7.2 MB
 
-X = pd.get_dummies(X0, columns=['f0', 'f1', 'factor'])
-X.columns
-X.shape       # (150000, 60)
-
-X.memory_usage().sum() / 1e6   ## 12.15 MB
-
 #%%
-y0 = data[target_col]
+y0 = data[target_var]
 y0.value_counts()
 
 from sklearn.preprocessing import LabelEncoder
 y = LabelEncoder().fit_transform(y0)
 np.array(np.unique(y, return_counts=True))
+
+
+#%%
+#%% plots
+plt.hist(y0)
+
+x0 = X0.iloc[:, 0]
+plt.hist(x0)
+
+plt.hist([x0[group=="A"], x0[group=="B"]], histtype="bar")
+
+ plt.bar(data.iloc[:, 1])
+
+#%%
+gdata = data.groupby('group')
+gdc1 = gdata.f1.value_counts()
+gdc1[("A")]
+gdc1[("B")]
+
+plt.hist([gdc1[("A")], gdc1[("B")]], histtype='bar')
+
+#%%
+#import plotly.express as px
+
+#%%
+x2 = data.iloc[:, 2]
+plt.hist(x2[x2.notna()])
+
+#%%
+from scipy.stats import gaussian_kde
+
+def plots(variable):
+    print(len(variable))
+    fig, ((ax0, ax1), (ax2, ax3)) = plt.subplots(nrows=2, ncols=2)
+    ax0.hist(variable, bins=50)
+    ax0.set_title("histogram")
+    ax1.scatter(variable, range(len(variable)), s=.1)
+    ax1.set_title("cloud")
+    ax2.boxplot(variable, vert=False)
+    ax2.set_title("boxplot")
+    density = gaussian_kde(variable)
+    xx = np.linspace(min(variable), max(variable), 1000)
+    ax3.plot(xx, density(xx))
+    ax3.set_title("density")
+    fig.tight_layout()
+    plt.show()
+
+
+x2 = X0.f2
+plots(x2)
+plots(x2[x2<100])
+
+x3 = X0.f3
+plots(x3)
+plots(x3[x3<1e4])
+
+val = X0.value
+plots(val)
+plots(val[val<3e4])
+
+from sklearn.preprocessing import PowerTransformer
+pt = PowerTransformer()
+X1 = X0.copy()
+to_transform_vars = ['f2', 'f3', 'value']
+X1[to_transform_vars] = pt.fit_transform(X1[to_transform_vars])
+pt.lambdas_
+
+x2 = X1.f2
+plots(x2)
+
+x3 = X1.f3
+plots(x3)
+
+val = X1.value
+plots(val)
+
+## END PLOTS
+#%%
+
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+
+ct = ColumnTransformer(
+    [ ("pt", PowerTransformer(), ["f2", "f3", "value"]),
+      ("oh", OneHotEncoder(), ["f0", "f1", "factor"])
+    ],
+    remainder="passthrough"
+    )
+
+
+#%%
+X = pd.get_dummies(X1, columns=['f0', 'f1', 'factor'])
+X.columns
+X.shape       # (150000, 60)
+
+X.memory_usage().sum() / 1e6   ## 12.15 MB
+
 
 #%%
 from sklearn.model_selection import train_test_split
@@ -184,6 +235,11 @@ accuracy_score(dtc.predict(X_ts), y_ts)
 confusion_matrix(dtc.predict(X_ts), y_ts)
 
 #%%
+pl = Pipeline([("transformer", ct), ("model", dtc)])
+
+pl.fit(X_tr, y_tr)
+
+#%%
 from sklearn.ensemble import RandomForestClassifier
 
 rfc = RandomForestClassifier(random_state=RANDSTATE)
@@ -201,13 +257,15 @@ svc.fit(X_tr, y_tr)
 accuracy_score(svc.predict(X_ts), y_ts)
 confusion_matrix(svc.predict(X_ts), y_ts)   ## oops...
 
-#%% 
+#%%
 from  sklearn.linear_model import LogisticRegression
 
 lr = LogisticRegression(random_state=RANDSTATE)
 lr.fit(X_tr, y_tr)
 accuracy_score(lr.predict(X_ts), y_ts)
-confusion_matrix(lr.predict(X_ts), y_ts) 
+confusion_matrix(lr.predict(X_ts), y_ts)
+
+
 
 #%%
 #%%
