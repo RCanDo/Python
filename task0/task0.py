@@ -116,6 +116,11 @@ from sklearn.preprocessing import LabelEncoder
 y = LabelEncoder().fit_transform(y0)
 np.array(np.unique(y, return_counts=True))
 
+#%%
+from sklearn.model_selection import train_test_split
+
+X_tr, X_ts, y_tr, y_ts = train_test_split(X0, y, random_state=RANDSTATE)
+
 
 #%%
 #%% plots
@@ -191,6 +196,14 @@ plots(x3)
 val = X1.value
 plots(val)
 
+plt.scatter(x2, x3, s=.1)
+plt.scatter(x2[y0=="A"], x3[y0=="A"], s=.1)
+plt.scatter(x2[y0=="B"], x3[y0=="B"], s=.1)
+
+plt.scatter(x2, val, s=.1)
+plt.scatter(x3, val, s=.1)
+plt.scatter(x3[y0=="A"], val[y0=="A"], s=.1)
+
 ## END PLOTS
 #%%
 
@@ -214,10 +227,7 @@ X.shape       # (150000, 60)
 X.memory_usage().sum() / 1e6   ## 12.15 MB
 
 
-#%%
-from sklearn.model_selection import train_test_split
 
-X_tr, X_ts, y_tr, y_ts = train_test_split(X, y, random_state=RANDSTATE)
 
 #%%
 from sklearn.tree import DecisionTreeClassifier, plot_tree
@@ -238,6 +248,10 @@ confusion_matrix(dtc.predict(X_ts), y_ts)
 pl = Pipeline([("transformer", ct), ("model", dtc)])
 
 pl.fit(X_tr, y_tr)
+
+accuracy_score(pl.predict(X_ts), y_ts)
+confusion_matrix(pl.predict(X_ts), y_ts)
+
 
 #%%
 from sklearn.ensemble import RandomForestClassifier
