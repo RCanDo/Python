@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 
 import os
 
-#PYWORKS = "E:/ROBOCZY/Python"
-PYWORKS = "/home/arek/Works/Python"
+PYWORKS = "E:/ROBOCZY/Python"
+#PYWORKS = "/home/arek/Works/Python"
 
 os.chdir(PYWORKS + "/task0/")
 print(os.getcwd())
@@ -72,20 +72,26 @@ data.dtypes[sparse_vars]
 data[dense_vars].count()
 
 from sklearn.impute import SimpleImputer
-data[dense_vars] = SimpleImputer(strategy="constant", fill_value="NA").fit_transform(data[dense_vars])
+data[dense_vars] = SimpleImputer(strategy="constant", fill_value="NA") \
+    .fit_transform(data[dense_vars])
 
 for n, c in data.iloc[:,0:3].iteritems(): print(" {:s} :".format(n)); print(c.value_counts())
 
 data.memory_usage().sum() / 1e6   ## 57.6 MB
 
-
-
 #%%
 #%%
 sdata = data[sparse_vars]
-sdata_fsum = sdata.notna().sum(axis=1)
-sdata_fsum.value_counts()
-sdata_fsum.value_counts()/sdata.shape[0]
+
+def no_nulls_in_row_distribution(df):
+    df_rsum = df.notna().sum(axis=1)
+    return pd.DataFrame(
+                { "count": df_rsum.value_counts(),
+                  "ratio": df_rsum.value_counts()/df.shape[0]
+                }
+            )
+
+no_nulls_in_row_distribution(sdata)
 
 #%%
 (sdata < 0).sum(axis=0).sum()     # 0
@@ -109,34 +115,39 @@ X0.head()
 X0.memory_usage().sum() / 1e6   ## 7.2 MB
 
 #%%
-y0 = data[target_var]
+y0 = data[target_var]      ## pd.Series
 y0.value_counts()
 
 from sklearn.preprocessing import LabelEncoder
 y = LabelEncoder().fit_transform(y0)
 np.array(np.unique(y, return_counts=True))
 
+type(y)                    ## np.ndarray ... WHY !!!
+
 #%%
 from sklearn.model_selection import train_test_split
-
-X_tr, X_ts, y_tr, y_ts = train_test_split(X0, y, random_state=RANDSTATE)
+X_train, X_test, y_train, y_test = train_test_split(X0, y, random_state=RANDSTATE)
 
 
 #%%
-#%% plots
+#%% PLOTS
+#%%%
 plt.hist(y0)
 
 x0 = X0.iloc[:, 0]
 plt.hist(x0)
 
-plt.hist([x0[group=="A"], x0[group=="B"]], histtype="bar")
+plt.hist([x0[y0=="A"], x0[y0=="B"]], histtype="bar")
 
  plt.bar(data.iloc[:, 1])
 
 #%%
 gdata = data.groupby('group')
 gdc1 = gdata.f1.value_counts()
-gdc1[("A")]
+gdc1
+gdc1.index
+
+plt.bar( range(), gdc1[("A")])
 gdc1[("B")]
 
 plt.hist([gdc1[("A")], gdc1[("B")]], histtype='bar')
@@ -204,7 +215,10 @@ plt.scatter(x2, val, s=.1)
 plt.scatter(x3, val, s=.1)
 plt.scatter(x3[y0=="A"], val[y0=="A"], s=.1)
 
-## END PLOTS
+#%%
+##  END PLOTS
+#%%
+
 #%%
 
 from sklearn.pipeline import Pipeline
