@@ -24,6 +24,7 @@ pd.set_option('display.max_columns', 500)
 #pd.set_option('display.width', 500)
 pd.set_option('display.max_seq_items', None)
 
+#%%
 pd.set_option('display.expand_frame_repr', False)
 pd.set_option('max_colwidth', -1)
 
@@ -75,7 +76,9 @@ from sklearn.impute import SimpleImputer
 data[dense_vars] = SimpleImputer(strategy="constant", fill_value="NA") \
     .fit_transform(data[dense_vars])
 
-for n, c in data.iloc[:,0:3].iteritems(): print(" {:s} :".format(n)); print(c.value_counts())
+for n, c in data.iloc[:,0:3].iteritems():
+    print(" {:s} :".format(n))
+    print(c.value_counts())
 
 data.memory_usage().sum() / 1e6   ## 57.6 MB
 
@@ -118,52 +121,38 @@ X0.memory_usage().sum() / 1e6   ## 7.2 MB
 y0 = data[target_var]      ## pd.Series
 y0.value_counts()
 
-from sklearn.preprocessing import LabelEncoder
-y = LabelEncoder().fit_transform(y0)
-np.array(np.unique(y, return_counts=True))
-
-type(y)                    ## np.ndarray ... WHY !!!
-
 #%%
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X0, y, random_state=RANDSTATE)
-
+Xg = X0.groupby(y0)
+Xg.head()
+Xg.f0.value_counts()
+Xg.f1.value_counts()
+Xg.factor.value_counts()
+Xg.boxplot()
 
 #%%
 #%% PLOTS
 #%%%
 plt.hist(y0)
 
-x0 = X0.iloc[:, 0]
-plt.hist(x0)
-
-plt.hist([x0[y0=="A"], x0[y0=="B"]], histtype="bar")
-
- plt.bar(data.iloc[:, 1])
+#%%
+fig, ax = plt.subplots(3, 1, figsize=(7, 9))
+for i, var in enumerate(['f0', 'f1', 'factor']):
+    xi = X0[var]
+    ax[i].hist([xi[y0=="A"], xi[y0=="B"]], histtype="bar", density=True, label=["A", "B"])  #!
+    ax[i].set_title(var)
+    ax[i].legend()
+fig.tight_layout()
 
 #%%
-gdata = data.groupby('group')
-gdc1 = gdata.f1.value_counts()
-gdc1
-gdc1.index
-
-plt.bar( range(), gdc1[("A")])
-gdc1[("B")]
-
-plt.hist([gdc1[("A")], gdc1[("B")]], histtype='bar')
+ plt.bar(data.iloc[:, 1])
 
 #%%
 #import plotly.express as px
 
 #%%
-x2 = data.iloc[:, 2]
-plt.hist(x2[x2.notna()])
-
-#%%
 from scipy.stats import gaussian_kde
 
-def plots(variable):
-    print(len(variable))
+def plots(variable, title="variable"):
     fig, ((ax0, ax1), (ax2, ax3)) = plt.subplots(nrows=2, ncols=2)
     ax0.hist(variable, bins=50)
     ax0.set_title("histogram")
@@ -175,21 +164,32 @@ def plots(variable):
     xx = np.linspace(min(variable), max(variable), 1000)
     ax3.plot(xx, density(xx))
     ax3.set_title("density")
+    fig.suptitle(title)
     fig.tight_layout()
     plt.show()
 
+#%%
 
-x2 = X0.f2
-plots(x2)
-plots(x2[x2<100])
+vname="f2"
+xi = X0[vname]
+plots(xi, vname)
+plots(xi[xi<100], vname)
 
-x3 = X0.f3
-plots(x3)
-plots(x3[x3<1e4])
+vname="f3"
+xi = X0[vname]
+plots(xi, vname)
+plots(xi[xi<1e4], vname)
 
-val = X0.value
-plots(val)
-plots(val[val<3e4])
+vname="value"
+xi = X0[vname]
+plots(xi, vname)
+plots(xi[xi<3e4], vname)
+
+Xg.boxplot()
+
+## hence we see that data are heavily skewed
+
+#%%
 
 from sklearn.preprocessing import PowerTransformer
 pt = PowerTransformer()
@@ -198,26 +198,53 @@ to_transform_vars = ['f2', 'f3', 'value']
 X1[to_transform_vars] = pt.fit_transform(X1[to_transform_vars])
 pt.lambdas_
 
-x2 = X1.f2
-plots(x2)
+vname="f2"
+xi = X1[vname]
+plots(xi, vname)
 
-x3 = X1.f3
-plots(x3)
+vname="f3"
+xi = X1[vname]
+plots(xi, vname)
 
-val = X1.value
-plots(val)
+vname="value"
+xi = X1[vname]
+plots(xi, vname)
 
-plt.scatter(x2, x3, s=.1)
-plt.scatter(x2[y0=="A"], x3[y0=="A"], s=.1)
-plt.scatter(x2[y0=="B"], x3[y0=="B"], s=.1)
+X1.groupby(y0).boxplot()
 
-plt.scatter(x2, val, s=.1)
-plt.scatter(x3, val, s=.1)
-plt.scatter(x3[y0=="A"], val[y0=="A"], s=.1)
+#%%
+
+def pairwise(v1, v2, X=X1):
+    x1 = X[v1]
+    x2 = X[v2]
+    fig, ax = plt.subplots()
+    B = ax.scatter(x1[y0=="B"], x2[y0=="B"], s=.1)
+    A = ax.scatter(x1[y0=="A"], x2[y0=="A"], s=.1, alpha=.5)
+    ax.set_xlabel(v1)
+    ax.set_ylabel(v2)
+    ax.legend([A, B], ["A", "B"])
+    fig.suptitle("{:s} vs {:s}".format(v1, v2))
+    fig.tight_layout()
+
+pairwise('f2', 'f3')
+pairwise('f2', 'value')
+pairwise('f3', 'value')
 
 #%%
 ##  END PLOTS
 #%%
+
+
+#%%
+from sklearn.preprocessing import LabelEncoder
+y = LabelEncoder().fit_transform(y0)
+np.array(np.unique(y, return_counts=True))
+
+type(y)                    ## np.ndarray ... WHY !!!
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X0, y, random_state=RANDSTATE)
+
 
 #%%
 
@@ -234,12 +261,11 @@ ct = ColumnTransformer(
 
 
 #%%
-X = pd.get_dummies(X1, columns=['f0', 'f1', 'factor'])
-X.columns
-X.shape       # (150000, 60)
+    X = pd.get_dummies(X1, columns=['f0', 'f1', 'factor'])
+    X.columns
+    X.shape       # (150000, 60)
 
-X.memory_usage().sum() / 1e6   ## 12.15 MB
-
+    X.memory_usage().sum() / 1e6   ## 12.15 MB
 
 
 
@@ -250,23 +276,30 @@ from sklearn.metrics import accuracy_score, confusion_matrix, plot_confusion_mat
 
 #%%
 dtc = DecisionTreeClassifier(random_state=RANDSTATE)
-cross_val_score(dtc, X_tr, y_tr, cv=10)
 
-# plot_tree(model_tree) # too large to plot !
+    #cross_val_score(dtc, X_tr, y_tr, cv=10)
+    # plot_tree(model_tree) # too large to plot !
 
 dtc.fit(X_tr, y_tr)
 accuracy_score(dtc.predict(X_ts), y_ts)
 confusion_matrix(dtc.predict(X_ts), y_ts)
 
 #%%
-pl = Pipeline([("transformer", ct), ("model", dtc)])
+pl_dtc = Pipeline([("transformer", ct), ("model", dtc)])
 
-pl.fit(X_tr, y_tr)
+pl_dtc.fit(X_tr, y_tr)
 
 accuracy_score(pl.predict(X_ts), y_ts)
 confusion_matrix(pl.predict(X_ts), y_ts)
 
+##
+parameters = {'model__criterion':['gini', 'entropy']}
+grid = GridSearchCV(pl_dtc, parameters)
+grid.fit(X_train, y_train)
 
+
+
+#%%
 #%%
 from sklearn.ensemble import RandomForestClassifier
 
