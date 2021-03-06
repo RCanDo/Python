@@ -287,17 +287,24 @@ confusion_matrix(dtc.predict(X_ts), y_ts)
 #%%
 pl_dtc = Pipeline([("transformer", ct), ("model", dtc)])
 
-pl_dtc.fit(X_tr, y_tr)
+ pl_dtc.fit(X_tr, y_tr)
 
-accuracy_score(pl.predict(X_ts), y_ts)
-confusion_matrix(pl.predict(X_ts), y_ts)
+ accuracy_score(pl_dtc.predict(X_ts), y_ts)
+ confusion_matrix(pl_dtc.predict(X_ts), y_ts)
 
 ##
 parameters = {'model__criterion':['gini', 'entropy']}
 grid = GridSearchCV(pl_dtc, parameters)
 grid.fit(X_train, y_train)
 
+grid.cv_results_
+grid.best_estimator_
+grid.best_score_
+grid.best_index_
 
+from sklearn.metrics import accuracy_score, confusion_matrix
+accuracy_score(grid.predict(X_test), y_test)
+confusion_matrix(grid.predict(X_test), y_test)
 
 #%%
 #%%
