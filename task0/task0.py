@@ -122,6 +122,19 @@ y0 = data[target_var]      ## pd.Series
 y0.value_counts()
 
 #%%
+X1 = pd.concat([X0, y0], axis=1)
+print(pd.pivot_table(X1, index="group", columns="f0", aggfunc=len, values="f1"))
+pd.pivot_table(X1, index="f0", columns="group", aggfunc=len, values="f1").plot()
+
+
+print(pd.pivot_table(X1, index="group", columns="f1", aggfunc=len, values="f0"))
+pd.pivot_table(X1, index="f1", columns="group", aggfunc=len, values="f0").plot()
+
+
+print(pd.pivot_table(X1, index="group", columns="factor", aggfunc=len, values="f0"))
+pd.pivot_table(X1, index="factor", columns="group", aggfunc=len, values="f0").plot()
+
+#%%
 Xg = X0.groupby(y0)
 Xg.head()
 Xg.f0.value_counts()
@@ -152,7 +165,15 @@ fig.tight_layout()
 #%%
 from scipy.stats import gaussian_kde
 
-def plots(variable, title="variable"):
+def plots(varname, Max=None, X=X1):
+    variable = X[varname]
+
+    if Max is None:
+        title = varname
+    else:
+        title = "{:s} < {:d}".format(varname, Max)
+        variable = variable[variable < Max]
+
     fig, ((ax0, ax1), (ax2, ax3)) = plt.subplots(nrows=2, ncols=2)
     ax0.hist(variable, bins=50)
     ax0.set_title("histogram")
@@ -164,6 +185,7 @@ def plots(variable, title="variable"):
     xx = np.linspace(min(variable), max(variable), 1000)
     ax3.plot(xx, density(xx))
     ax3.set_title("density")
+
     fig.suptitle(title)
     fig.tight_layout()
     plt.show()
@@ -171,19 +193,16 @@ def plots(variable, title="variable"):
 #%%
 
 vname="f2"
-xi = X0[vname]
-plots(xi, vname)
-plots(xi[xi<100], vname)
+plots(vname)
+plots(vname, Max=100)
 
 vname="f3"
-xi = X0[vname]
-plots(xi, vname)
-plots(xi[xi<1e4], vname)
+plots(vname)
+plots(vname, Max=1e4)
 
 vname="value"
-xi = X0[vname]
-plots(xi, vname)
-plots(xi[xi<3e4], vname)
+plots(vname)
+plots(vname, Max=3e4)
 
 Xg.boxplot()
 
@@ -299,8 +318,16 @@ grid.fit(X_train, y_train)
 
 grid.cv_results_
 grid.best_estimator_
+grid.best_params_
 grid.best_score_
 grid.best_index_
+
+def GridSearchCV_results(grid):
+    pd.DataFrame(
+        {k: grid.cv_results_[k] for k in \
+             ['params', 'mean_test_score', 'std_test_score', 'rank_test_score']}
+        ).T
+GridSearchCV_results(grid)
 
 from sklearn.metrics import accuracy_score, confusion_matrix
 accuracy_score(grid.predict(X_test), y_test)
