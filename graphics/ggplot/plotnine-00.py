@@ -28,7 +28,7 @@ file:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
     name:
-    path: D:/ROBOCZY/Python/...
+    path: ~/graphics/ggplot/
     date: 2021-03-12
     authors:
         - nick: rcando
@@ -153,9 +153,31 @@ ggplot(mpg, aes(x='displ', y='hwy')) + \
 
 
 #%%
+"""
+facet_grid() is used for plotting 2 categorical variables
+whereas facet_wrap() is mostly used for plotting 1 categorical variable,
+even though it’s possible to plot 2.
+
+From a stats perspective it’s possible to think of this plot
+as how the interaction of `cyl` and `year` affects `displ`
+"""
+
+ggplot(mpg, aes(x='displ')) + geom_histogram() + facet_grid('cyl ~ year')
+
+#%%
+ggplot(mtcars, aes('wt', 'mpg', color='factor(gear)')) + \
+    geom_point()
+
+ggplot(mtcars, aes('wt', 'mpg', color='factor(gear)')) + \
+    geom_point() + geom_smooth(method="rlm")
+
+ggplot(mtcars, aes('wt', 'mpg', color='factor(gear)')) + \
+    geom_point() + geom_smooth(method="rlm") + facet_wrap('~ gear')
+
+#%%
 
 
 #%%
 
 
-
+#%%
