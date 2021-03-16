@@ -46,15 +46,17 @@ file:
 
 #%% This is block delimiter very useful for interactive work like e.g. in Spyder (part of Anaconda)
 
-import rcando as ak
+import rcando.ak as ak
 import os
 
 ROOT = "E:/"
-DATA = os.path.join(ROOT, "Data/eco")
+#ROOT = "~"
 PYWORKS = os.path.join(ROOT, "ROBOCZY/Python")
-#PYWORKS = "/home/arek/Works/Python"
+##
+DATA = os.path.join(ROOT, "Data/eco")           ## adjust !!!
+WD = os.path.join(PYWORKS, "graphics/ggplot/")  ## adjust !!!
 
-os.chdir(PYWORKS + "/graphics/ggplot/")
+os.chdir(WD)
 print(os.getcwd())
 
 #%% Block delimiters allows to run separated blocks of code by one key-stroke
