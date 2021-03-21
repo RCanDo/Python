@@ -69,12 +69,12 @@ print(os.getcwd())
 #%% Block delimiters allows to run separated blocks of code by one key-stroke
 # e.g. Shift+Enter in Spyder
 
-"""
-link: https://stackoverflow.com/questions/11707586/how-do-i-expand-the-output-display-to-see-more-columns-of-a-pandas-dataframe
-"""
 import numpy as np
 import pandas as pd
 
+"""
+link: https://stackoverflow.com/questions/11707586/how-do-i-expand-the-output-display-to-see-more-columns-of-a-pandas-dataframe
+"""
 #pd.options.display.width = 0  # autodetects the size of your terminal window - does it work???
 pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)

@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Mar 15 08:26:10 2021
-
-@author: staar
-"""
 #! python3
 # -*- coding: utf-8 -*-
 """
@@ -49,10 +43,10 @@ file:
 import rcando.ak as ak
 import os
 
-#ROOT = "E:/"
-ROOT = "/home/arek"
-#PYWORKS = os.path.join(ROOT, "ROBOCZY/Python")
-PYWORKS = os.path.join(ROOT, "Works/Python")
+ROOT = "E:/"
+#ROOT = "/home/arek"
+PYWORKS = os.path.join(ROOT, "ROBOCZY/Python")
+#PYWORKS = os.path.join(ROOT, "Works/Python")
 ##
 DATA = os.path.join(ROOT, "Data/eco")           ## adjust !!!
 WD = os.path.join(PYWORKS, "graphics/ggplot/")  ## adjust !!!
@@ -60,17 +54,15 @@ WD = os.path.join(PYWORKS, "graphics/ggplot/")  ## adjust !!!
 os.chdir(WD)
 print(os.getcwd())
 
-#%% Block delimiters allows to run separated blocks of code by one key-stroke
-# e.g. Shift+Enter in Spyder
-
-"""
-link: https://stackoverflow.com/questions/11707586/how-do-i-expand-the-output-display-to-see-more-columns-of-a-pandas-dataframe
-"""
+#%%
 import numpy as np
 import pandas as pd
 import warnings
 
 #%%
+"""
+link: https://stackoverflow.com/questions/11707586/how-do-i-expand-the-output-display-to-see-more-columns-of-a-pandas-dataframe
+"""
 #pd.options.display.width = 0  # autodetects the size of your terminal window - does it work???
 pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
@@ -95,7 +87,6 @@ theme_set(theme_gray()) # default theme
 #%matplotlib inline
 
 #%%
-
 surveys0 = pd.read_csv(os.path.join(DATA, 'surveys.csv'))
 surveys0.head()
 surveys0.shape   # (35549, 9)
@@ -159,13 +150,13 @@ p1
 """
 Building plots with plotnine is typically an iterative process.
 We start by defining
-1. the dataset we’ll use,  `data=`
-2. lay the axes,  aes(...)
-3. and choose a geom.  geom_*(...)
+1. the dataset we’ll use:  ggplot(data=...)
+2. lay the axes:           + aes(x=..., y=...)
+3. and choose a geom:      + geom_*(...)
 Hence, the data, aes and geom_* are the elementary elements of any graph:
 """
-p0 = ggplot(data=surveys0,
-    mapping=aes(x="weight", y="hindfoot_length"))
+p0 = ggplot(data=surveys0) \
+    + aes(x="weight", y="hindfoot_length")
 #%%
 p0 + geom_point()
 p0 + geom_point(alpha=.1)
@@ -176,6 +167,7 @@ p0 + geom_point(alpha=.1, size=.5, color="species_id")   #! ERROR !
 
 p2 = p0 + aes(color="species_id") + geom_point(alpha=.1, size=.5)
 p2  # OK
+p2 + theme(subplots_adjust={'right': 0.75})  # hmm..
 
 #%%
 p2 = p2 + xlab("Weight (g)")
@@ -233,6 +225,86 @@ p3 + aes(color="factor(plot_id)") + \
 
 #%%
 ## Plotting time series data
+#%%
+surveys0.head()
+yearly_counts = surveys0.groupby(['year', 'species_id'])['species_id'].count()
+yearly_counts
+yearly_counts = yearly_counts.reset_index(name='counts')   #!!!
+yearly_counts
+
+#%%
+p4 = ggplot(data=yearly_counts) + aes(x="year", y="counts") \
+    + geom_line()
+p4
+
+#%%
+p4 + aes(color="species_id")
+p4 + aes(color="species_id") + scale_y_log10()
+
+#%%
+## Faceting
+#%%
+p5 = ggplot(data=surveys0) + \
+    aes(x="weight", y="hindfoot_length") + \
+    geom_point(alpha=.9)
+#%%
+p5 + aes(color="species_id")
+
+p5 + facet_wrap("sex")
+
+p5 + facet_wrap("sex") + aes(color="species_id")
+p5 + facet_wrap("species_id") + aes(color="sex")
+
+p5 + facet_grid("sex ~ species_id")  # no good
+
+#%% try sth different
+p6 = ggplot(data=surveys0[surveys0["year"].isin([2000, 2001])]) + \
+    aes(x="weight", y="hindfoot_length") + \
+    geom_point(alpha=.5)
+p6 + aes(color="species_id") + facet_grid("year ~ sex")
+
+#%%
+yearly_weight = surveys0.groupby(['year', 'species_id'])
+yearly_weight = yearly_weight['weight'].mean().reset_index()
+
+p7 = ggplot(data=yearly_weight, mapping=aes(x='year', y='weight')) + \
+    geom_line() + \
+    facet_wrap("species_id")
+p7
+
+#%%
+yearly_weight = surveys0.groupby(['year', 'species_id', 'sex'])
+yearly_weight = yearly_weight['weight'].mean().reset_index()
+
+p8 = ggplot(data=yearly_weight,
+        mapping=aes(x='year',
+                       y='weight',
+                       color='species_id')) \
+    + geom_line() \
+    + facet_wrap("sex")
+p8
+
+#%%
+## Further customization
+#%%
+p9 = ggplot(data=surveys0,
+           mapping=aes(x='factor(year)'))
+p9 = p9 + geom_bar()
+p9
+
+#%%
+my_custom_theme = theme(
+    axis_text_x = element_text(color="grey", size=10, angle=50, hjust=.5),
+    axis_text_y = element_text(color="grey", size=10))
+
+p9 = p9 + my_custom_theme
+p9
+
+#%% saving the plot
+
+p9.save("some_bars.png", width=10, height=10, dpi=300)
+
+
 #%%
 
 
