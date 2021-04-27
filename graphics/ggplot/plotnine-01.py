@@ -119,7 +119,7 @@ The most important aes() _mappings_ are:
 
 #%%
 """Still no specific data is plotted, as we have to define
- what kind of geometry will be used for the plot.
+what kind of geometry will be used for the plot.
 The most straightforward is probably using  `points`.
 Points is one of the  `geoms`  options,
 the graphical representation of the data in the plot.
@@ -169,6 +169,8 @@ p2 = p0 + aes(color="species_id") + geom_point(alpha=.1, size=.5)
 p2  # OK
 p2 + theme(subplots_adjust={'right': 0.75})  # hmm..
 
+p2.save("hindfoot_length_vs_weight.png", width=12, height=10, dpi=300)
+
 #%%
 p2 = p2 + xlab("Weight (g)")
 p2
@@ -183,7 +185,8 @@ p2 = p2 + theme(text=element_text(size=16))
 p2
 
 #%%
-p1 = p1 + aes(color="sex")
+p1 + aes(color="sex")      # ugly
+p1 = p1 + aes(fill="sex")  # nice !
 p1
 p1 = p1 + scale_color_manual(["blue", "green"])
 p1
@@ -196,6 +199,7 @@ p3 + geom_boxplot()
 #%%
 p3 + geom_boxplot(alpha=0.) + geom_jitter(alpha=.2)  ## not so good
 p3 + geom_jitter(alpha=.2) + geom_boxplot(alpha=0.)  ## better! order matters !!!
+## but not always... or maybe sth changed within library
 
 #%%
 p3 + geom_violin()
@@ -222,6 +226,9 @@ p3 + aes(color="factor(plot_id)") + \
      geom_jitter(alpha=0.3) + \
      geom_violin(alpha=0, color="0.2") + \
      scale_y_log10()
+
+#%%
+ggplot(surveys0) + aes(x="species_id") + geom_bar() + facet_grid("~plot_id")
 
 #%%
 ## Plotting time series data
@@ -283,6 +290,13 @@ p8 = ggplot(data=yearly_weight,
     + geom_line() \
     + facet_wrap("sex")
 p8
+
+#%%
+p81 = ggplot(data=yearly_weight) \
+     + aes(x="year", y="weight", color="sex") \
+     + geom_line() \
+     + facet_wrap("species_id")
+p81
 
 #%%
 ## Further customization

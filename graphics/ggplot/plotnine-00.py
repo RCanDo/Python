@@ -92,35 +92,40 @@ ggplot(mpg) + aes(x='displ', y='hwy', color='cyl') + geom_point()
 
 #%% make 'cyl' categorical
 mpg2 = mpg.copy()
-mpg.dtypes
 mpg2.dtypes
 
-#%%
 mpg2['cyl'] = mpg2['cyl'].astype('category')
 ggplot(mpg2) + aes(x='displ', y='hwy', color='cyl') + geom_point()
 
 #%%
 p = ggplot(mpg2)
-p += aes(x='displ', y='hwy', color='cyl')  ## better not use += as it's possible in R
+p += aes(x='displ', y='hwy', color='cyl')  ## better not use += as it's not possible in R
 p = p + geom_point()
 p
 
 #%%
 p = ggplot(mpg2)
 p = p + aes(x='cyl', y='displ')
-p = p + geom_boxplot()
-p
+p + geom_point()
+p + geom_boxplot()
 
 #%%
 mpg2['year'] = mpg['year'].astype('category')
 ggplot(mpg2) + aes(x='cyl', y='displ', fill='year') + geom_boxplot()
+ggplot(mpg2) + aes(x='cyl', y='displ', color='year') + geom_boxplot()
+ggplot(mpg2) + aes(x='cyl', y='displ', fill='year') + geom_point()
+ggplot(mpg2) + aes(x='cyl', y='displ', color='year') + geom_point()
 
 #%%
 ggplot(mpg2) + aes(x='displ', fill='year') + geom_density()
+ggplot(mpg2) + aes(x='displ', fill='year') + geom_density(alpha=.5)
 
+ggplot(mpg2) + aes(x='displ', color='year') + geom_density()
 #%%
 #%%
 economics.head()
+
+ggplot(economics) + aes(x='date', y='pop') + geom_line()
 
 #%%
 economics['year'] = pd.DatetimeIndex(economics.date).year.astype('category')

@@ -1,22 +1,19 @@
-#! python3
-# -*- coding: utf-8 -*-
 """
 ---
 # This is YAML, see: https://yaml.org/spec/1.2/spec.html#Preview
 # !!! YAML message always begin with ---
 
-title: Using ggplot in Python: Visualizing Data With plotnine
+title: plotnine.mapping.after_stat
 subtitle:
 version: 1.0
-type: tutorial
+type: example
 keywords: [plotnine, ggplot]
 description: |
 remarks:
 todo:
 sources:
-    - title: Using ggplot in Python: Visualizing Data With plotnine
-      site:
-      link: https://realpython.com/ggplot-python/
+    - title: plotnine.mapping.after_stat
+      link: https://plotnine.readthedocs.io/en/stable/generated/plotnine.mapping.after_stat.html#plotnine.mapping.after_stat
       date: 2020-10-12
       authors:
           - nick:
@@ -30,7 +27,7 @@ file:
         terminal: False     # if the file is intended to be run in a terminal
     name:
     path: ~/graphics/ggplot/
-    date: 2021-03-21
+    date: 2021-4-25
     authors:
         - nick: rcando
           fullname: Arkadiusz Kasprzyk
@@ -80,86 +77,68 @@ pd.set_option('max_colwidth', None)
 #%%
 from plotnine import *     ## not pythonic but using alias e.g. `pn.` all the time is really cumbersome !!!
 
-#from plotnine.data import economics, mtcars, mpg
-warnings.filterwarnings("ignore")
-
-theme_set(theme_gray()) # default theme
-#%matplotlib inline
+#%%
+plotnine.mapping.after_stat(x: str)
 
 #%%
-from plotnine.data import economics, mpg, huron
+df = pd.DataFrame({
+    'var1': [1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5]
+})
 
-huron.head()
-
-#%%
-...
-
-#%%
-ggplot(huron) + aes(x="level") + stat_bin(bins=10) + geom_bar()
-    ## divides the level range into 10 equally sized bins
-
-ggplot(huron) + aes(x="level") + geom_histogram(bins=10)  ## the same
-
-ggplot(huron) + stat_bin(mappings=aes(x="level", y=after_stat('count'), bins=10)) + geom_bar()
-## ...
-
-#%%
-(ggplot(huron)
- + aes(x="factor(decade)", y="level")
- + geom_boxplot()
+(ggplot(df, aes('var1'))
+ + geom_bar()
 )
 
 #%%
-(ggplot(economics)
- + aes(x="date", y="pop")
- + scale_x_timedelta(name="Years since 1970")
- + labs(title="Population Evolution", y="Population")     # !!!
- + geom_line()
+(ggplot(df, aes('var1'))
+ + geom_bar(aes(y=after_stat('prop'))) # default is after_stat('count')
 )
 
 #%%
-ggplot(mpg) + aes(x="class") + geom_bar()
-ggplot(mpg) + aes(x="class") + geom_bar() + coord_flip()
-
-#%% facet_grid()
-p = (
-    ggplot(mpg)
-    + aes(x="displ", y="hwy")
-    + labs(
-        x="Engine Size",
-        y="Miles per Gallon",
-        title="Miles per Gallon for Each Year and Vehicle Class",
-    )
-    + geom_point()
-    + facet_grid(facets="year ~ class")
+(ggplot(df) + aes('var1', y=after_stat('prop'))
+ + geom_bar() # default is after_stat('count')
 )
-p
+# the same
 
-#%% Themes
-p + theme_dark()
-p + theme_xkcd()
+#%%
+(ggplot(df, aes('var1'))
+ + geom_bar(aes(y=after_stat('count / np.sum(count)')))
+ + labs(y='prop')
+)
 
+#%%
+(ggplot(df, aes('var1'))
+ + geom_bar(aes(fill='var1'))
+)
 
+#%%
+"""
+By default `geom_bar` uses `stat_count` to compute a frequency table with the x aesthetic
+as the key column.
+As a result, any mapping to a continuous variable (other than the x aesthetic) is lost;
+e.g. if you have a classroom and you compute a frequency table of the gender,
+you lose any other information like height of students.
+
+For example, below fill='var1' has no effect,
+but the `var1` variable has not been lost it has been turned into x aesthetic.
+"""
+(ggplot(df, aes('var1')) + geom_bar(aes(fill='var1')))
+
+(ggplot(df, aes('var1')) + geom_bar())
+
+#%%
+"""We use `after_stat` to map `fill` to the x aesthetic after it has been computed.
+"""
+
+(ggplot(df, aes('var1'))
+ + geom_bar(aes(fill=after_stat('x')))
+ + labs(fill='var1')
+)
+
+(ggplot(df) + aes('var1', fill=after_stat('x')) + geom_bar()
+ + labs(fill='var1')
+)
 
 #%%
 
 
-#%%
-
-
-#%%
-
-
-#%%
-
-
-#%%
-
-
-#%%
-
-
-#%%
-
-
-#%%
