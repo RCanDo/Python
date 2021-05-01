@@ -90,6 +90,7 @@ theme_set(theme_gray()) # default theme
 from plotnine.data import economics, mpg, huron
 
 huron.head()
+economics.head()
 
 #%%
 ...
@@ -100,8 +101,8 @@ ggplot(huron) + aes(x="level") + stat_bin(bins=10) + geom_bar()
 
 ggplot(huron) + aes(x="level") + geom_histogram(bins=10)  ## the same
 
-ggplot(huron) + stat_bin(mappings=aes(x="level", y=after_stat('count'), bins=10)) + geom_bar()
-## ...
+ggplot(huron) + stat_bin(aes(x="level", y=after_stat('count'), bins=10)) + geom_bar()
+## ???
 
 #%%
 (ggplot(huron)
@@ -116,9 +117,31 @@ ggplot(huron) + stat_bin(mappings=aes(x="level", y=after_stat('count'), bins=10)
  + labs(title="Population Evolution", y="Population")     # !!!
  + geom_line()
 )
+#%%
+(ggplot(economics)
+ + aes(x="date", y="pop")
+ + scale_x_datetime()#name="Years since 1970")
+ + labs(title="Population Evolution", y="Population")     # !!!
+ + geom_line()
+)
+#%%
+"""!!! make factor from date !!!
+"""
+import datetime as dt
+dir(economics.date)
+economics.date.apply(lambda x: dt.datetime.strftime(x, "%Y"))
+economics.date.apply(lambda x: x.year)
 
 #%%
 ggplot(mpg) + aes(x="class") + geom_bar()
+ggplot(mpg) + aes(x="class", y=after_stat('prop')) + geom_bar()  # nonsense !
+
+ggplot(mpg) + aes(x="class") \
+ + geom_bar(aes(y=after_stat('count / np.sum(count)'))) \
+ + labs(y='prop')
+
+ggplot(mpg) + aes(x="class") + geom_histogram()  # ooops... nonsense !
+
 ggplot(mpg) + aes(x="class") + geom_bar() + coord_flip()
 
 #%% facet_grid()
@@ -140,12 +163,23 @@ p + theme_dark()
 p + theme_xkcd()
 
 
+#%% the same data displayed different way
 
-#%%
+(
+    ggplot(mpg)
+    + aes(x="cyl", y="hwy", color="class")
+    + labs(
+        x="Engine Cylinders",
+        y="Miles per Gallon",
+        color="Vehicle Class",
+        title="Miles per Gallon for Engine Cylinders and Vehicle Classes",
+    )
+    + geom_point()
+)
 
-
-#%%
-
+#%% to file
+myPlot = ggplot(economics) + aes(x="date", y="pop") + geom_line()
+myPlot.save("myplot.png", dpi=600)
 
 #%%
 

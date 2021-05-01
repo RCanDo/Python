@@ -101,12 +101,12 @@ df = pd.DataFrame({
 # the same
 
 #%%
-(ggplot(df, aes('var1'))
- + geom_bar(aes(y=after_stat('count / np.sum(count)')))
+ggplot(df, aes('var1')) \
+ + geom_bar(aes(y=after_stat('count / np.sum(count)'))) \
  + labs(y='prop')
-)
 
-#%%
+
+#%% ???
 (ggplot(df, aes('var1'))
  + geom_bar(aes(fill='var1'))
 )
