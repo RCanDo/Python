@@ -165,8 +165,6 @@ pd.isnull(nn)    # True
 pd.isnull(npnan)    # True !!!
 
 
-
-
 #%%
 #%%
 ss = pd.Series(range(3), dtype=int)
