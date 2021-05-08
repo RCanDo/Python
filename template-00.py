@@ -5,22 +5,18 @@
 # This is YAML, see: https://yaml.org/spec/1.2/spec.html#Preview
 # !!! YAML message always begin with ---
 
-title:
+title: date & time
 subtitle:
 version: 1.0
-type:          # possible values: ...
-keywords: [kw1, kw2, ..., kwn]   # there are always some keywords!
+type: tutorial
+keywords: [date, time]
 description: |
-    Description of what is in the file.
-    Detailed but do not make lectures here!
-remarks:    # additional notes worth emphasising
-    - eg. work interactively (in Spyder)
-    - install PackageX first
+    About dates and time
+remarks:
     - etc.
 todo:
     - problem 1
-    - problem 2   # and so on...
-sources:   # there may be more sources
+sources:
     - title:     # title of the book or internet page
       chapter:   # if necessary
       pages:     # if necessary
@@ -31,19 +27,13 @@ sources:   # there may be more sources
             fullname:
             email:
       usage: |
-          to what extent this source was used:
-          is the file just copy from the source?
-          or the main idea was taken from the source?
-          or only some minor details of the algorithm were borrowed from the source
-          (what details?)
-          be conscise!
 file:
     usage:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
     name:
-    path: D:/ROBOCZY/Python/...
-    date: 2020-08-
+    path: D:/ROBOCZY/Python/datetime
+    date: 2021-04-27
     authors:
         - nick: rcando
           fullname: Arkadiusz Kasprzyk

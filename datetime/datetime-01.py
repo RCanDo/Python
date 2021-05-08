@@ -52,6 +52,38 @@ import datetime as dt
 #import numpy as np
 
 dir(dt)
+dt.date(year, month, day)        # class
+dt.datetime(year, month, day)    # class
+dt.datetime_CAPI    # reference
+dt.sys              # module
+dt.time()
+dt.timedelta()
+dt.timezone()
+dt.tzinfo()
+
+dt.date # datetime.date
+type(dt.date)   # type             ???
+dt.date(year, month, day)    # class
+dir(dt.date)
+
+dt.datetime
+type(dt.datetime)  # type
+dt.datetime(year, month, day, hour, minute, second, microsecond, tzinfo, fold)   #
+dir(dt.datetime)
+
+dt.time # datetime.time
+type(dt.time)   # type
+dt.time(hour, minute, second, microsecond, tzinfo, fold)
+dir(dt.time)
+
+dt.timedelta   # datetime.timedelta
+type(dt.timedelta)   # type
+dt.timedelta(minutes, hours, days, seconds, microseconds, weeks, fold)
+dir(dt.timedelta)
+
+dt.sys  # module
+dir(dt.sys)   # ...
+
 #%%
 dt.MINYEAR
 dt.MAXYEAR
@@ -60,11 +92,18 @@ dt.MAXYEAR
 now = dt.datetime.now()
 now
 print(now)
+dir(now)
 
 today = dt.date.today()
 today
-print(today)
-today.weekday()   # 0, 1, ..., 6  where  0 = Monday, ..., 6 = Sunday
+print(today)      # like ISO
+today.weekday()     # 0, 1, ..., 6  where  0 = Monday, ..., 6 = Sunday
+today.isoweekday()  # 1, ..., 6, 7  where  1 = Monday, ..., 7 = Sunday
+dir(today)
+
+dt.datetime.today()  # == dt.datetime.now()
+dt.date.now()        #! ERROR
+dt.time.now()        #! ERROR
 
 # %%
 d1 = dt.date(2021, 4, 12)
@@ -90,6 +129,7 @@ d1.toordinal()     # 737892
 d1.strftime('.')   #! big topic !
 
 d1.replace(2022, 4, 12)  #? just new date... what's for?
+d1.replace(year=2022)    # that's better
 d1  # unchanged
 
 #%% methods inherited from dt.date - i.e. not specific for given date
@@ -98,6 +138,7 @@ d1.min # datetime.date(1, 1, 1)
 d1.today()  #! just today's date !
 
 d1.today().weekday()
+d1.today().isoweekday()
 d1.fromisoformat('2021-04-12')
 d1.fromordinal(1)    # datetime.date(1, 1, 1)
 d1.fromordinal(1).ctime()  # 'Mon Jan  1 00:00:00 0001'

@@ -53,12 +53,12 @@ import numpy as np
 
 #%%
 # https://numpy.org/devdocs/reference/generated/numpy.busday_count.html#numpy.busday_count
-# Number of weekdays in January 2011
+# Number of working days ('weekdays' in np help...) in January 2011
 
 np.busday_count('2011-01', '2011-02')
 # 21
 
-# Number of weekdays in 2011
+# Number of working days in 2011
 np.busday_count('2011', '2012')
 # 260
 
