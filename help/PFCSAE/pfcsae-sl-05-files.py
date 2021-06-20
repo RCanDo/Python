@@ -16,8 +16,19 @@ Python distinguishes between
 If we don’t specify the file type, Python assumes we mean text files.
 '''
 
+#%% Prolog (from other sources)
+# Checking if a File Exists
+import os.path
+from os import path
+
+def check_for_file():
+	print("File exists: ", path.exists("data.txt"))
+
+check_for_file()  # in current dir
+
 #%%
-## writing
+#%%
+## Writing
 
 f = open("test.txt", "tw")  ## open (&create if not exists) file to write ("w")
                            ## "t" means "text" and is default - no need to write it

@@ -43,6 +43,12 @@ ls
 import numpy as np
 rand = np.random.RandomState(42)
 
+#%% ordinary indexing
+lst = np.array([0] + [2] + [3], ndmin=2)
+lst
+lst[0, 0]
+lst[0, 1]
+
 #%%
 """
 Fancy indexing is conceptually simple:

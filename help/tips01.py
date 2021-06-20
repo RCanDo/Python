@@ -5,54 +5,23 @@
 
 1. How to merge two dictionaries in Python 3.5+
 2. Different ways to test multiple flags at once in Python
-3. How to sort a Python dict by value (== get a representation sorted by value)
+3. How to sort a Python dict by value (== get a representation sorted by value) -- see also sorting.py
 4. The get() method on dicts and its "default" argument
 5. Namedtuples
-6. Using "json.dumps()" to pretty-print Python dicts
-7. Function argument unpacking
+6. Using "json.dumps()" to pretty-print Python dicts -- see strings02.py
+7. Function argument unpacking -- see kwargs.py
 8. Measure the execution time of small bits of Python code with the "timeit" module
+    -- see size_memory_time.py
 9. In-place value swapping
-10. "is" vs "=="
+10. "is" vs "=="  -- see also lists.py
 11. Functions are first-class citizens in Python
 12. Dicts can be used to emulate switch/case statements
 13. Python's built-in HTTP server
-14. Python's list comprehensions are awesome.
+14. Python's list comprehensions are awesome. -- see lists.py
 15. Python 3.5+ supports 'type annotations'
-16. Python's list slice syntax can be used without indices
+16. Python's list slice syntax can be used without indices -- see lists.py
 
 """
-
-#%%
-#%%
-# 16. Python's list slice syntax can be used without indices
-#     for a few fun and useful things:
-
-# You can clear all elements from a list:
-lst = [1, 2, 3, 4, 5]
-del lst[:]
-lst # []
-
-# You can replace all elements of a list without creating a new list object:
-a = lst
-lst[:] = [7, 8, 9]
-lst # [7, 8, 9]
-a   # [7, 8, 9]
-a is lst # True
-
-# You can also create a (shallow) copy of a list:
-b = lst[:]
-b
-[7, 8, 9]
-b is lst # False
-
-lst[0] = 0
-lst   # [0, 8, 9]
-
-b     # [7, 8, 9]    -- (shallow) copy
-b is lst # False
-
-a     # [0, 8, 9]
-a is lst # True
 
 #%%
 #%%
@@ -66,27 +35,6 @@ def my_add(a: int, b: int) -> int:
 my_add(3, 2)
 # but works also for floats (it's still Python!)
 my_add(3., 2.)
-
-#%%
-#%%
-# 14. Python's list comprehensions are awesome.
-'''
-vals = [expression
-        for value in collection
-        if condition]
-
-# This is equivalent to:
-
-vals = []
-for value in collection:
-    if condition:
-        vals.append(expression)
-'''
-# Example:
-
-even_squares = [x * x for x in range(10) if not x % 2]
-even_squares
-# [0, 4, 16, 36, 64]
 
 
 #%%
@@ -142,6 +90,18 @@ dispatch_if('unknown', 2, 8) # None
 
 dispatch_dict('unknown', 2, 8) # None
 
+#%% simpler but less safe (no .get())
+"""
+The following snippet shows how you can write a simple calculator
+without the need to use if-else conditions.
+"""
+
+import operator as op
+do = {'+':op.add, '-':op.sub, '*':op.mul, '/':op.truediv, '^':op.pow}
+
+do['^'](2, 3)
+do['/'](2, 3)
+
 #%%
 #%%
 # 11. Functions are first-class citizens in Python
@@ -159,7 +119,7 @@ funcs[0](2, 3)  ## 5
 
 #%%
 #%%
-# 10. "is" vs "=="
+# 10. "is" vs "=="  -- see also lists.py
 
 a = [1, 2, 3]
 b = a
@@ -209,122 +169,15 @@ a, b = b, a
 
 #%%
 #%%
-# 8. Measure the execution time of small bits of Python code with the "timeit" module
-
-# The "timeit" module lets you measure the execution
-# time of small bits of Python code
-
-import timeit
-
-"-".join(str(n) for n in range(100))
-timeit.timeit('"-".join(str(n) for n in range(100))', number=10000)
-# 0.3412662749997253
-
-"-".join([str(n) for n in range(100)])
-timeit.timeit('"-".join([str(n) for n in range(100)])', number=10000)
-# 0.2996307989997149
-
-"-".join(map(str, range(100)))
-timeit.timeit('"-".join(map(str, range(100)))', number=10000)
-# 0.24581470699922647
-
-
-#%%
-#%%
-# 7. Function argument unpacking
-
-def myfunc(x, y, z):
-    print(x, y, z)
-
-tuple_vec = (1, 0, 1)
-dict_vec = {'x': 1, 'y': 0, 'z': 1}
-
-myfunc(*tuple_vec)
-# 1, 0, 1
-
-myfunc(**dict_vec)
-# 1, 0, 1
-
-#%%
-def argskwargs(*args, **kwargs):
-    print(args)
-    print(list(args))
-    print(kwargs)
-    print(kwargs.keys())
-    print(kwargs.values())
-
-argskwargs(1, 2, 3)
-argskwargs(a=1, b=2, c=3)
-argskwargs(-1, 0, 4, a=1, b=3, c=3)
-
-#%%
-arguments = [-2, -1, 0]
-
-kwarguments = dict(a=1, b=2, c=3)
-kwarguments
-
-argskwargs(arguments)     # works but not the way we expect
-argskwargs(*arguments)    # OK
-
-argskwargs(kwarguments)   # works but not the way we expect
-argskwargs(**kwarguments) # OK
-
-#%%
-#%%
-# 6. You can use "json.dumps()" to pretty-print Python dicts
-#    as an alternative to the "pprint" module
-
-# The standard string repr for dicts is hard to read:
-my_mapping = {'a': 23, 'b': 42, 'c': 0xc0ffee}
-my_mapping
-# {'b': 42, 'c': 12648430. 'a': 23}  #
-
-
-# The "json" module can do a much better job:
-import json
-print(json.dumps(my_mapping, indent=4, sort_keys=True))
-#{
-#    "a": 23,
-#    "b": 42,
-#    "c": 12648430
-#}
-
-# Note this only works with dicts containing primitive types (check out the "pprint" module):
-json.dumps({all: 'yup'}) #!!! TypeError: keys must be a string
-
-## WHAT'S all TYPE ???
-
-#%%
-# In most cases I'd stick to the built-in "pprint" module though :-)
-# https://pymotw.com/3/pprint/index.html
-import pprint as pp
-
-pp.pprint(my_mapping)
-pp.pprint(my_mapping, indent=4, depth=1)  # ?
-pp.pformat(my_mapping)  # ?
-
-#%%
-data = [
-    (1, {'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D'}),
-    (2, {'e': 'E', 'f': 'F', 'g': 'G', 'h': 'H',
-         'i': 'I', 'j': 'J', 'k': 'K', 'l': 'L'}),
-    (3, ['m', 'n']),
-    (4, ['o', 'p', 'q']),
-    (5, ['r', 's', 't''u', 'v', 'x', 'y', 'z']),
-]
-
-pp.pprint(data)  # what the hell... ???!!!
-pp.pprint(data, indent=4)
-
-#%%
-#%%
 # 5. Namedtuples
 
 # Using namedtuple is way shorter than defining a class manually:
 
 from collections import namedtuple
 Car = namedtuple('Car', 'color mileage')
-Car  ## ~= class with attributes 'color' and 'mileage'
+Car
+    ## ~= class with attributes 'color' and 'mileage'
+Car()
 
 # Our new "Car" class works as expected:
 my_car = Car('red', 3812.4)
@@ -349,6 +202,10 @@ mycar = Car(10, 'blue', list(range(5)))
 #!!! TypeError: __new__() takes 3 positional arguments but 4 were given
 ## we've declared only 2 attributes
 
+dir(my_car)
+my_car._asdict()
+my_car._fields      # ('color', 'mileage')
+my_car.index((1))   # ???
 
 #%%
 #%%
@@ -377,9 +234,9 @@ If it does exist, the value for that key is returned.
 If it does not exist then the value of the default argument is returned instead.
 """
 
-
 #%%
 #%%
+#!!! see sorting.py
 # 3. How to sort a Python dict by value (== get a representation sorted by value)
 
 xs = {'a': 4, 'b': 3, 'c': 2, 'd': 1}
@@ -391,7 +248,6 @@ sorted(xs.items(), key=lambda x: x[1])
 sorted(xs, key=lambda x: x[1])  # IndexError: string index out of range
 #! because
 [x for x in xs]  # only indices
-
 
 # Or:
 
@@ -407,6 +263,15 @@ operator.itemgetter(2)([1, 2])  #! IndexError: list index out of range
 
 #%%
 sorted([[1, 2], [0, 1], [-1, 4]], key=lambda x: sum(x))
+
+#%% Most frequent
+"""
+This method returns the most frequent element that appears in a list.
+"""
+numbers = [1,2,1,2,3,2,1,4,2]
+max(numbers, key=numbers.count)
+max(*numbers, key=numbers.count)
+max(set(numbers), key=numbers.count)
 
 #%%
 #%%
@@ -461,4 +326,25 @@ z
 #
 # See: https://www.youtube.com/watch?v=Duexw08KaC8
 
+#%% older method
 
+a = { 'x': 1, 'y': 2}
+b = { 'y': 3, 'z': 4}
+
+c = a.copy()
+c.update(b)    #!!! in-place
+c
+
+c = a.copy()
+d = c.update(b)    #!!! in-place
+d                  #!!! None
+c
+
+def merge_dicts(a, b):
+    c = a.copy()   # make a copy of a
+    c.update(b)    # modify keys and values of a with the ones from b
+    return c
+
+d = merge_dicts(a, b)
+d
+#%%

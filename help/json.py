@@ -5,44 +5,13 @@ Created on Mon Feb 18 17:10:21 2019
 @author: kasprark
 """
 
-def fun(a=1, b=2, c=3):
-    return a * b + c
-
-fun()
-
-dic = {"a":1, "b":2, "c":3}
-dic
-
-fun(**dic)
-
-
-dic2 = {}
-dic2 = {**dic}
-dic2["p"] = 4.5
-
-#%%
-
-import numpy as np
-
-lst = np.array([0] + [2] + [3], ndmin=2)
-lst
-lst[0, 0]
-lst[0, 1]
-
-#%%
-
-lst = [k**2 for k in range(-3, 3)]
-lst
-lst[-1]
-lst[:2]
-
 #%%
 #%%
 
 import json
 import numpy as np
 
-file = "C:/Projects/AIML/car-agent/agents_setup/agent_car.json"
+file = "E:/Projects/AIML/car-agent/agents_setup/agent_car.json"
 car = json.load(open(file))
 type(car)
 

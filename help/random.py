@@ -5,9 +5,10 @@ Created on Sat Jan 20 19:27:25 2018
 
 @author: kasprark
 
-
 random examples
 """
+
+
 #%%
 import numpy as np
 
@@ -29,7 +30,7 @@ np.random.sample((5,3))
 np.random.rand(5)
 np.random.rand(5, 3)
 # but little different
-np.random.sample(5,3)         #! ERROR  
+np.random.sample(5,3)         #! ERROR
 
 
 #%%
@@ -37,7 +38,7 @@ np.random.sample(5,3)         #! ERROR
 np.random.normal(10, 5, size=10)
 
 # sample (or samples) from the "standard_normal" distribution.
-np.random.randn(8, 4) 
+np.random.randn(8, 4)
 
 np.random.randint(-5, 5)
 [ str(x) for x in np.random.choice( range(1980,2000), size=100, replace=True ) ]
@@ -71,11 +72,23 @@ arr
 #%%
 help(np.random.choice)
 
+random.choice(['Head',"Tail"])
+
 np.random.choice(list('abc'), 10, replace=True)
 np.random.choice(['s1', 's2', 's3'], 10, replace=True)
 
 
-#%%
+#%% 27. Shuffle
+"""
+This snippet can be used to randomize the order of the elements in a list.
+Note that shuffle works in place, and returns None.
+"""
+
+from random import shuffle
+
+foo = [1, 2, 3, 4]
+shuffle(foo)
+foo
 
 
 
