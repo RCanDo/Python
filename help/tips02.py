@@ -152,3 +152,60 @@ dict(map(lambda x: (x, np.log(x)), range(10)))
 dict(map(lambda x: np.log(x), range(10)))  # TypeError: cannot convert dictionary update sequence element #0 to a sequence
 
 #%%
+#%% itertools
+c = [[1, 2], [3, 4], [5, 6]]
+# Let's convert this matrix to a 1 dimensional list.
+import itertools as it
+newlist = list(it.chain.from_iterable(c))
+newlist
+
+#%% named slices
+a = [0, 1, 2, 3, 4, 5]
+LASTTHREE = slice(-3, None)
+LASTTHREE       # slice(-3, None, None)
+a[LASTTHREE]    # [3, 4, 5]
+
+REV = slice(None, None, -1)
+REV     # slice(None, None, -1)
+a[REV]  # [5, 4, 3, 2, 1, 0]
+
+#%% Group Adjacent Lists
+a = [1, 2, 3, 4, 5, 6]
+group_adjacent = lambda a, k: zip(*([iter(a)] * k))
+[k for k in group_adjacent(a, 3)]  # [(1, 2, 3), (4, 5, 6)]
+list(group_adjacent(a, 3))         # "
+list(group_adjacent(a, 2))         # [(1, 2), (3, 4), (5, 6)]
+list(group_adjacent(a, 1))         # [(1,), (2,), (3,), (4,), (5,), (6,)]
+
+
+#%%
+g = (x ** 2 for x in range(10))   # iterator
+print(next(g))
+print(next(g))
+
+#%%
+from collections import Counter
+A = Counter([1, 1, 2, 2, 3, 3, 3, 3, 4, 5, 6, 7])
+A   # Counter({3: 4, 1: 2, 2: 2, 4: 1, 5: 1, 6: 1, 7: 1})
+A.most_common(1) # [(3, 4)]
+A.most_common(3) # [(3, 4), (1, 2), (2, 2)]
+dir(A)
+
+#%%
+from collections import deque
+
+Q = deque()
+Q    # deque([])
+Q.append(1)
+Q    # deque([1])
+Q.appendleft(2)
+Q.extend([3, 4])
+Q.extendleft([5, 6])
+Q.pop()
+Q.popleft()
+Q.rotate(3)
+Q.rotate(-3)
+print(Q)
+
+#%%
+...

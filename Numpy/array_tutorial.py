@@ -31,7 +31,7 @@ file:
 """
 #%%
 pwd
-cd D:/ROBOCZY/Python/Numpy/
+cd E:/ROBOCZY/Python/Numpy/
 cd ~/Works/Python/Numpy/
 ls
 
@@ -205,7 +205,12 @@ z
 z.shape
 
 # broadcasting in action: two dimensions are _compatible_ when one of them is 1:
-x+z
+x + z
+x + z.T  # THE SAME !!!  because z is 1-dim so .T is irrelevant
+x.T + z  #! ValueError: operands could not be broadcast together with shapes (4,3) (4,)
+
+np.arange(4).reshape(4, -1)
+x.T + np.arange(4).reshape(4, -1)
 
 # Noteice though that if the dimensions are not _compatible_, you will get a ValueError.
 x + np.ones(3) #! ValueError: operands could not be broadcast together with shapes (3,4) (3,)
@@ -284,18 +289,22 @@ x.std(axis=1)
 ...
 arr3d
 arr3d[1,...]
+arr3d[1]
 arr3d[1,1,...]
-arr3d[1,1,1,...]
+arr3d[1,1]
+arr3d[1,1,1,...]   # array(10)
+arr3d[1,1,1]       # 10
 
-x
-x % 3 == 0
-type(x % 3 == 0)  # numpy.ndarray
-x[x % 3 == 0]
+
+arr3d
+arr3d % 3 == 0
+type(arr3d % 3 == 0)  # numpy.ndarray
+arr3d[arr3d % 3 == 0]
 
 #%%
 arr2d
 arr2d[[1,0,1,0]]
-arr2d[[1,0,1,0]][:,[0,1,2,0]]
+arr2d[[1,0,1,0]][:,[0,1,2,0]]  # only 1 dim
 
 #%% other manipulations
 

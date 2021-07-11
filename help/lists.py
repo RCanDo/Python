@@ -7,6 +7,10 @@ Created on Sun Mar  4 20:01:16 2018
 
 
 #%%
+lis = list(map(int, input().split()))
+lis
+
+#%%
 a,b,*c = [1,2,3,4,5]
 print(a,b,c)
 
@@ -89,6 +93,11 @@ b is lst # False
 
 a     # [0, 8, 9]
 a is lst # True
+
+#%%
+ll = [['a', 'b'], ['c', 'd'], ['e', 'f', 'g']]
+sum(ll, [])      # specifying start value for sum(); default is 0.
+sum(ll, ['p'])
 
 #%% primes in a range (works but very suboptimal)
 list(filter(lambda x:all(x % y != 0 for y in range(2, x)), range(2, 13)))

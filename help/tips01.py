@@ -169,12 +169,46 @@ a, b = b, a
 
 #%%
 #%%
+ll = [['a', 'b'], ['c', 'd'], ['e', 'f', 'g']]
+sum(ll, [])      # specifying start value for sum(); default is 0.
+sum(ll, ['p'])
+help(sum)
+
+#%%
+#%%
 # 5. Namedtuples
 
 # Using namedtuple is way shorter than defining a class manually:
 
 from collections import namedtuple
-Car = namedtuple('Car', 'color mileage')
+help(namedtuple)
+
+NT = namedtuple(typename='NT', field_names=['a', 'b', 'c'])
+NT  # __main__.NT
+nt = NT('a', 1, lambda x: x - 1/x)  # works !!!
+nt  # NT(a='a', b=1, c=<function <lambda> at 0x00000295C63B1378>)
+nt.a
+nt.b
+nt.c
+nt.c(3)
+nt.c(nt.b)
+
+for f in list('abc'): print(nt[f])   #! TypeError: tuple indices must be integers or slices, not str
+for f in range(3): print(nt[f])
+
+# field names may be passed in one string separated with space
+NT = namedtuple(typename='NT', field_names='a b c')
+nt = NT('a', 1, lambda x: x - 1/x)
+nt.a
+nt.b
+nt.c
+
+nt._asdict()  # OrderedDict
+nt._fields    # ('a', 'b', 'c')
+nt.index(1)   # ???
+
+#%%
+Car = namedtuple('Car', 'color mileage')  #
 Car
     ## ~= class with attributes 'color' and 'mileage'
 Car()
@@ -206,6 +240,8 @@ dir(my_car)
 my_car._asdict()
 my_car._fields      # ('color', 'mileage')
 my_car.index((1))   # ???
+
+
 
 #%%
 #%%

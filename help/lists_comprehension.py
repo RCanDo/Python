@@ -30,6 +30,10 @@ for x in [1,2,3]:
             combs.append((x, y))
 combs
 
+#%% Space Separated integers to a List
+['FizzBuzz' if i%3==0 and i%5==0 else 'Fizz' if i%3==0
+  else 'Buzz' if i%5==0 else i for i in range(1,20)]
+
 #%%
 vec = [-4, -2, 0, 2, 4]
 # create a new list with the values doubled

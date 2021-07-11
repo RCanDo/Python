@@ -39,8 +39,8 @@ from rcando.ak.builtin import flatten, paste
 from rcando.ak.nppd import data_frame
 import os
 
-#PYWORKS = "D:/ROBOCZY/Python"
-PYWORKS = "/home/arek/Works/Python"
+PYWORKS = "E:/ROBOCZY/Python"
+#PYWORKS = "/home/arek/Works/Python"
 
 os.chdir(PYWORKS + "/Pandas/User Guide/")
 print(os.getcwd())
@@ -56,7 +56,8 @@ arr = [['bar', 'bar', 'baz', 'baz', 'foo', 'foo', 'qux', 'qux'],
        ['one', 'two', 'one', 'two', 'one', 'two', 'one', 'two']]
 arr
 
-#%% construct a MultiIndex automatically:
+#%% construct a MultiIndex directly and automatically
+#   without use of MultiIndex...()
 
 arr
 s = pd.Series(np.random.randn(8), index=arr)
@@ -65,6 +66,19 @@ s
 df = pd.DataFrame(np.random.randn(8, 4), index=arr)
 df
 
+#%% BUT 'automatically' doesn't work for NumPy arrays or DataFrames
+
+pd.Series(np.random.randn(8), index=np.array(arr))    #! ValueError: Length of passed values is 8, index implies 2.
+pd.Series(np.random.randn(8), index=np.array(arr).T)  # not MultiIndex
+
+pd.Series(np.random.randn(8), index=\
+          pd.DataFrame({'first': ['bar', 'bar', 'baz', 'baz', 'foo', 'foo', 'qux', 'qux'],
+                        'second': ['one', 'two', 'one', 'two', 'one', 'two', 'one', 'two']})
+         )                                            # not MultiIndex
+
+#%%
+#%% via  MultiIndex...()
+
 #%% from arrays
 index0 = pd.MultiIndex.from_arrays(arr, names=['first', 'second'])
 index0
@@ -72,7 +86,7 @@ index0
 s0 = pd.Series(np.random.randn(8), index=index0)
 s0
 
-#%%
+#%% from NumPy arrays
 nparr = np.array(arr)
 nparr
 index1 = pd.MultiIndex.from_arrays(nparr, names=['first', 'second'])
@@ -81,6 +95,9 @@ index1
 #!!! be aware of
 index = pd.MultiIndex.from_arrays(nparr.T)
 index   #! NO !!!
+
+pd.MultiIndex.from_arrays(arr, names=['first', 'second'])   # OK - no need for numpy(arr)
+
 
 #%% from df
 index1 = pd.MultiIndex.from_frame(
@@ -92,14 +109,16 @@ s1 = pd.Series(np.random.randn(8), index=index1)
 s1
 
 #%%
-df = pd.DataFrame([['bar', 'one'], ['bar', 'two'],
-                   ['foo', 'one'], ['foo', 'two']],
+df = pd.DataFrame([['bar', 'one'],
+                   ['bar', 'two'],
+                   ['foo', 'one'],
+                   ['foo', 'two']],
                    columns=['first', 'second'])
 df
 
 pd.MultiIndex.from_frame(df)
 
-pd.MultiIndex.from_frame(df).to_frame()
+pd.MultiIndex.from_frame(df).to_frame()   #!!! self-indexed data frame
 
 #%% from tuples
 tuples = list(zip(*arr))

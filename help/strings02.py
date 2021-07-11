@@ -118,3 +118,7 @@ count_vowels('foobar')
 count_vowels('gym')
 
 #%%
+import re
+len(re.findall('python','python is a programming language. python is python.'))
+
+#%%
