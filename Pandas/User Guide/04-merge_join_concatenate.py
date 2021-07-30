@@ -39,11 +39,11 @@ from rcando.ak.builtin import flatten, paste
 from rcando.ak.nppd import data_frame
 import os
 
-PYWORKS = "D:/ROBOCZY/Python"
+#PYWORKS = "D:/ROBOCZY/Python"
+PYWORKS = "/home/akasprzyk/Works/Python"
 
 os.chdir(PYWORKS + "/Pandas/User Guide/")
 print(os.getcwd())
-
 
 #%%
 import numpy as np
@@ -178,7 +178,9 @@ df1.append([df2, df3])
 df1.append([df2, df3, df4])
 
 #%% Ignoring indexes on the concatenation axis
+# i.e. new index after concatenation
 
+pd.concat([df1, df4], ignore_index=False)  # default
 pd.concat([df1, df4], ignore_index=True)
 pd.concat([df1, df4], ignore_index=True, sort=False)
 

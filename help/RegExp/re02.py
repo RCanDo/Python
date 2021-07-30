@@ -15,4 +15,6 @@ for ss in ll: print(re.search('^[a-z]+', ss))
 
 list(filter(lambda ss: re.search('^[a-z]+', ss), ll))
 
+dir(re)
+
 #%%
