@@ -43,17 +43,15 @@ file:
 
 #%% This is block delimiter very useful for interactive work like e.g. in Spyder (part of Anaconda)
 
-import rcando.ak as ak
-import os
+#%%
+from rcando.ak.builtin import * #flatten, paste
+from rcando.ak.nppd import * #data_frame
+import os, sys, json
 
-ROOT = "E:/"
-#ROOT = "~"
-PYWORKS = os.path.join(ROOT, "ROBOCZY/Python")
-##
-DATA = os.path.join(ROOT, "Data/eco")           ## adjust !!!
-WD = os.path.join(PYWORKS, "graphics/ggplot/")  ## adjust !!!
-
+ROOTS = json.load(open('roots.json'))
+WD = os.path.join(ROOTS['Works'], "Python/Pandas/User Guide/")   #!!! adjust
 os.chdir(WD)
+
 print(os.getcwd())
 
 #%% Block delimiters allows to run separated blocks of code by one key-stroke
@@ -74,10 +72,11 @@ pd.set_option('display.max_seq_items', None)
 pd.set_option('display.expand_frame_repr', False)
 pd.set_option('display.precision', 3)
 
-#%% other df options
+# %% other df options
 pd.set_option('display.width', 1000)
 pd.set_option('max_colwidth', None)
-#pd.options.display.max_colwidth = 500         # the same
+#pd.options.display.max_colwidth = 500   
+# the same
 
 
 # %% However, some style checkers like Flake may complain on #%% - there should be space after #

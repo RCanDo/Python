@@ -35,14 +35,15 @@ file:
 """
 
 #%%
+#%%
 from rcando.ak.builtin import flatten, paste
 from rcando.ak.nppd import data_frame
-import os
+import os, json
 
-#PYWORKS = "D:/ROBOCZY/Python"
-PYWORKS = "/home/akasprzyk/Works/Python"
+ROOTS = json.load(open('roots.json'))
+WD = os.path.join(ROOTS['Works'], "Python/Pandas/User Guide/")
+os.chdir(WD)
 
-os.chdir(PYWORKS + "/Pandas/User Guide/")
 print(os.getcwd())
 
 #%%

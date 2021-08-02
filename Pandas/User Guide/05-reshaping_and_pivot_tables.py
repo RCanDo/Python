@@ -35,11 +35,17 @@ file:
 """
 
 #%%
-"""
-cd "D:/ROBOCZY/Python/Pandas/User Guide/"
-pwd
-ls
-"""
+#%%
+from rcando.ak.builtin import flatten, paste
+from rcando.ak.nppd import data_frame
+import os, json
+
+ROOTS = json.load(open('roots.json'))
+WD = os.path.join(ROOTS['Works'], "Python/Pandas/User Guide/")
+os.chdir(WD)
+
+print(os.getcwd())
+
 #%%
 import numpy as np
 import pandas as pd

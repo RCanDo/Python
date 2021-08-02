@@ -7,8 +7,23 @@ Created on Mon Feb 18 17:10:21 2019
 
 #%%
 #%%
-
 import json
+#%%
+# BE CAREFULL WITH THIS CELL - DO NOT OVERWRITE roots.json !!!
+
+roots0 = {'Works': '/home/akasprzyk/Works',
+ 'Projects': '/home/akasprzyk/Projects'}
+
+file = 'roots.json'
+f = open(file, 'w')     # 'w' is necessary to create file if it doesn't exist (default 'r' assumes file exists, of course!)
+json.dump(roots0, f)
+
+#%%
+ROOTS = json.load(open(file))
+ROOTS
+ROOTS['Works']
+
+#%%
 import numpy as np
 
 file = "E:/Projects/AIML/car-agent/agents_setup/agent_car.json"

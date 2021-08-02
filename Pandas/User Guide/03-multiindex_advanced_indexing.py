@@ -37,18 +37,33 @@ file:
 #%%
 from rcando.ak.builtin import flatten, paste
 from rcando.ak.nppd import data_frame
-import os
+import os, json
 
-PYWORKS = "E:/ROBOCZY/Python"
-#PYWORKS = "/home/arek/Works/Python"
+ROOTS = json.load(open('roots.json'))
+WD = os.path.join(ROOTS['Works'], "Python/Pandas/User Guide/")
+os.chdir(WD)
 
-os.chdir(PYWORKS + "/Pandas/User Guide/")
 print(os.getcwd())
-
 
 #%%
 import numpy as np
 import pandas as pd
+
+#%%
+#pd.options.display.width = 0  # autodetects the size of your terminal window - does it work???
+pd.set_option("display.max_columns", None)
+pd.set_option("display.max_rows", None)
+# pd.options.display.max_rows = 500         # the same
+pd.set_option('display.max_seq_items', None)
+
+pd.set_option('display.expand_frame_repr', False)
+pd.set_option('display.precision', 3)
+
+# %% other df options
+pd.set_option('display.width', 1000)
+pd.set_option('max_colwidth', None)
+#pd.options.display.max_colwidth = 500   
+# the same
 
 #%% Creating a MultiIndex (hierarchical index) object
 #%%
@@ -79,7 +94,7 @@ pd.Series(np.random.randn(8), index=\
 #%%
 #%% via  MultiIndex...()
 
-#%% from arrays
+#%% .from_arrays()
 index0 = pd.MultiIndex.from_arrays(arr, names=['first', 'second'])
 index0
 
@@ -96,31 +111,38 @@ index1
 index = pd.MultiIndex.from_arrays(nparr.T)
 index   #! NO !!!
 
-pd.MultiIndex.from_arrays(arr, names=['first', 'second'])   # OK - no need for numpy(arr)
+#!!! no need for numpy(arr)
+pd.MultiIndex.from_arrays(arr, names=['first', 'second'])   # OK !
 
 
-#%% from df
-index1 = pd.MultiIndex.from_frame(
-             pd.DataFrame({'first': ['bar', 'bar', 'baz', 'baz', 'foo', 'foo', 'qux', 'qux'],
-                           'second': ['one', 'two', 'one', 'two', 'one', 'two', 'one', 'two']})
-         )
+#%% .from_frame()
+
+index_df = pd.DataFrame({'first': ['bar', 'bar', 'baz', 'baz', 'foo', 'foo', 'qux', 'qux'],
+                         'second': ['one', 'two', 'one', 'two', 'one', 'two', 'one', 'two']})
+
+index1 = pd.MultiIndex.from_frame( index_df )
 index1
+
 s1 = pd.Series(np.random.randn(8), index=index1)
 s1
 
-#%%
-df = pd.DataFrame([['bar', 'one'],
+df = pd.DataFrame(np.random.randn(8, 4), index=index1)
+df
+
+#%% .from_frame()
+df0 = pd.DataFrame([['bar', 'one'],
                    ['bar', 'two'],
                    ['foo', 'one'],
                    ['foo', 'two']],
                    columns=['first', 'second'])
-df
+df0
 
-pd.MultiIndex.from_frame(df)
+pd.MultiIndex.from_frame(df0)
 
-pd.MultiIndex.from_frame(df).to_frame()   #!!! self-indexed data frame
+## .to_frame()
+pd.MultiIndex.from_frame(df0).to_frame()   #!!! self-indexed data frame
 
-#%% from tuples
+#%% .from_tuples()
 tuples = list(zip(*arr))
 tuples
 
@@ -133,7 +155,7 @@ s
 #!!! BUT
 pd.Series(np.random.randn(8), index=tuples)
 
-#%% from product
+#%% .from_product()
 iterables = [['bar', 'baz', 'foo', 'qux'], ['one', 'two']]
 pd.MultiIndex.from_product(iterables, names=['first', 'second'])
 
@@ -143,6 +165,10 @@ pd.MultiIndex.from_product([range(2), range(3), range(3)], names=['d', 'p', 'q']
 midx = pd.MultiIndex(levels=[['zero', 'one'], ['x', 'y']],
                      codes=[[1, 1, 0, 0], [1, 0, 1, 0]])
 midx
+#%%
+midx = pd.MultiIndex(levels=[['zero', 'one'], ['x', 'y']],
+                     codes=[[1, 1, 0, 0, 1], [1, 0, 1, 0, 1]])
+midx
 
 #%%
 index.names
@@ -150,6 +176,12 @@ s.index.names
 df.index.names
 
 index.levels
+
+dir(index)  # ! a lot !
+
+#%% BY THE WAY
+df.sample(5)
+df.sample(1, axis=1)
 
 #%%
 # This index can back any axis of a pandas object,
@@ -159,6 +191,9 @@ df = pd.DataFrame(np.random.randn(3, 8), index=['A', 'B', 'C'], columns=index)
 df
 
 pd.DataFrame(np.random.rand(6, 6), index=index[:6], columns=index[:6])
+
+df.sample(5, axis=1)
+
 #%%
 with pd.option_context('display.multi_sparse', False):
     print(df)
@@ -174,8 +209,8 @@ index.get_level_values(level=0)
 index.get_level_values(1)
 index.get_level_values('second')
 
-#!!! Notice that `level` here has a differet meaning then in
-index.levels
+#!!! Notice that `level` here (like ) has a differet meaning then in
+index.levels   # like levels of the categorical variable
 
 #%% Basic indexing on axis with MultiIndex
 #%%
@@ -258,6 +293,13 @@ index[:3]
 s.reindex(index[:3])   #!!!
 s.reindex([('foo', 'two'), ('bar', 'one'), ('qux', 'one'), ('baz', 'one'), ('a', 'b')])
 
+s[index[:3]]          # OK
+s[index[:3]].index    # OK - pruned
+
+# BUT
+s[[('foo', 'two'), ('bar', 'one'), ('qux', 'one'), ('baz', 'one'), ('a', 'b')]]  #! KeyError: "Passing list-likes to .loc or [] with any missing labels is no longer supported. 
+# so we need .reindex() !
+
 #%% Advanced indexing with hierarchical index
 #%%
 df
@@ -297,7 +339,6 @@ when it comes to indexing.
 Whereas a tuple is interpreted as one multi-level key, a list is used to specify several keys.
 Or in other words, tuples go 'horizontally' (traversing levels),
 lists go 'vertically' (scanning levels).
-
 """
 
 #%%
@@ -309,9 +350,9 @@ s = pd.Series([1, 2, 3, 4, 5, 6],
               index=pd.MultiIndex.from_product([["A", "B"], ["c", "d", "e"]]))
 s
 
-s.loc[[("A", "c"), ("B", "d")]]  # list of tuples
+s.loc[[("A", "c"), ("B", "d")]]  # list of tuples ~= only given combinations of levels
 
-s.loc[(["A", "B"], ["c", "d"])]  # tuple of lists
+s.loc[(["A", "B"], ["c", "d"])]  # tuple of lists ~= all combinations of levels
 
 #%%
 #%%  Using slicers
@@ -342,6 +383,14 @@ dfmi = pd.DataFrame(np.arange(len(miindex) * len(micolumns))
 dfmi
 
 #%%
+dfmi0 = dfmi.sample(11)
+dfmi0
+dfmi0.loc['A1']
+dfmi0.loc['B1']   #! KeyError: 'B1'
+dfmi0.xs('B1', level=1)
+dfmi0.loc[('A1', 'B1')]
+
+#%%
 dfmi.sort_index()
 dfmi = dfmi.sort_index().sort_index(axis=1)
 dfmi
@@ -349,10 +398,13 @@ dfmi
 #%%
 dfmi.loc[(slice('A1', 'A3')), :]
 dfmi.loc[(slice('A1', 'A3'), slice(None)), :]
+#!!! slices are inside tuple !!!
 dfmi.loc[(slice('A1', 'A3'), slice(None), ['C1', 'C3']), :]
+dfmi.loc[(slice('A1', 'A3'), slice('B1', 'B1'), ['C1', 'C3']), :]  # slice('B1') doesn't work BUT
+dfmi.loc[(slice('A1', 'A3'), slice('B0'), ['C1', 'C3']), :]   # OK, because:
 
 # slics('A1') means the same as slice('A0', 'A1')
-# i.e. everything from beginning up to 'A2'
+# i.e. everything from beginning up to 'A1'
 dfmi.loc[(slice('A1')), :]
 
 dfmi.loc[(slice('A1', 'A3'), slice('B0')), :]
@@ -364,8 +416,8 @@ dfmi.loc[(slice(None), ['B1']), :]  # OK
 # slicing must be done from the outermost level - cannot ommit one... :(
 dfmi.loc[(slice('B0')), :]  # everything
 dfmi.loc[(slice('C1')), :]  # everything
-dfmi.loc[['C1', 'C3'], :]   # Empty DataFrame
-dfmi.loc[(['C1', 'C3']), :]   # Empty DataFrame
+dfmi.loc[['C1', 'C3'], :]     #! KeyError: "['C1' 'C3'] not in index"
+dfmi.loc[(['C1', 'C3']), :]   #! KeyError: "['C1' 'C3'] not in index"
 
 dfmi.loc[(slice(None), slice(None), ['C1', 'C3']), :]   # OK
 
@@ -390,8 +442,9 @@ dfmi.loc[idx[mask, ['C1', 'C3']], idx[:, 'foo']]   # NO! empty - one level ommit
 dfmi.loc[idx[mask, :, ['C1', 'C3']], idx[:, 'foo']]   # OK
 
 #%%
-# You can also specify the axis argument to .loc to interpret the passed slicers on a single axis.
-dfmi.loc(axis=0)[:, :, ['C1', 'C3']]
+# You can also specify the axis argument to .loc to interprete the passed slicers on a single axis.
+
+dfmi.loc(axis=0)[:, :, ['C1', 'C3']]                        #!!!
 dfmi.loc[idx[:, :, ['C1', 'C3']], :]
 dfmi.loc[(slice(None), slice(None), ['C1', 'C3']), :]
 
@@ -403,7 +456,7 @@ df2
 
 #%% You can use a right-hand-side of an __alignable__ (?) object as well.
 df2 = dfmi.copy()
-df2.loc[idx[:, :, ['C1', 'C3']], :] = df2 * 1000          # !!!
+df2.loc[idx[:, :, ['C1', 'C3']], :] = df2 * 1000            #!!!
 df2
 
 #%%
@@ -427,14 +480,14 @@ df.loc[(slice(None), 'one')]  #! KeyError
 df.loc[(slice(None), 'one'), :]  #! OK
 df.loc[idx[:, 'one'], :]         #! OK
 
-df.xs('one', level='second')    # almost! the same with .xs()  Cross Section
+# almost! the same with .xs()  Cross Section
+df.xs('one', level='second')
 #! NOTICE THE DIFF IN the number of displayed columns levels
 df.xs('one', level='second').index   # no second level !!!
 df.loc[idx[:, 'one'], :].index       # both levels present !!!
 
 #! You can pass drop_level=False to xs to retain the level that was selected.
 df.xs('one', level='second', drop_level=False)
-
 
 #%% on the columns
 dft = df.T
@@ -449,7 +502,8 @@ dft.xs(('one', 'bar'), level=('second', 'first'), axis=1)
 type(dft.xs(('one', 'bar'), level=('second', 'first'), axis=1))  # DF !!!
 # does NOT collapse to Series !!!
 
-dft.loc[:, ('bar', 'one')]   # pd.Series !!!
+dft.loc[:, ('bar', 'one')]    # pd.Series !!!
+dft.loc[:, idx['bar', 'one']] # pd.Series !!! 
 
 #%%
 #%% Advanced reindexing and alignment
@@ -471,11 +525,20 @@ df.columns   # RangeIndex(start=0, stop=2, step=1)       #!!!
 df2 = df.mean(level=0)
 df2
 
+df.mean(level=1)
+df.mean(level=1, axis=1)  #! ValueError: level > 0 or level < -1 only valid with MultiIndex
+df.mean(axis=1)   # OK
+
+#%%
+df2
+df2.index
+df.index
+
 df2.reindex()          # nothing changed
 df2.reindex(df.index)  # only NaN
 df2.reindex(df.index, level=0)    # OK
 
-#%% aligning
+#%% aligning  ??? very strange!
 df_aligned, df2_aligned = df.align(df2, level=0)
 df_aligned    # == df
 df2_aligned   # == df2.reindex(df.index, level=0)
