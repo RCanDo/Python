@@ -35,7 +35,7 @@ file:
 """
 #%%
 pwd
-cd D:/ROBOCZY/Python/Numpy/
+cd E:/ROBOCZY/Python/Numpy/
 cd ~/Works/Python/Numpy/
 ls
 
@@ -69,19 +69,45 @@ reflects the shape of the index arrays
 rather than the shape of the array being indexed:
 """
 idx = np.array([[3, 7], [4, 5]])
+idx
 x[idx]
 
-#%% Fancy indexing also works in multiple dimensions.
+#%% !!!
+# Fancy indexing also works in multiple dimensions.
 # Consider the following array:
 X = np.arange(12).reshape((3, 4))
 X
+X.ndim
+X.shape
 
-row = np.array([0, 1, 2])
+row = np.array([1, 0, 2])
+X[row, 1]
+X[[1, 0, 2], 1]       # so it's possible to index with ordinary lists
+X[[1, 0, 2, 2], 1]    # repetitions allowed
+
 col = np.array([2, 1, 3])
+X[1, col]
+X[1, col*2]           #! col is NOT a list !
+X[1, [2, 1, 3]*2]
+
 X[row, col]
+X[[1, 0, 2], [2, 1, 3]]
+X[[1, 0, 2]*2, [2, 1, 3]*2]
+
+#!!! BUT
 row[:, np.newaxis]
 row[:, np.newaxis] * col
-X[row[:, np.newaxis], col]
+X[row[:, np.newaxis], col]       #!!!
+
+X[[[1], [0], [2]], [2, 1, 3]]    # ordinary lists work
+
+# notice that
+row.T    # == row
+#
+row2 = np.array([[1, 0, 2]])
+row2
+row2.T
+X[row2.T, col]
 
 #%% Combined Indexing
 """
@@ -92,12 +118,18 @@ print(X)
 
 # We can combine fancy and simple indices:
 X[2, [2, 0, 1]]
+X[[2, 1], [2, 0, 1]]    # IndexError: shape mismatch: indexing arrays could not be broadcast together with shapes (2,) (3,)
+X[[[2, 1]], [2, 0, 1]]  # IndexError: shape mismatch: indexing arrays could not be broadcast together with shapes (1,2) (3,)
+X[[[2], [1]], [2, 0, 1]]  # OK
+
+# !
 X[2, [2, 0, 1, 1, 0, 2]]
 X[1:, [2, 0, 1]]
 X[1:, [2, 0, 1, 1, 0, 2]]
 
 # And we can combine fancy indexing with masking:
 mask = np.array([1, 0, 1, 0], dtype=bool)
+mask
 X[:, mask]
 
 X[row[:, np.newaxis], mask]
@@ -105,15 +137,17 @@ X[row[:, np.newaxis], mask]
 X[row, mask]   #! IndexError: shape mismatch: indexing arrays could not be broadcast together with shapes (3,) (2,)
 #!!!
 
+
 #%% Example: Selecting Random Points
 """
 One common use of fancy indexing is the selection of subsets of rows from a matrix.
 For example, we might have an N by D matrix representing N points in D dimensions,
 such as the following points drawn from a two-dimensional normal distribution:
 """
+N = 100
 mean = [0, 0]
 cov = [[1, 2], [2, 5]]
-X = rand.multivariate_normal(mean, cov, 100)
+X = rand.multivariate_normal(mean, cov, N)
 X.shape
 X
 
@@ -128,7 +162,7 @@ Let's use fancy indexing to select 20 random points.
 We'll do this by first choosing 20 random indices with no repeats,
 and use these indices to select a portion of the original array:
 """
-idx = np.random.choice(X.shape[0], 20, replace=False)
+idx = np.random.choice(N, 20, replace=False)
 idx
 
 selection = X[idx]
@@ -196,8 +230,7 @@ np.add.at(counts, i, 1)                 #!!!
 counts
 
 # plot the results
-plt.plot(bins, counts, linestyle='steps');
-
+plt.plot(bins, counts, linestyle='dashed')  #'steps'); 'steps' not valid anymore :(
 
 # all of this in one line using matplotlib function
 res = plt.hist(x, bins, histtype='step')

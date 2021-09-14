@@ -35,12 +35,30 @@ file:
 
 #%% 23. Try else
 try:
-    2*3
-except TypeError:
-    print("An exception was raised")
+    2 * 3
+except Exception as e:
+    print(f"An exception was raised: {e}")
 else:
     print("No exceptions were raised")
 
+#%%
+try:
+    [2] + 3
+except Exception as e:
+    print(f"An exception was raised: {e}")
+else:
+    print("No exceptions were raised")
+
+#%%
+""" Remark:
+It is considered bad style to use generic `Exception`.
+It is strongly advised to use specific type of exceptions like:
+`ValueError`, `TypeError`, `ZeroDivisionError`, `IOError`, `OSError`, etc.
+
+See  exceptions.py
+"""
+
+#%%
 #%% 21. Use enumerate
 
 lst = list('abcdefgh')
@@ -51,7 +69,7 @@ for i, l in enumerate(lst):
 """
 You can do multiple comparisons with all kinds of operators in a single line.
 """
-a=3
+a = 42313
 2 < a < 8
 1 == a < 8
 
@@ -107,7 +125,6 @@ dict([(1,10), (2,20), (3, 30)])    # (!!!)   #!!! WOW !!!
 dict(([1,10], [2,20], [3, 30]))    # (!!!)   #!!! WOW !!!
 dict([[1,10], [2,20], [3, 30]])    # (!!!)   #!!! WOW !!!
 
-
 # See the story below:
 
 #
@@ -159,6 +176,8 @@ import itertools as it
 newlist = list(it.chain.from_iterable(c))
 newlist
 
+dir(it)
+
 #%% named slices
 a = [0, 1, 2, 3, 4, 5]
 LASTTHREE = slice(-3, None)
@@ -177,9 +196,8 @@ list(group_adjacent(a, 3))         # "
 list(group_adjacent(a, 2))         # [(1, 2), (3, 4), (5, 6)]
 list(group_adjacent(a, 1))         # [(1,), (2,), (3,), (4,), (5,), (6,)]
 
-
 #%%
-g = (x ** 2 for x in range(10))   # iterator
+g = (x**2 for x in range(10))   # iterator
 print(next(g))
 print(next(g))
 
@@ -201,6 +219,7 @@ Q    # deque([1])
 Q.appendleft(2)
 Q.extend([3, 4])
 Q.extendleft([5, 6])
+Q
 Q.pop()
 Q.popleft()
 Q.rotate(3)

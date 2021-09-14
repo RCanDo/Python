@@ -9,36 +9,32 @@ lst = [(1,2,3), (2,5,6), (3,8,5), (1,5,7), (1,3,8), (2,6,4), (2,0,1), (3,2,5), (
 
 #%% 1st
 def sumi(lst, i):
-    return sum( [ l[i] for l in lst ] )
+    return sum( l[i] for l in lst )
 
 def nth_floor(lst, n):
-    return [ l for l in lst if l[0]==1 ]
-    
-[ [n] + [ sumi( nth_floor(lst,n), i) for i in [1,2]  ] ## [1,2]==[x,y]
-  for n in [1,2,3]  ## floors
+    return [ l for l in lst if l[0]==n ]
+
+[ [n] + [ sumi( nth_floor(lst, n), i) for i in [1, 2]  ]   ## [1,2]==[x,y]
+  for n in [1, 2, 3]  ## floors
 ]
 
 #%% 2nd
+import pandas as pd
 
 df = pd.DataFrame(lst)
+df
 dfg = df.groupby(0)
 dfg[[1,2]].aggregate(sum)
 
 #%% 3d
 
 lst
-list( filter(lambda x: x[0]==1, lst) )
 
+list( filter(lambda x: x[0]==1, lst) )
 
 [ filter(lambda x: x[0]==floor, lst) for floor in [1, 2, 3] ]
 
-
+import numpy as np
 np.array( list( filter(lambda x: x[0]==1, lst) ) ).sum(axis=0)
 
-
-
-
-    
-
-    
-
+#%%

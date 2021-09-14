@@ -81,8 +81,7 @@ a is lst # True
 
 # You can also create a (shallow) copy of a list:
 b = lst[:]
-b
-[7, 8, 9]
+b     # [7, 8, 9]
 b is lst # False
 
 lst[0] = 0
@@ -95,18 +94,40 @@ a     # [0, 8, 9]
 a is lst # True
 
 #%%
+#%% finding elements
+ll = [2, 4, 2, 2, 3, 4, 1, 5, 3]
+ll.index(2)  # 0,  only first appearance is considered
+ll.index(4)  # 1
+ll.index(-1) #! ValueError: -1 is not in list; nothing to do with that;
+             # should be `None`
+help(ll.index)
+
+#%% item getting
+ll[1]
+
+from operator import itemgetter
+itemgetter(1)      # function
+itemgetter(1)(ll)
+
+getfirst = itemgetter(1)   # function
+getfirst(ll)
+
+# works on dicts too:
+itemgetter('x')({'x':1, 'y':2})
+
+#%%
+#%%
 ll = [['a', 'b'], ['c', 'd'], ['e', 'f', 'g']]
 sum(ll, [])      # specifying start value for sum(); default is 0.
 sum(ll, ['p'])
 
 #%% primes in a range (works but very suboptimal)
-list(filter(lambda x:all(x % y != 0 for y in range(2, x)), range(2, 13)))
+list(filter(lambda x: all(x % y != 0 for y in range(2, x)), range(2, 13)))
 
 #%% 9. Transpose
 """
 This snippet can be used to transpose a 2D array.
 """
-
 arr = [['a', 'b'], ['c', 'd'], ['e', 'f']]
 list(zip(*arr))  #!!!
 [list(k) for k in zip(*arr)]
@@ -114,22 +135,21 @@ list(map(list, zip(*arr)))
 
 tuple(zip(*arr))
 
-
 #%% 28. Flatten
 """
 This method flattens a list similarly like [].concat(…arr) in JavaScript.
 Notice that only ONE level is flattened:
 """
-def flatten(arg):
-    ret = []
-    for i in arg:
-        if isinstance(i, list):
-            ret.extend(i)
+def flatten(lst):
+    res = []
+    for l in lst:
+        if isinstance(l, list):
+            res.extend(l)
         else:
-            ret.append(i)
-    return ret
+            res.append(l)
+    return res
 
-flatten([1, 2, 3, [4, [5, 6]], [7], 8, 9]) # [1, 2, 3, 4, [5, 6], 7, 8, 9]
+flatten([1, 2, 3, [4, [5, 6]], [7], 8, 9])  # [1, 2, 3, 4, [5, 6], 7, 8, 9]
 
 
 #%% 14. Flatten deep
@@ -137,7 +157,6 @@ flatten([1, 2, 3, [4, [5, 6]], [7], 8, 9]) # [1, 2, 3, 4, [5, 6], 7, 8, 9]
 """
 The following methods flatten a potentially deep list using recursion.
 """
-
 def deep_flatten(lst):
     flat = []
     for l in lst:
@@ -160,6 +179,15 @@ max(numbers, key=numbers.count)
 max(*numbers, key=numbers.count)
 max(set(numbers), key=numbers.count)
 
+#%%
+max([(1, 2), (1, 3), (3, 1)], key=lambda x: x[1])
+min([(1, 2), (1, 3), (3, 1)], key=lambda x: x[1])
+sorted([(1, 2), (1, 3), (3, 1)], key=lambda x: x[1])
+sorted([(1, 2), (1, 3), (3, 1)], key=lambda x: x[0]/x[1])
+
+from operator import itemgetter
+max([(1, 2), (1, 3), (3, 1)], key=itemgetter(1))
+
 #%% 1. All unique
 """
 The following method checks whether the given list has duplicate elements.
@@ -174,13 +202,13 @@ y = x*2
 all_unique(x)
 all_unique(y)
 
-list(set(y))
+# list(set(y))
 # order not preserved...
 
 #%%
 #??? How to make unique() which preserves order?
 def unique(ll):
-    order = list(map(lambda x: ll.index(x), ll))  # only first appearance of the item in the list
+    order = list(map(lambda x: ll.index(x), ll))  # only first appearance of the item in the list    #!!!
     print(order)  # for check
     lst = []
     s = -1
@@ -214,7 +242,6 @@ chunk(lst, 3)
 This method removes falsy values (False, None, 0 and “”) from a list
 by using filter().
 """
-
 lst = [0, 1, False, 2, '', 3, 'a', 's', 34, None, True]
 lst
 list(filter(bool, lst))
@@ -225,7 +252,6 @@ list(filter(bool, lst))
 This method finds the difference between two iterables
 by keeping only the values that are in the first one.
 """
-
 def difference(a, b):
     return list(set(a).difference(set(b)))
 
@@ -248,5 +274,3 @@ difference_by([2.1, 1.2], [2.3, 3.4], floor) # [1.2]
 difference_by([{ 'x': 2 }, { 'x': 1 }], [{ 'x': 1 }], lambda v : v['x']) # [ { x: 2 } ]
 
 #%%
-
-

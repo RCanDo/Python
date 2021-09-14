@@ -3,11 +3,12 @@
 Created on Sun Jul 28 09:00:41 2019
 
 @author: kasprark
+
 """
 
 import shelve
 
-cd D:/ROBOCZY/Python/help/
+cd E:/ROBOCZY/Python/Objects/
 
 #%%
 
@@ -19,7 +20,7 @@ class Cls():
         self.c = c
 
     def save(self, file):
-        f = shelve.open(file, 'n')
+        f = shelve.open(file, 'n')     #!!! see help(shelve) !!!
         for k in vars(self):
             f[k] = vars(self)[k]
         f.close()
@@ -46,11 +47,15 @@ class Cls():
 
 abc = Cls('1', 2, [2, 3])
 abc
-abc.print()
+abc.print()     # globals + dir(self)
 
-abc.myself()
-vars(abc)
-abc.__dict__
+# notice that  dir(self)  is much MORE then  self.__dict__
+dir(abc)
+
+abc.__dict__    # only  attributes! (no methods, magics and hiddens)
+                # the same  as
+vars(abc)       # the same  as
+abc.myself()    # print(vars(self))
 
 #%%
 
@@ -63,4 +68,9 @@ pqr.myself()
 
 del(abc)
 
+#%%
+help(shelve)
+#   d = shelve.open(filename, writeback=True)     # slow
+#   d.sync()
 
+#%%

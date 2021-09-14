@@ -184,7 +184,8 @@ from collections import namedtuple
 help(namedtuple)
 
 NT = namedtuple(typename='NT', field_names=['a', 'b', 'c'])
-NT  # __main__.NT
+NT
+ # __main__.NT
 nt = NT('a', 1, lambda x: x - 1/x)  # works !!!
 nt  # NT(a='a', b=1, c=<function <lambda> at 0x00000295C63B1378>)
 nt.a
@@ -206,6 +207,7 @@ nt.c
 nt._asdict()  # OrderedDict
 nt._fields    # ('a', 'b', 'c')
 nt.index(1)   # ???
+nt.index(0)   # ValueError: tuple.index(x): x not in tuple
 
 #%%
 Car = namedtuple('Car', 'color mileage')  #
@@ -283,7 +285,7 @@ sorted(xs.items(), key=lambda x: x[1])
 
 sorted(xs, key=lambda x: x[1])  # IndexError: string index out of range
 #! because
-[x for x in xs]  # only indices
+[x for x in xs]  # only keys/indices
 
 # Or:
 
@@ -305,8 +307,13 @@ sorted([[1, 2], [0, 1], [-1, 4]], key=lambda x: sum(x))
 This method returns the most frequent element that appears in a list.
 """
 numbers = [1,2,1,2,3,2,1,4,2]
+numbers.count(1)
+numbers.count(4)
+
 max(numbers, key=numbers.count)
 max(*numbers, key=numbers.count)
+
+set(numbers)
 max(set(numbers), key=numbers.count)
 
 #%%

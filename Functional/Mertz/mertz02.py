@@ -53,7 +53,6 @@ Let's implement simple game of rock/paper/scissors
 long code with many repetitions prone to mistakes
 """
 
-
 class Thing(object): pass
 class Rock(Thing): pass
 class Paper(Thing): pass
@@ -102,7 +101,7 @@ beats(paper, 3)
 
 #%% way 2 -- Delegating to the Object
 """
-As a second try we might try to eliminate some of the fragile repitition
+As a second try we might try to eliminate some of the fragile repetition
 with Python’s “duck typing”—that is, maybe we can have different
 things share a common method that is called as needed:
 """

@@ -37,8 +37,7 @@ file:
               - arek@staart.pl
 """
 #%%
-
-cd D://ROBOCZY/Python/Functional/Mertz
+cd E:/ROBOCZY/Python/Functional/Mertz
 pwd
 ls
 

@@ -55,6 +55,9 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 #%% data persistence
 
 import pickle
+import shelve
+#   d = shelve.open(filename, writeback=True)     # slow
+#   d.sync()
 
 #%% development tools
 
@@ -79,3 +82,6 @@ import zipapp
 
 #%%
 
+#%%
+
+#%%

@@ -37,7 +37,7 @@ file:
 """
 #%%
 
-cd D://ROBOCZY/Python/help/Functional/Mertz
+cd E:/ROBOCZY/Python/Functional/Mertz
 pwd
 ls
 
@@ -87,10 +87,16 @@ for l in get_lines: print(len(l))  ## ooops! infinite!!!
 
 #%%
 #%%
+chr(65)
+chr(90)
+
+chr(97)
+chr(122)
 
 {i: chr(i+65) for i in range(6)}    # dict
 {chr(i+65) for i in range(6)}       # set
 
+{k: chr(k) for k in range(256)}    # dict
 
 #%%
 """ RECURSION
@@ -123,11 +129,12 @@ def running_sum(numbers):
         print(rs, end=" ")
         return rs
     else:
-        print()     # no use...
+        print("\n")     # no use...
         return 0
 
 running_sum([1, 5, 3, 6, 2, 4, 1])
 
+#%%
 """
 It prints FINALLY (i.e. recursion go to its end first)
 and there is no way of printing "\n" ONLY at the beginning of recurssion...
@@ -159,7 +166,7 @@ def factorial_i(N):
     return product
 
 t0 = time.time()
-factorial_i(1000)
+print(factorial_i(1000))
 print(time.time() - t0)
 
 #%%
@@ -175,10 +182,11 @@ from functools import reduce
 from operator import mul
 
 def factorial_x(N):
-    return reduce(mul, range(N+1), 1)
+    assert isinstance(N, int) and N >= 1
+    return reduce(mul, range(1, N+1), 1)
 
 t0 = time.time()
-factorial_x(1000)
+print(factorial_x(1000))
 print(time.time() - t0)
 
 ## too fast to measure... :)
@@ -278,10 +286,7 @@ list(map(do_it, [f3], [1, 2, 3], [2, 2, 4], [3, 4]))
 list(map(do_it, [f3], [[1, 2, 3]], [[2, 2, 4]], [[3, 4]]))
 
 #%%
-
-
 #%%
-
 hello = lambda first, last: print("Hello", first, last)
 bye = lambda first, last: print("Bye", first, last)
 
@@ -293,7 +298,6 @@ list(map(do_it, [hello, bye], ["A", "B"], ["X", "Y"]))
 _ = list(map(do_it, [hello, bye], ["A", "B"], ["X", "Y"]))
 
 #%%
-
 do_all = lambda fs, *args: [list(map(f, *args)) for f in fs]
 
 _ = do_all([hello, bye], ["A", "B"], ["X", "Y"])
@@ -307,7 +311,7 @@ _ = do_all([hello, bye], ["A", "B"], ["X", "Y"])
 # by the way
 
 x = 3
-5 < x < y ## works!!!
+5 < x < y  ## works!!!
 # although `y` is undefined!!!
 # this is "short-circuit" version of boolean operation
 # -- evalution halts as soon as the result is determined e.g. ...
@@ -317,7 +321,7 @@ x = 3
 #! BUT:
 (5 < x) & (x < y)  #! NameError: name 'y' is not defined
 # this is "eager" evaluation -- all expressions are evaluated before the operators' value
-# never mind that the result is determined regardless of the second expressions' value
+# never mind that the result is determined regardless of the second expressions value
 
 #%%
 # imperative version of echo
@@ -340,7 +344,7 @@ def identity_print(x):
     return x
 
 echo_fp = lambda: identity_print(input("FP -- "))=="quit" or echo_fp()
-# short circuit is applied here: "loop" halts as soon as the first operand is True
+#!!! short circuit is applied here: "loop" halts as soon as the first operand is True  #!!!
 
 echo_fp()
 # btw: lambda always return sth. in this case True
@@ -355,16 +359,13 @@ echo_fp()
 # Callables
 #
 #%%
-
 def hello_d(name): print("Hello", name)
 
 hello_d("Qrak")
 
-
 hello_l = lambda name: print("Hello", name)
 
 hello_l("Qrak")
-
 
 hello_d.__qualname__
 hello_l.__qualname__
@@ -378,7 +379,6 @@ hello_2.__qualname__
 hello_2.__qualname__ = "hello_2"
 hello_2.__qualname__
 hello_l.__qualname__
-
 
 #%%
 # function created via OO
@@ -426,7 +426,6 @@ add5_f(10)
 
 #%%
 # BUT
-
 adders = []
 
 for n in range(5):
@@ -442,11 +441,10 @@ n = 10
 [adder(10) for adder in adders]
 
 # `n` value is taken from the envir
-#%%
+#%%                                                                            #!!!
 """
 fortunately it has easy solution
 """
-
 adders = []
 
 for n in range(5):
@@ -546,7 +544,7 @@ rt.cos(3, 4)
 #%%
 """
 from Python 3.x you don't need to use @staticmethod decorator --
-it's possible to pull out from a class every functions which
+it's possible to pull out from a class every functions
 which is not a method (does not have `self` as [first] argument).
 """
 import functools
@@ -597,7 +595,7 @@ next(get_primes())
 next(get_primes())
 
 primes = get_primes()
-next(primes), next(primes), next(primesc)     #!#! DANGER !!!  (*)
+next(primes), next(primes), next(primes)     #!#! DANGER !!!  (*)
 
 for _, prime in zip(range(10), primes):
     print(prime, end=" ")

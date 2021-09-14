@@ -9,7 +9,7 @@ import random
 import pandas as pd
 
 #%%
-def seqand( df, varnames, conds):
+def seqand(df, varnames, conds):
     letters = 'abcdefghijklmnopqrstuvwxyz'
     for i in range(len(varnames)):
         exec("{} = df.{}".format(letters[i], varnames[i]))
@@ -24,7 +24,6 @@ def seqand( df, varnames, conds):
     return res
 
 #%%
-
 
 df = pd.DataFrame({ 'var1' : np.random.randn(7), 'var2' : np.random.randn(7), 'var3' : np.random.randn(7) })
 df
