@@ -571,6 +571,9 @@ However it does not work on the instance as `self` is needed!
 m = Math()
 m.product(3, 4, 5)
 
+#%%
+# !!! see  ../iterators_vs_generators.py
+#
 #%% Generator Functions - `yield`
 #
 
@@ -600,6 +603,16 @@ next(primes), next(primes), next(primes)     #!#! DANGER !!!  (*)
 for _, prime in zip(range(10), primes):
     print(prime, end=" ")
 
+for _, prime in zip(range(10), get_primes()):  #!!!
+    print(prime, end=" ")
+
+# best:
+from itertools import islice
+for prime in islice(get_primes(), 10):  #!!!
+    print(prime, end=" ")
+
+# or e.g.
+for prime in islice(get_primes(), 4, 20, 3):  #!!!
+    print(prime, end=" ")
+
 #%%
-
-

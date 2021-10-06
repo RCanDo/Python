@@ -17,9 +17,9 @@ remarks:
 todo:
     - problem 1
 sources:
-    - title:     # title of the book or internet page
-      chapter:   # if necessary
-      pages:     # if necessary
+    - title: Itertools
+      chapter:
+      pages:
       link: https://the_page/../xxx.domain
       date:    # date of issue or last edition of the page
       authors:
@@ -32,7 +32,7 @@ file:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
     name:
-    path: D:/ROBOCZY/Python/datetime
+    path: E:/ROBOCZY/Python/datetime
     date: 2021-04-27
     authors:
         - nick: rcando
@@ -48,8 +48,8 @@ from rcando.ak.builtin import * #flatten, paste
 from rcando.ak.nppd import * #data_frame
 import os, sys, json
 
-ROOTS = json.load(open('roots.json'))
-WD = os.path.join(ROOTS['Works'], "Python/Pandas/User Guide/")   #!!! adjust
+ROOT = json.load(open('root.json'))
+WD = os.path.join(ROOT['Works'], "Python/Pandas/User Guide/")   #!!! adjust
 os.chdir(WD)
 
 print(os.getcwd())
@@ -75,8 +75,16 @@ pd.set_option('display.precision', 3)
 # %% other df options
 pd.set_option('display.width', 1000)
 pd.set_option('max_colwidth', None)
-#pd.options.display.max_colwidth = 500   
+#pd.options.display.max_colwidth = 500
 # the same
+
+#%%
+pd.options.display.width = 120
+
+#%%
+import matplotlib.pyplot as plt
+plt.style.use('dark_background')
+# see `plt.style.available` for list of available styles
 
 
 # %% However, some style checkers like Flake may complain on #%% - there should be space after #

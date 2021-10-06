@@ -30,6 +30,7 @@ class Cls():
         kwargs = dict()
         for k in f:
             kwargs[k] = f[k]
+            # kwargs.setdefault(k, f[k])
         f.close()
         self.__init__(**kwargs)
 
@@ -47,7 +48,7 @@ class Cls():
 
 abc = Cls('1', 2, [2, 3])
 abc
-abc.print()     # globals + dir(self)
+abc.print()     # globals() + dir(self)
 
 # notice that  dir(self)  is much MORE then  self.__dict__
 dir(abc)
@@ -58,7 +59,6 @@ vars(abc)       # the same  as
 abc.myself()    # print(vars(self))
 
 #%%
-
 abc.save('abc')
 
 pqr = Cls([0, 0], '0', 0)

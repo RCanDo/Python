@@ -35,7 +35,7 @@ any object whose class has a `next` method (`__next__` in Python 3)
 and an `__iter__` method that does return `self`.
 
 Every `generator` is an `iterator`, but not vice versa.
-A generator is built by calling a function that has one or more `yield` expressions
+A generator __is built by__ calling a function that has one or more `yield` expressions
 (`yield` statements, in Python 2.5 and earlier),
 and is an object that meets the previous paragraph's definition of an iterator.
 
@@ -53,6 +53,9 @@ For example, a generator such as:
 def squares(start, stop):
     for i in range(start, stop):
         yield i * i
+
+dir(squares)        #!!! no __next__ nor __iter__ because this is a _generator function_  !!!
+dir(squares(2, 5))  #!!! "__next__" and "__iter__"  !!!
 
 generator = squares(2, 5)
 dir(generator)  # "__next__" and "__iter__"
@@ -211,7 +214,7 @@ class Squares(object):
        self.start = start
        self.stop = stop
     def __iter__(self): return self
-    def __next__(self): # __next__ in Python 3
+    def __next__(self): # next in Python 2
        if self.start >= self.stop:
            raise StopIteration
        current = self.start * self.start
@@ -246,8 +249,36 @@ Generators provide an easy, built-in way to create instances of Iterators.
 """
 
 #%%
+#%% Examples
+
+#%% 1. Group Adjacent Lists                                                       #!!! ???
+
+group_adjacent = lambda a, p: zip(*([iter(a)] * p))
+[k for k in group_adjacent(a, 3)]  # [(1, 2, 3), (4, 5, 6)]
+list(group_adjacent(a, 3))         # "
+list(group_adjacent(a, 2))         # [(1, 2), (3, 4), (5, 6)]
+list(group_adjacent(a, 1))         # [(1,), (2,), (3,), (4,), (5,), (6,)]
+
+#%% step by step
+a = [1, 2, 3, 4, 5, 6]
+itera = iter(a)
+itera           # <list_iterator at 0x1968e308c70>
+
+next(itera)     # 1
+list(itera)     # [2, 3, 4, 5, 6]
+next(itera)     #! StopIteration
+
+pitera = [iter(a)] * 3
+pitera
+#  [<list_iterator at 0x1968e3087f0>,
+#   <list_iterator at 0x1968e3087f0>,
+#   <list_iterator at 0x1968e3087f0>]
+# NOTICE exactly the same address -- all three are the same object !
+
+#? What about:
+pitera = iter(a) * 3
+    #! TypeError: unsupported operand type(s) for *: 'list_iterator' and 'int'
+
 #%%
-
-
 
 

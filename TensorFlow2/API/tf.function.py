@@ -1,36 +1,34 @@
 #! python3
 """
----  
+---
 # This is YAML, see: https://yaml.org/spec/1.2/spec.html#Preview
-# !!! YAML message always begin with ---  
+# !!! YAML message always begin with ---
 
 title: tf.function
-type: code chunks
+type: doc examples
 sources:
     - link: https://www.tensorflow.org/versions/r2.0/api_docs/python/tf/function?hl=en
       usage: copy
 file:
-    usage: 
+    usage:
         interactive: True
         terminal: False
-    path: "D:/ROBOCZY/Python/TensorFlow2/API/"
+    path: ".../Python/TensorFlow2/API/"
     date: 2019-10-03
-    authors:   
-        - nick: kasprark
+    authors:
+        - nick: RCanDo
           fullname: Arkadiusz Kasprzyk
-          email: 
-              - arkadiusz.kasprzyk@tieto.com
-              - akasp666@google.com
-              - arek@staart.pl      
-"""  
+          email:
+              - rcando@int.pl
+"""
 #%%
 import tensorflow as tf
 
 #%%
 """
-function() constructs a callable that executes a TensorFlow graph (tf.Graph) 
-created by tracing the TensorFlow operations in func. 
-This allows the TensorFlow runtime to apply optimizations and exploit parallelism 
+function() constructs a callable that executes a TensorFlow graph (tf.Graph)
+created by tracing the TensorFlow operations in func.
+This allows the TensorFlow runtime to apply optimizations and exploit parallelism
 in the computation defined by func.
 """
 
@@ -78,24 +76,25 @@ def g(x):
     tf.compat.v1.assign(v, i)                       # Works
     tf.compat.v1.py_func(lambda i: l.append(i))(i)  # Works
     #l.append(i)                           # Caution! Doesn't work.
-    
+
 g(x)  # ???
+
 #%%
 """
-Note that unlike other TensorFlow operations, 
+Note that unlike other TensorFlow operations,
 !!! we don't convert python numerical inputs to tensors. !!!
-Moreover, a new graph is generated for each distinct python numerical value, 
-for example calling g(2) and g(3) will generate two new graphs 
-(while only one is generated if you call g(tf.constant(2)) and g(tf.constant(3))). 
-Therefore, python numerical inputs should be restricted to arguments 
-that will have few distinct values, 
-such as hyperparameters like the number of layers in a neural network. 
+Moreover, a new graph is generated for each distinct python numerical value,
+for example calling g(2) and g(3) will generate two new graphs
+(while only one is generated if you call g(tf.constant(2)) and g(tf.constant(3))).
+Therefore, python numerical inputs should be restricted to arguments
+that will have few distinct values,
+such as hyperparameters like the number of layers in a neural network.
 This allows TensorFlow to optimize each variant of the neural network.
 """
 
 #%% Referencing tf.Variables
 """
-The Python function func may reference _stateful_ objects (such as tf.Variable). 
+The Python function func may reference _stateful_ objects (such as tf.Variable).
 These are captured as implicit inputs to the callable returned by function. For example:
 """
 ...

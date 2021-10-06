@@ -56,7 +56,6 @@ def say(name, line):
     return f'{name}: {line}'
 
 #%%
-
 say('Marian', 'Ale jazz!')
 
 #%% How to Write “Debuggable” Decorators

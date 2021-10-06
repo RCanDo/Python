@@ -178,6 +178,8 @@ newlist
 
 dir(it)
 
+# see  itertools.py  and  iterators_vs_generators.py
+
 #%% named slices
 a = [0, 1, 2, 3, 4, 5]
 LASTTHREE = slice(-3, None)
@@ -188,14 +190,36 @@ REV = slice(None, None, -1)
 REV     # slice(None, None, -1)
 a[REV]  # [5, 4, 3, 2, 1, 0]
 
-#%% Group Adjacent Lists
+#%%
+#%% Group Adjacent Lists                                                       #!!! ???
 a = [1, 2, 3, 4, 5, 6]
-group_adjacent = lambda a, k: zip(*([iter(a)] * k))
+group_adjacent = lambda a, p: zip(*([iter(a)] * p))
 [k for k in group_adjacent(a, 3)]  # [(1, 2, 3), (4, 5, 6)]
 list(group_adjacent(a, 3))         # "
 list(group_adjacent(a, 2))         # [(1, 2), (3, 4), (5, 6)]
 list(group_adjacent(a, 1))         # [(1,), (2,), (3,), (4,), (5,), (6,)]
 
+#%% step by step
+a = [1, 2, 3, 4, 5, 6]
+itera = iter(a)
+itera           # <list_iterator at 0x1968e308c70>
+
+next(itera)     # 1
+list(itera)     # [2, 3, 4, 5, 6]
+next(itera)     #! StopIteration
+
+pitera = [iter(a)] * 3
+pitera
+#  [<list_iterator at 0x1968e3087f0>,
+#   <list_iterator at 0x1968e3087f0>,
+#   <list_iterator at 0x1968e3087f0>]
+# NOTICE exactly the same address -- all three are the same object !
+
+#? What about:
+pitera = iter(a) * 3
+    #! TypeError: unsupported operand type(s) for *: 'list_iterator' and 'int'
+
+#%%
 #%%
 g = (x**2 for x in range(10))   # iterator
 print(next(g))
@@ -226,5 +250,6 @@ Q.rotate(3)
 Q.rotate(-3)
 print(Q)
 
+#%% see  collections_1.py  and  collections_2.py
+
 #%%
-...

@@ -69,10 +69,28 @@ pd.set_option('max_colwidth', None)
 # %%
 #%% In short
 
+# list.sort()  in-place !!!
+ll = [1, 4, 2, 1, 0]
+ll.sort()
+ll
+
+ll = list('pghjskenga')
+ll.sort()
+ll
+
+ll = [(1, 2), (0, 3), (2, 0)]
+ll.sort()
+ll
+
+# how to sort with the second dim ?
+import operator as op
+
+ll = [(1, 2), (0, 3), (2, 0)]
+ll.sort(key=op.itemgetter(1))
+ll
+
+#%% sorted() is better as it returns !
 sorted([5, 2, 3, 1, 4])
-a = [5, 2, 3, 1, 4]
-a.sort()
-a
 
 # list.sort() method is only defined for lists;
 # the sorted() function accepts any iterable.
@@ -89,9 +107,15 @@ sorted(xs, key=lambda x: x[1])  # IndexError: string index out of range
 [x for x in xs]  # only indices
 
 # Or:
+import operator as op
+sorted(xs.items(), key=op.itemgetter(1))  #???
 
-import operator
-sorted(xs.items(), key=operator.itemgetter(1))  #???
+#%% sorting dict with Pandas (that's huge but often used besides)
+
+import pandas as pd
+
+pd.Series(xs).sort_index()
+pd.Series(xs).sort_values()
 
 #%%
 #%% Key Functions

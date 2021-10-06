@@ -109,9 +109,9 @@ bar()
 
 def my_decorator(some_function):
 
-    def wrapper():
+    def wrapper(*args, **kwargs):
         print("Something is happening before some_function() is called.")
-        some_function()
+        some_function(*args, **kwargs)
         print("Something is happening after some_function() is called.")
 
     return wrapper

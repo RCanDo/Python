@@ -104,16 +104,20 @@ x.__dict__    # {}
 class Foo(): pass
 x = Foo()
 x  # <__main__.Foo at 0x1f5177fb548>
+x.__dict__     # {}
 
 Foo.__bases__  # (object,)
+Foo.__dict__   # mappingproxy({'__module__': '__main__', ...
 
 #%% Ex 1.1
 Foo = type('Foo', (), dict(attr0=1))
 x = Foo()
 x
+x.__dict__   # {}
 
 x.attr0    # 1
 Foo.attr0  # 1
+Foo.__dict__  # mappingproxy({'attr0': 1, '__module__': '__main__', ...
 
 #%% Ex.2
 Bar = type('Bar', (Foo,), dict(attr=100))
@@ -121,7 +125,8 @@ x = Bar()
 x.attr
 x.attr0
 
-x.__class__  # __main__.Bar
+x.__class__
+    # __main__.Bar
 x.__class__.__bases__  # (__main__.Foo,)
 Bar.__bases__  # (__main__.Foo,)
 
@@ -210,7 +215,7 @@ s = Spam()
 s.attr      # 100
 
 r = Spam()
-r.attr      # attr
+r.attr      # 100
 
 """
 (Code like this would more usually appear in the __init__() method

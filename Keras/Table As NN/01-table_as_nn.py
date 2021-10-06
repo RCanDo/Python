@@ -1,11 +1,37 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Apr  4 15:00:09 2019
+---
+# This is YAML, see: https://yaml.org/spec/1.2/spec.html#Preview
+# !!! YAML message always begin with ---
 
-@author: kasprark
+title: NN table implementation
+subtitle:
+version: 1.0
+type: tutorial
+keywords: [tensor, Keras, Tensor Flow]
+description: |
+    Below we show that for a NN with one input and M outputs
+    it is enough to have one hidden layer with N neurons
+    to implement N x M table.
+    But is such a small NN able to LEARN a table?
+remarks:
+sources:
+file:
+    usage:
+        interactive: True   # if the file is intended to be run interactively e.g. in Spyder
+        terminal: False     # if the file is intended to be run in a terminal
+    name:
+    path: E:/ROBOCZY/Python/Keras/Intro-old/
+    date: 2019-04-04
+    authors:
+        - nick: rcando
+          fullname: Arkadiusz Kasprzyk
+          email:
+              - rcando@int.pl
 """
-
+#%%
 import numpy as np
+from pprint import pprint
 
 import keras
 from keras import backend as K
@@ -22,26 +48,26 @@ def tprint(table, form="{:10.4f}", sep=["", "  |"]):
             print(form.format(col), end=s)
         print()
 
-#%% 
+#%%
 """
 we'd like to implement the table below as a neural network (NN)
 """
 
 table = np.random.randn(10, 2) * 10
-table        
-tprint(table)        
+table
+tprint(table)
 
 """
-Notice that every column of this table may be considered as a function of x \in [0, ..., 9], i.e. 
-c_k:[0, ..., 9] -> R  where  k \in [0, 1]  
-(m columns in table).
-If we have n x m table then we need to construct NN 
-N:[0, ..., n-1] -> R^m
-i.e. it should have one input and m outputs.
+Notice that every column of this table may be considered as a function of x \in [0, ..., 9], i.e.
+c_k:[0, ..., 9] -> R  where  k \in [0, 1]
+(M columns in table).
+If we have N x M table then we need to construct NN
+NN:[0, ..., N-1] -> R^m
+i.e. it should have one input and M outputs.
 
-Below we show that for a NN with one input and m outputs 
-it is eonugh to have one hidden layer with n neurons 
-to implement n x m table.
+Below we show that for a NN with one input and M outputs
+it is enough to have one hidden layer with N neurons
+to implement N x M table.
 
 But is such a small NN able to LEARN a table?
 """
@@ -70,10 +96,10 @@ ww = np.linalg.solve(mmrelu, table)
 np.dot(mmrelu, ww)
 table               # OK !!!
 
-#%% 
+#%%
 """
-model not to train -- weights calculated algebraically 
-reference model -- the best possible -- perfect predictions 
+model not to train -- weights calculated algebraically
+reference model -- the best possible -- perfect predictions
 """
 
 model0 = Sequential()
@@ -83,25 +109,26 @@ model0.add(Dense(2, activation='linear'))
 model0
 model0.summary()
 
-#%% by the way:  configuration -- many things to learn! 
+
+#%% by the way:  configuration -- many things to learn!
 model0.get_config()
+pprint(model0.get_config())
 print(model0.to_json())
 print(model0.to_yaml())
 
 #%%
-
 model0.get_weights()
 
-weights = [np.ones((1, 10)),     np.array(bias), ww, np.zeros(2)] 
-        # [np.array([[1] * 10]), biases,         ww, np.array([0, 0])]
+weights = [np.ones((1, 10)),     np.array(biases), ww, np.zeros(2)]
+        # [np.array([[1] * 10]), biases,           ww, np.array([0, 0])]
 model0.set_weights(weights)
 
 
 """
-OK !!!   perfect solution -- this network is infallible :) 
+OK !!!   perfect solution -- this network is infallible :)
 
-This is only example of possible perfect solution 
---- there are infinitely many perfect solutions 
+This is only example of possible perfect solution
+--- there are infinitely many perfect solutions
 --- it's just simple algebra!
 
 
@@ -111,14 +138,14 @@ The problem is if the network with one layer is able to learn a table?
 """
 
 tprint(np.concatenate((model0.predict(x), table), axis=1))
-    
+
 
 #%%
 """
 Now we shall try to create models which are able to learn the table by its own.
 Questions:
     - Is there a universal set of parameters which makes a NN capable of learning ANY table
-      in a reasonable time? 
+      in a reasonable time?
     - ... which protects a learning alg. against falling into a cycle?
 """
 
@@ -137,7 +164,7 @@ model01.compile( optimizer=keras.optimizers.SGD(nesterov=True, lr=.01, momentum=
 """
 Run it few times till learning will effectively stop, i.e.
 mean_square_error stabilises or fall into cycles
-what means that optimizing algorithm got into cycle or into a local minimum.  
+what means that optimizing algorithm got into cycle or into a local minimum.
 """
 model01.fit(x, table, epochs=int(1e4))
 
@@ -172,13 +199,12 @@ model02.compile( optimizer=keras.optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=N
 model02.fit(x, table, epochs=int(1e4))
 
 #%% GOF
-diff = table-model02.predict(x)
-ratio = model02.predict(x)/table
+diff = table - model02.predict(x)
+ratio = model02.predict(x) / table
 print("       prediction               table                difference               ratio")
 tprint(np.concatenate((model02.predict(x), table, diff, ratio), 1))
 
 # conclusion: little better ?
-
 
 #%%
 #%% model 03
@@ -200,7 +226,6 @@ print("       prediction               table                difference          
 tprint(np.concatenate((model03.predict(x), table, diff, ratio), 1))
 
 # conclusion: better
-
 
 #%%
 #%% model 04
@@ -295,7 +320,7 @@ model.get_config()
 
 #%%
 
-model.layers[i].set_weights(listOfNumpyArrays)    
+model.layers[i].set_weights(listOfNumpyArrays)
 model.get_layer(layerName).set_weights(...)
 model.set_weights(listOfNumpyArrays)
 

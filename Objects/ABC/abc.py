@@ -37,7 +37,6 @@ file:
               - arek@staart.pl
 """
 #%%
-
 cd D:/ROBOCZY/Python/Objects/ABC/
 
 #%%

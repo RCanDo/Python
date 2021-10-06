@@ -121,6 +121,31 @@ ll = [['a', 'b'], ['c', 'd'], ['e', 'f', 'g']]
 sum(ll, [])      # specifying start value for sum(); default is 0.
 sum(ll, ['p'])
 
+#%%
+ll = [1, 4, 2, 1, 0]
+ll.sort()
+ll
+
+ll = list('pghjskenga')
+ll.sort()
+ll
+
+ll = [(1, 2), (0, 3), (2, 0)]
+ll.sort()
+ll
+
+# how to sort with the second dim ?
+import operator as op
+
+ll = [(1, 2), (0, 3), (2, 0)]
+ll.sort(key=op.itemgetter(1))
+ll
+
+# more in sorting.py; especially:
+sorted([1, 4, 2, 1, 0])
+sorted([(1, 2), (0, 3), (2, 0)], key=op.itemgetter(1))
+
+
 #%% primes in a range (works but very suboptimal)
 list(filter(lambda x: all(x % y != 0 for y in range(2, x)), range(2, 13)))
 
@@ -178,6 +203,10 @@ numbers = [1,2,1,2,3,2,1,4,2]
 max(numbers, key=numbers.count)
 max(*numbers, key=numbers.count)
 max(set(numbers), key=numbers.count)
+
+numbers.count(1)
+numbers.count(2)
+numbers.count(3)
 
 #%%
 max([(1, 2), (1, 3), (3, 1)], key=lambda x: x[1])

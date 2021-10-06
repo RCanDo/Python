@@ -50,7 +50,6 @@ list(letter_range("a", "f", step=2))
 """
 https://stackoverflow.com/questions/4719850/python-combinations-of-numbers-and-letters
 """
-
 # doesn't work
 def product(*args, **kwds):
     # product('ABCD', 'xy') --> Ax Ay Bx By Cx Cy Dx Dy
@@ -63,18 +62,14 @@ def product(*args, **kwds):
         yield tuple(prod)
 
 #%%
-
-[k for k in product('ABCD', 'xy')]
+from itertools import product
+list(product(list('ABCD'), list('xy')))
+list(product(range(2), repeat=3))
 
 #%%
-
 def lists_grid(l1, l2):
     return [[str(i) + str(j) for i in l1] for j in l2]
 
 np.array(lists_grid(['a', 'b', 'c'], [1, 2, 3, 4])).ravel()
 
-
-
-
-
-
+#%%

@@ -19,7 +19,7 @@ sources:
       authors:
           - fullname: Andrei-George Hondrari
       usage: |
-    - link: D:/ROBOCZY/Python/help/ExpertPython/14-DesignPatterns/01-singleton.py
+    - link: E:/ROBOCZY/Python/help/ExpertPython/14-DesignPatterns/01-singleton.py
 file:
     usage:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
@@ -59,13 +59,17 @@ class A(object):
     def __new__(cls):
         print("A.__new__ called")
         return super(A, cls).__new__(cls)
+               # this is passed directly to __init__ as `self`
 
     def __init__(self):
+        self.a = "I'm an A!"
         print("A.__init__ called")
 
-A()
+a = A()
 # A.__new__ called
 # A.__init__ called
+dir(a)
+vars(a)
 
 #%%
 """
@@ -111,6 +115,7 @@ class A(object):
         print("A.__new__ called")
         return 42
 
+#%%
 a =  A()
 print(a)  # 42
 type(a)   # int !!
@@ -203,6 +208,7 @@ a = A(2)
 a  # <__main__.A at 0x1b9cb8c3508>
 type(a)  # __main__.A
 a.x  # 6
+vars(a)
 
 #%% __init__(x) overwrites __new__(x)
 class A(object):
@@ -236,6 +242,7 @@ class A(object):
 a = A(2)
 a.x  # 6
 a.y  # 1
+vars(a)
 
 #%% be carefull though not to use one variable twice
 

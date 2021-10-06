@@ -1,8 +1,34 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Apr  8 13:45:44 2019
+---
+# This is YAML, see: https://yaml.org/spec/1.2/spec.html#Preview
+# !!! YAML message always begin with ---
 
-@author: kasprark
+title: NN table implementation
+subtitle:
+version: 1.0
+type: tutorial
+keywords: [tensor, Keras, Tensor Flow]
+description: |
+    Below we show that for a NN with one input and M outputs
+    it is enough to have one hidden layer with N neurons
+    to implement N x M table.
+    But is such a small NN able to LEARN a table?
+remarks:
+    - version of 01-..
+sources:
+file:
+    usage:
+        interactive: True   # if the file is intended to be run interactively e.g. in Spyder
+        terminal: False     # if the file is intended to be run in a terminal
+    name:
+    path: E:/ROBOCZY/Python/Keras/Intro-old/
+    date: 2019-04-08
+    authors:
+        - nick: rcando
+          fullname: Arkadiusz Kasprzyk
+          email:
+              - rcando@int.pl
 """
 
 import numpy as np
@@ -14,24 +40,24 @@ from keras.models import Model
 
 K.backend()
 
-#%% 
+#%%
 """
 we'd like to implement the table below as a neural network (NN)
 """
 
 table = np.random.randn(10, 2) * 10
-table        
+table
 
 """
-Notice that every column of this table may be considered as a function of x \in [0, ..., 9], i.e. 
-c_k:[0, ..., 9] -> R  where  k \in [0, 1]  
+Notice that every column of this table may be considered as a function of x \in [0, ..., 9], i.e.
+c_k:[0, ..., 9] -> R  where  k \in [0, 1]
 (m columns in table).
-If we have n x m table then we need to construct NN 
+If we have n x m table then we need to construct NN
 N:[0, ..., n-1] -> R^m
 i.e. it should have one input and m outputs.
 
-Below we show that for a NN with one input and m outputs 
-it is eonugh to have one hidden layer with n neurons 
+Below we show that for a NN with one input and m outputs
+it is eonugh to have one hidden layer with n neurons
 to implement n x m table.
 
 But is such a small NN able to LEARN a table?
@@ -61,9 +87,9 @@ w2 = np.linalg.solve(mmrelu, table)
 np.dot(mmrelu, w2)
 table               # OK !!!
 
-#%% 
+#%%
 """
-model not to train -- weights calculated algebraically 
+model not to train -- weights calculated algebraically
 """
 
 model = keras.Sequential()
@@ -72,7 +98,7 @@ model.add(Dense(2, activation='linear'))
 
 model.summary()
 
-#%% configuration -- many things to learn! 
+#%% configuration -- many things to learn!
 model.get_config()
 print(model.to_json())
 print(model.to_yaml())
@@ -88,21 +114,21 @@ model.set_weights(weights)
 model.predict(x)
 table
 
-## OK !!!   perfect solution -- this network is infallible :) 
+## OK !!!   perfect solution -- this network is infallible :)
 """
-This is only example of possible perfect solution 
---- there are infinitely many perfect solutions 
+This is only example of possible perfect solution
+--- there are infinitely many perfect solutions
 --- it's just simple algebra!
 
 The problem is if the network with one layer is able to learn a table?
 Below number of trials...
 """
-#%%  
+#%%
 #%%
 
 model2 = keras.Sequential([Dense(10, input_dim=1),
                            Activation('relu'),
-                           Dense(2), 
+                           Dense(2),
                            Activation('linear')
                           ])
 
@@ -120,7 +146,7 @@ def mse(y, yhat):
 def fit(model, min_mse=.1, max_iter=100):
     MSE = 1
     k = 0
-    while (MSE > .1 and k < max_iter): 
+    while (MSE > .1 and k < max_iter):
         k += 1
         print(k, end=" : ")
         model.fit(x, table, epochs=100, batch_size=10)
@@ -130,7 +156,7 @@ def fit(model, min_mse=.1, max_iter=100):
     print(table)
 
 #%% learning model2
-        
+
 fit(model2, 10, 100)
 
 #%%
@@ -182,41 +208,41 @@ import keras
 class TableNN(keras.Model):
 
     def __init__(self, rows=10, columns=2, train_first=False):
-        
+
         super(TableNN, self).__init__(name='table_nn')
-        
+
         #self.inputs = keras.Input((1,))
-        
+
         self.dense1 = keras.layers.Dense(units=rows,
-                           activation='relu', 
-                           kernel_initializer='glorot_uniform', 
-                           bias_initializer='zeros', 
+                           activation='relu',
+                           kernel_initializer='glorot_uniform',
+                           bias_initializer='zeros',
                            input_dim=1,
                            #
-                           kernel_regularizer=None, 
-                           bias_regularizer=None, 
-                           activity_regularizer=None, 
-                           kernel_constraint=None, 
+                           kernel_regularizer=None,
+                           bias_regularizer=None,
+                           activity_regularizer=None,
+                           kernel_constraint=None,
                            bias_constraint=None)
-        
+
         if not train_first:
             self.dense1.set_weights=[ np.ones(10), np.arange(1, -9, -1) ]
             self.dense1.trainable = False
 
         self.dense2 = keras.layers.Dense(units=columns,
-                           activation='linear', 
-                           kernel_initializer='glorot_uniform', 
-                           bias_initializer='zeros', 
-                           kernel_regularizer=None, 
-                           bias_regularizer=None, 
-                           activity_regularizer=None, 
-                           kernel_constraint=None, 
+                           activation='linear',
+                           kernel_initializer='glorot_uniform',
+                           bias_initializer='zeros',
+                           kernel_regularizer=None,
+                           bias_regularizer=None,
+                           activity_regularizer=None,
+                           kernel_constraint=None,
                            bias_constraint=None)
 
     def call(self, inputs):
         x = self.dense1(inputs)
         return self.dense2(x)
-    
+
 #%%
 
 model = TableNN()

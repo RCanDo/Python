@@ -82,6 +82,7 @@ class GeometricRectangle:
 class DrawRectangle:
     def draw(self):
         # Do some drawing
+        pass
 
 #%%
 """
@@ -91,7 +92,7 @@ class DrawRectangle:
   should be open for extension, but closed for modification.”
 
 At first reading this statement may seem contradictory,
-but in any OOP language this is trivially achieved through abstraction.
+but in any OOP language this is trivially achieved through __abstraction__.
 
 The base (or abstract) class is closed for modification
 and we implement concrete subclasses in order to modify their behaviour.
@@ -143,7 +144,7 @@ Most of the arguments and examples on this principle are equally valid in Python
 but I think you have to be particularly careful of this in Python
 because it is so easy to override methods and variables – as we have seen above!
 
-Changes in behaviour using e.g. monkey patching will almost inevitably
+Changes in behaviour using e.g. _monkey patching_ will almost inevitably
 break the Liskov Substitution Principle (but may be justified in some circumstances).
 
 It’s interesting to consider for a moment how this principle relates
@@ -173,6 +174,7 @@ In Python we are free to inherit from multiple concrete classes,
 and this is precisely the purpose of the mix-ins discussed above
 – to provide multiple clients specific behaviours.
 """
+
 EXAMPLE !!!
 #%%
 """
@@ -214,12 +216,14 @@ if i > 0.0:
     v = cmath.sqrt(i)
 else:
     #handle
+    print(i)
 
 #%%  EAFP
 try:
     v = cmath.sqrt(i)
 except ValueError:
     # handle
+    print(v)
 
 #%%
 """
@@ -289,6 +293,10 @@ next(gen)
 for k, a in enumerate(gen()): ...
 for k, a in zip(range(n), gen()): ...
 
+from itertools import islice
+for a in islice(gen(), stop)
+for a in islice(gen(), start, stop, step)
+
 #%% 3. dictionary comprehension
 my_dict = { key.attr: val.attr  for key in keys for val in vals}
 
@@ -329,13 +337,18 @@ or use `my_dict.setdefault` to set a default on a standard dict.
 There are some subtle differences though about when the default is created,
 and some code might expect a KeyError, so take care with this one.
 """
+dic = {'a':1, 'b':3}
+help(dic.setdefault)
+dic.setdefault('c', 33)
+dic
+dic.setdefault('c', 22)
 
 #%% 13 Named formatting
 print("The {foo} is {bar}".format(foo='answer', bar=42))
 # Note that you can also unpack a dict into format!
 
-#%% 13 Named formatting
-print("The {foo} is {bar}".format(foo='answer', bar=42))
+dic = {'foo':'answer', 'bar':42}
+print("The {foo} is {bar}".format(**dic))
 # Note that you can also unpack a dict into format!
 
 #%% 14 Much more readable ternary operators

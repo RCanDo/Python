@@ -40,16 +40,20 @@ file:
 #%%
 #%% Problem 1
 x = 1
+id(x)
 y = 2
 l = [x, y]
-x += 5   # no effect -- 5 is immutable (int)...
+id(l[0]) # the same as id(x)
+x += 5
 l        # [1, 2]
 x        # 6  ... although x IS mutable
+id(x)    # new id
+id(l[0]) # old id !
 
 #%% from article
-""" 
-Since x is immutable, the operation x+=5 does not alter the original object,
-but creates a new one. 
+"""
+Since x is immutable (int), the operation x+=5 does not alter the original object,
+but creates a new one.
 The first element of the list still points to the original object,
 therefore its value remains the same.
 """
@@ -70,6 +74,7 @@ y = 2
 a = [x]
 b = [y]
 ll = [a, b]
+ll
 x += 5
 x      # 6
 a      # [1]
@@ -96,12 +101,11 @@ def f(x, s=None):
     s = set() if s is None else s
     s.add(x)
     print(s)
-   
+
 #%%
 f(7)          # {7}
 f(6, {4, 5})  # {4, 5, 6}
-f(2)          # {2, 7}
-
+f(2)          # {2}
 
 #%%
 #%% Problem 3
@@ -111,7 +115,7 @@ def f():
     l = [1]
     def inner(x):
         l.extend([x])
-        # compiler call LOAD_DEREF instruction which will load 
+        # compiler call LOAD_DEREF instruction which will load
         # the non-local list l (and then the list will be modified)
         return l
     return inner
@@ -127,7 +131,7 @@ def h():
     l = [1]
     def inner(x):
         l += [x]
-        # compiler call LOAD_FAST which looks for the variable l 
+        # compiler call LOAD_FAST which looks for the variable l
         # to in the local scope of the inner function and therefore fails
         return l
     return inner
@@ -135,7 +139,7 @@ def h():
 #%% What will be the result of the following commands?
 
 f_inner = f()
-print(f_inner(2))
+print(f_inner(2))  # [1, 2]
 
 g_inner = g()
 print(g_inner(2))  # UnboundLocalError: local variable 'y' referenced before assignment
@@ -145,8 +149,8 @@ print(h_inner(2))  # UnboundLocalError: local variable 'l' referenced before ass
 
 #%%
 """
-In this problem we deal with closures 
-— the fact that inner functions remember how their enclosing namespaces 
+In this problem we deal with closures
+— the fact that inner functions remember how their enclosing namespaces
 looked at the time of definition.
 """
 
@@ -181,12 +185,12 @@ Be mindful of the distinction between mutable and immutable variables.
 
 Do not use mutable default arguments.
 
-Be careful when altering closure variables in inner functions. 
+Be careful when altering closure variables in inner functions.
 Use nonlocal keyword to declare that the variable is not local.
 
-Please feel free to share other examples of potential problems 
-resulting from misuse of mutable and immutable objects in your responses. 
-If you want to learn what role do mutable and immutable objects 
+Please feel free to share other examples of potential problems
+resulting from misuse of mutable and immutable objects in your responses.
+If you want to learn what role do mutable and immutable objects
 play in list copying check out my next article.
 """
-
+#%%

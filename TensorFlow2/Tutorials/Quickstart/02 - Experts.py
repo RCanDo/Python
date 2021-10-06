@@ -1,11 +1,11 @@
 #! python3
 """
----  
+---
 # This is YAML, see: https://yaml.org/spec/1.2/spec.html#Preview
-# !!! YAML message always begin with ---  
+# !!! YAML message always begin with ---
 
 title: Quickstart For Experts
-part: 1 
+part: 1
 subtitle:
 version: 1.0
 type: code chunks
@@ -16,24 +16,24 @@ sources:
       link: https://www.tensorflow.org/tutorials/quickstart/advanced/
       usage: copy
 file:
-    usage: 
+    usage:
         interactive: True
         terminal: False
     name: "02 - Experts.py"
     path: "D:/ROBOCZY/Python/TensorFlow2/Tutorials/Quickstart/"
     date: 2019-10-02
-    authors:   
+    authors:
         - nick: kasprark
           fullname: Arkadiusz Kasprzyk
-          email: 
+          email:
               - arkadiusz.kasprzyk@tieto.com
               - akasp666@google.com
-              - arek@staart.pl      
-"""  
+              - arek@staart.pl
+"""
 
 #%%
 
-from __future__ import absolute_import, division, print_function, unicode_literals
+# from __future__ import absolute_import, division, print_function, unicode_literals
 
 import tensorflow as tf
 
@@ -55,9 +55,14 @@ x_train[1, :, :]
 x_train, x_test = x_train / 255.0, x_test / 255.0
 x_train[1, :, :]
 
+#%%
+import matplotlib.pyplot as plt
+plt.imshow(x_train[2], cmap='Greys', interpolation='nearest')
+plt.show()
+
 #%% Add a channels dimension
 help(tf.newaxis)
-x_train = x_train[..., tf.newaxis]
+x_train = x_train[..., tf.newaxis]                                         #!!! the same as arr[..., np.newaxis]
 x_train.shape   # (60000, 28, 28, 1)
 
 x_test = x_test[..., tf.newaxis]
@@ -75,7 +80,7 @@ type(train_ds)   # tensorflow.python.data.ops.dataset_ops.BatchDataset
 
 #%%
 test_ds = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(32)
-type(test_ds)   # tensorflow.python.data.ops.dataset_ops.BatchDataset
+type(test_ds)    # tensorflow.python.data.ops.dataset_ops.BatchDataset
 
 #%% Build the tf.keras model using the Keras model subclassing API:
 
@@ -94,12 +99,12 @@ class MyModel(Model):
     return self.d2(x)
 
 #%% Create an instance of the model
-    
+
 model = MyModel()
 dir(model)
 model.summary()
-"""ValueError: This model has not yet been built. 
-Build the model first by calling `build()` or calling `fit()` with some data, 
+"""ValueError: This model has not yet been built.
+Build the model first by calling `build()` or calling `fit()` with some data,
 or specify an `input_shape` argument in the first layer(s) for automatic build.
 """
 
@@ -113,10 +118,11 @@ loss_object.name   # 'sparse_categorical_crossentropy'
 optimizer = tf.keras.optimizers.Adam()
 type(optimizer)    # tensorflow.python.keras.optimizer_v2.adam.Adam
 dir(optimizer)
-optimizer.weights    # [] 
-optimizer.variables  # <bound method OptimizerV2.variables of <tensorflow.python.keras.optimizer_v2.adam.Adam 
+optimizer.weights    # []
+optimizer.variables  # <bound method OptimizerV2.variables of <tensorflow.python.keras.optimizer_v2.adam.Adam
+optimizer.variables()  # []
 
-#%% Select _metrics_ to measure the _loss_ and the _accuracy_ of the model. 
+#%% Select _metrics_ to measure the _loss_ and the _accuracy_ of the model.
 # These metrics accumulate the values over epochs and then print the overall result.
 
 train_loss     = tf.keras.metrics.Mean(name='train_loss')
@@ -129,19 +135,21 @@ test_accuracy  = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy'
 
 @tf.function
 def train_step(images, labels):
-  with tf.GradientTape() as tape:
-    predictions = model(images)
-    loss = loss_object(labels, predictions)
-  gradients = tape.gradient(loss, model.trainable_variables)
-  optimizer.apply_gradients(zip(gradients, model.trainable_variables))
 
-  train_loss(loss)
-  train_accuracy(labels, predictions)
+    with tf.GradientTape() as tape:
+        predictions = model(images)
+        loss = loss_object(labels, predictions)
+
+    gradients = tape.gradient(loss, model.trainable_variables)
+    optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+
+    train_loss(loss)
+    train_accuracy(labels, predictions)
 
 #%% alternatively (check it!)
 """
-optimizer.minimize(loss, vars_list) ==    tf.GradientTape() 
-                                       -> tape.gradient(loss, vars_list) 
+optimizer.minimize(loss, vars_list) ==    tf.GradientTape()
+                                       -> tape.gradient(loss, vars_list)
                                        -> optimizer.apply_gradents(zip(gradients, vars_list))
 """
 @tf.function
@@ -152,7 +160,7 @@ def train_step_v2(images, labels):
 
   train_loss(loss)
   train_accuracy(labels, predictions)
-  
+
 #%% Test the model:
 
 @tf.function
@@ -165,7 +173,7 @@ def test_step(images, labels):
   test_accuracy(labels, predictions)
 
 #%%
-  
+
 EPOCHS = 5
 
 for epoch in range(EPOCHS):
@@ -189,14 +197,14 @@ for epoch in range(EPOCHS):
   test_accuracy.reset_states()
 
 # The image classifier is now trained to ~98% accuracy on this dataset.
-  
+
 #%%
-  
+
 model.summary()
 """
 Model: "my_model_1"
 _________________________________________________________________
-Layer (type)                 Output Shape              Param #   
+Layer (type)                 Output Shape              Param #
 =================================================================
 conv2d_2 (Conv2D)            multiple                  320       = (3*3*1 + 1)*32   1 bias, 1 channel
 _________________________________________________________________

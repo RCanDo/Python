@@ -11,12 +11,17 @@ print(a,b,c)
 
 #%%
 def fun(**kwargs):
+
+    print({**kwargs})            #!!!
+    print(dict(**kwargs))        #!!!
+    print(dict(kwargs))          #!!!
+
     print(list(kwargs.keys()))
     print(kwargs.values())
 
 #%%
 fun(a='b', c=3)
-fun(dict(a='b', c=3))
+fun(dict(a='b', c=3))      #! TypeError: fun() takes 0 positional arguments but 1 was given
 fun(**dict(a='b', c=3))
 
 #%%
@@ -34,11 +39,12 @@ dic2 = {}
 dic2 = {**dic}
 dic2["p"] = 4.5
 
+fun(**dic2)    #! TypeError: fun() got an unexpected keyword argument 'p'
 
 #%%
 #%%
 def some_function (a,b,c,d):
-       print(a,b,c,d)
+    print(a,b,c,d)
 
 some_list = [1,2,3,4]
 some_function(*some_list)
@@ -49,12 +55,12 @@ some_function(**some_dictionary)
 #%%
 # List Packing
 def some_list_packing(*args):
-       args = list(args)                        #!!!
+    args = list(args)                           #!!!
 
-       args[0] = 'I am about to'
-       args[1] = 'pack lists'
+    args[0] = 'I am about to'
+    args[1] = 'pack lists'
 
-       some_function(*args)
+    some_function(*args)
 
 # use the previous function unpacking
 some_list_packing('I am packing','','','')

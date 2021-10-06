@@ -1,11 +1,41 @@
+#! python3
 # -*- coding: utf-8 -*-
 """
-title: The mplot3d Toolkit
-https://matplotlib.org/tutorials/toolkits/mplot3d.html#sphx-glr-tutorials-toolkits-mplot3d-py
-author: kasprark
-date: Tue Jan  9 11:35:14 2018
+---
+# This is YAML, see: https://yaml.org/spec/1.2/spec.html#Preview
+# !!! YAML message always begin with ---
+
+title: 3D plots in matplotlib
+subtitle:
+version: 1.0
+type: tutorial
+keywords: [3d plot, matplotlib, pyplot]
+description: |
+    About 3d plots in matplotlib
+remarks:
+    - etc.
+todo:
+    - problem 1
+sources:
+    - title: The mplot3d Toolkit
+      link: https://matplotlib.org/stable/gallery/index.html#d-plotting
+      usage: |
+          Collated from separate examples.
+file:
+    usage:
+        interactive: True   # if the file is intended to be run interactively e.g. in Spyder
+        terminal: False     # if the file is intended to be run in a terminal
+    name:
+    path: E:/ROBOCZY/Python/graphics/matplotlib
+    date: 2021-04-27
+    authors:
+        - nick: rcando
+          fullname: Arkadiusz Kasprzyk
+          email:
+              - rcando@int.pl
 """
-## •
+
+#%%
 
 %reset
 
@@ -72,7 +102,6 @@ import numpy as np
 
 # Fixing random state for reproducibility
 np.random.seed(19680801)
-
 
 def randrange(n, vmin, vmax):
     '''

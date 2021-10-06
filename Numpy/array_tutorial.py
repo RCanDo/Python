@@ -19,15 +19,14 @@ file:
     usage:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
-    name: "array_tutorial.py"
-    path: "~/Works/Python/Numpy/"
+    name: array_tutorial.py
+    path: ~/Works/Python/Numpy/
     date: 2019-11-27
     authors:
         - nick: rcando
           fullname: Arkadiusz Kasprzyk
           email:
-              - akasp666@google.com
-              - arek@staart.pl
+              - rcando@int.pl
 """
 #%%
 pwd
@@ -64,6 +63,10 @@ If your strides are (16,4), you need to proceed 4 bytes to get to the next colum
 and 16 bytes to locate the next row.
 """
 
+#%% !!!
+arr2d[..., np.newaxis]
+
+#%%
 arr3d = np.array([[[1, 2, 3, 4], [5, 6, 7, 8]],
                   [[1, 2, 3, 4], [9, 10, 11, 12]]])
 arr3d
@@ -115,67 +118,7 @@ np.eye(1)
 # the same:
 np.identity(3)
 
-#%% from text
-# This is your data in the text file
-# Value1  Value2  Value3
-# 0.2536  0.1008  0.3857
-# 0.4839  0.4536  0.3561
-# 0.1292  0.6875  0.5929
-# 0.1781  0.3049  0.8928
-# 0.6253  0.3486  0.8791
-
-# Import your data
-x, y, z = np.loadtxt('data.txt', skiprows=1, unpack=True,
-                     delimiter=None,    # default
-                     dtype='float64'   # defult?
-                     )
-"""
-you skip the first row,
-and you return the columns as separate arrays with  `unpack=TRUE`.
-This means that the values in column Value1 will be put in x, and so on.
-"""
-x
-y
-z
 #%%
-# Your data in the text file
-# Value1  Value2  Value3
-# 0.4839  0.4536  0.3561
-# 0.1292  0.6875  MISSING
-# 0.1781  0.3049  0.8928
-# MISSING 0.5801  0.2038
-# 0.5993  0.4357  0.7410
-
-my_array2 = np.genfromtxt('data2.txt', skip_header=1,
-                          missing_values='MISSING', filling_values=-999)
-# https://docs.scipy.org/doc/numpy/reference/generated/numpy.genfromtxt.html#numpy.genfromtxt
-
-"""
-loadtxt(), only works when each row in the text file has the same number of values;
-So when you want to handle missing values easily,
-you’ll typically find it easier to use genfromtxt().
-
-there is really a lot more things that you can specify in your import,
-using genfromtxt(), such as the
-- maximum number of rows to read or
-- the option to automatically strip white spaces from variables.
-"""
-#%%
-x = np.arange(0.0, 5.0, 1.0)
-np.savetxt('test.out', x, delimiter=',')
-ls
-
-y = np.loadtxt('test.out')
-y
-y == x
-y is x  # False
-np.array_equal(x, y)
-
-"""
-save() 	    Save an array to a _binary_ file in NumPy .npy format
-savez() 	Save several arrays into an _uncompressed_ .npz archive
-savez_compressed() 	Save several arrays into a _compressed_ .npz archive
-"""
 #%%
 arr3d
 len(arr3d)
@@ -233,6 +176,7 @@ x.shape
 y.shape
 
 #%% How Do Array Mathematics Work?
+
 x = np.random.randint(-10, 10, (2, 3))
 y = np.random.randint(-2, 2, (2, 3))
 x
@@ -285,7 +229,16 @@ np.corrcoef(x)
 x.std()
 x.std(axis=1)
 
-#%% How To Subset, Slice, And Index Arrays
+
+#%%
+#%% slice, resize, reshape, transpose, ravel
+
+#%% Slice, Subset, And Index Arrays
+
+arr3d = np.array([[[1, 2, 3, 4], [5, 6, 7, 8]],
+                  [[1, 2, 3, 4], [9, 10, 11, 12]]])
+arr3d
+
 ...
 arr3d
 arr3d[1,...]
@@ -330,8 +283,9 @@ newarr = np.random.randint(0, 10, (3, 4))
 newarr
 np.resize(newarr, (4, 6))
 
-#%% .reshape() and np.reshape()
 #%%
+#%% .reshape() and np.reshape()
+
 newarr
 newarr.reshape((4, 3)) # not in-place!!!
 newarr
@@ -342,6 +296,10 @@ x
 x.ravel()
 arr3d
 arr3d.ravel()
+
+
+#%%
+#%%
 
 #%% np.append()
 newarr
@@ -371,7 +329,9 @@ np.delete(arr1d, [0, 3])
 
 # notice that arr1d is untuched
 
+#%%
 #%% How To Join And Split Arrays
+
 x = np.random.randint(0, 10, (2, 3))
 x
 y = np.random.randint(-10, 0, (2, 3))
@@ -430,6 +390,7 @@ np.split(z, [2], axis=1)
 np.hsplit(z, 1)
 np.hsplit(z, 2)  #! ValueError: array split does not result in an equal division
 np.hsplit(z, 5)
+
 
 #%%
 #%%  How To Visualize NumPy Arrays

@@ -40,15 +40,20 @@ file:
 #%%
 """
 This pattern is considered by many developers as a heavy way to deal with
-uniqueness in an application. If a singleton is needed, why not use a module with
-functions instead, since a Python module is already singleton? The most common
-pattern is to define a module-level variable as an instance of a class that needs to be
-singleton. This way, you also don't constrain the developers to your initial design.
+uniqueness in an application.
 
-The singleton factory is an implicit way of dealing with the uniqueness
-of your application. You can live without it. Unless you are working
-in a framework à la Java that requires such a pattern, use a module
-instead of a class.
+If a singleton is needed, why not use a module with functions instead,         !!!
+since a Python module is already singleton?
+
+The most common pattern is to define a module-level variable as an instance of a class
+that needs to be singleton.
+This way, you also don't constrain the developers to your initial design.
+
+The singleton factory is an implicit way of dealing with the uniqueness of your application.
+    You can live without it.                                                   !!!
+
+Unless you are working in a framework à la Java that requires such a pattern,
+use a module instead of a class.
 """
 
 #%%
@@ -96,9 +101,10 @@ Singleton()
 
 #%%
 """
-It is a lot safer to use a more advanced technique—metaclasses. By overriding
-the __call__() method of a metaclass, you can affect the creation of your custom
-classes. This allows creating a reusable singleton code:
+It is a lot safer to use a more advanced technique — metaclasses.
+By overriding the __call__() method of a metaclass,
+you can affect the creation of your custom classes.
+This allows creating a reusable singleton code:
 """
 class Singleton(type):
     _instances = {}

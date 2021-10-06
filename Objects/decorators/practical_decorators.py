@@ -88,6 +88,7 @@ legb - local enclosed global buit-in
 
 #%% 1. logging run-time
 import time
+
 def logtime(func):
     def wrapper(*args, **kwargs):
         start = time.time()
@@ -172,16 +173,25 @@ add                      # 4. the return value from `once_per_n(5)(add)` assigne
                    (add) #    invoked on add
 
 #%%
+"""
+Decorators with parameter are created via outer function
+having only this parameter as an argument
+and returning a proper decorator utilising this parameter internally
+as from its closure.
+"""
+
 class WaitFewMinutes(Exception): pass
 
 def once_per_n(n):
-    def middle(func):
+
+    def decor(func):
         last_invoked = 0
 
         def wrapper(*args, **kwargs):
             nonlocal last_invoked
             elapsed_time = time.time() - last_invoked
-            if elapsed_time < n:
+
+            if elapsed_time < n:          #! parameter
                 raise WaitFewMinutes(f'One must wait {n} seconds before running {func.__name__} the second time.')
             last_invoked = time.time()
 
@@ -189,7 +199,7 @@ def once_per_n(n):
 
         return wrapper
 
-    return middle
+    return decor
 
 @once_per_n(10)
 def slow_add(a, b):
@@ -204,16 +214,20 @@ slow_add(1341351, 4524987028)
 #%% 4. Memoization
 # cache the result of function calls, so we don't need to call them again
 
+#!!! this is implemented by  functools.lru_cache  (also decorator)  !!!
+
 def memoize(func):
     cache = {}
+
     def wrapper(*args, **kwargs):
-        nonlocal cache   # not needed here as we do not assign to variable but to cahe[.] !!! ???
+        nonlocal cache   # not needed here as we do not assign to variable but to cache[.] !!! ???
         if args not in cache:
             print(f'Caching NEW value for {func.__name__}({args})')
             cache[args] = func(*args, **kwargs)
         else:
             print(f'Using OLD value for {func.__name__}({args})')
         return cache[args]
+
     return wrapper
 
 @memoize
@@ -231,6 +245,8 @@ super_power(3)
 super_power(5)
 super_power(6)
 super_power(7)
+super_power(7)
+len(str(super_power(7)))
 
 #%% 5. repeating attributes/methods across classes (which are also callables!)
 # without resorting to (multiple) inheritance
@@ -261,7 +277,6 @@ sp = Spam(10, [1, 2, 3])
 print(sp)
 
 #%% 6. give each object its birthday
-
 import time
 
 def object_birthday(cls):
@@ -280,8 +295,9 @@ class Spam():
 
 sp = Spam(10, [1, 2, 3])
 print(sp)
+vars(sp)
 
-#%% of course ew may merge both decors into one:
+#%% of course we may merge both decors into one:
 def object_birthday(cls):
     cls.__repr__ = fancy_repr
     def wrapper(*args, **kwargs):
@@ -298,7 +314,7 @@ class Spam():
 
 sp = Spam(10, [1, 2, 3])
 print(sp)
-sp._created_at
+vars(sp)
 
 #%%
 

@@ -2,7 +2,10 @@
 NewClass = type("NewClass", (object,), {"intro": "This is an awesome new class"})
 
 n = NewClass()
-n.intro # "This is an awesome new class"
+n               # <__main__.NewClass at 0x1f1680b57c0>
+n.intro         # "This is an awesome new class"
+help(n)
+type(n)         # __main__.NewClass
 
 # which is exactly the same as:
 
@@ -23,6 +26,9 @@ def constructor(self, arg):
 def displayMethod(self, arg):
     print(arg)
 
+def callMethod(self, arg):
+    print(arg)
+
 # class method
 @classmethod
 def classMethod(cls, arg):
@@ -32,6 +38,8 @@ def classMethod(cls, arg):
 Geeks = type("Geeks", (object, ), {
     # constructor
     "__init__": constructor,
+
+    "__call__": callMethod,
 
     # data members
     "string_attribute": "Geeks 4 geeks !",
@@ -45,6 +53,7 @@ Geeks = type("Geeks", (object, ), {
 #%%
 # creating objects
 obj = Geeks("constructor argument")
+obj(1)     # 1
 print(obj.constructor_arg)
 print(obj.string_attribute)
 print(obj.int_attribute)
