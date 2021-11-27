@@ -80,7 +80,6 @@ def myfunc(a, b=2):
     "Docstring for myfunc()."
     print('  called myfunc with:', (a, b))
 
-
 myfunc('a', 3)          # called myfunc with: ('a', 3)
 
 #%%

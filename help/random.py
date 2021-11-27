@@ -15,6 +15,7 @@ import numpy as np
 #%%
 dir(np.random)
 
+#%%
 help(np.random.random_sample)
 # Return random floats in the half-open interval [0.0, 1.0).
 np.random.random_sample()
@@ -25,21 +26,48 @@ np.random.sample((5,3))
 
 # from interval [3, 5)
 (5 - 3)*np.random.sample((5,3)) + 3
+# or
+#%% .uniform(low=0.0, high=1.0, size=None) ~  U(a, b)
+np.random.uniform(size=20)
+np.random.uniform(1, 10, size=20)
 
-#! another alias !
+#%%! another alias !
 np.random.rand(5)
 np.random.rand(5, 3)
 # but little different
 np.random.sample(5,3)         #! ERROR
 
-
+#%%%
 #%%
 # random samples from a normal (Gaussian) distribution.
-np.random.normal(10, 5, size=10)
+np.random.normal(loc=0.0, scale=1.0, size=None)
+np.random.normal(10, 5, size=10)         # scale == sigma (dispersion) == sqrt(variance)
+np.random.normal(10, 5, size=(10, 5))
+help(np.random.normal)
+"""
+Parameters
+----------
+loc : float or array_like of floats
+    Mean ("centre") of the distribution.
+scale : float or array_like of floats
+    Standard deviation (spread or "width") of the distribution. Must be
+    non-negative.
+size : int or tuple of ints, optional
+    Output shape.  If the given shape is, e.g., ``(m, n, k)``, then
+    ``m * n * k`` samples are drawn.  If size is ``None`` (default),
+    a single value is returned if ``loc`` and ``scale`` are both scalars.
+    Otherwise, ``np.broadcast(loc, scale).size`` samples are drawn.
+"""
+np.random.normal(10, 5, size=(10, 5)).mean()    # 9.955969763582148
+np.random.normal(10, 5, size=(10, 5)).var()     # 19.934248561926882
 
-# sample (or samples) from the "standard_normal" distribution.
+# sample (or samples) from the "standard_normal" distribution  N(0, 1)
+np.random.randn(10)
 np.random.randn(8, 4)
+help(np.random.randn)
+# Return a sample (or samples) from the "standard normal" distribution. ...
 
+#%%  integers
 #%%
 help(np.random.randint)
 # ONLY UNIFORM distribution;
@@ -76,7 +104,7 @@ np.random.choice(range(5), 3, replace=False, p=[0.1, 0, 0.3, 0.6, 0])
 [ str(x) for x in np.random.choice( range(1980, 2000), size=100, replace=True ) ]
 
 #%%
-x_sub, y_sub = zip(*np.random.sample(list(zip([1, 2, 3], [-1, -2, -3])), 2))
+x_sub, y_sub = zip(*np.random.sample(list(zip([1, 2, 3], [-1, -2, -3])), 2))   #! TypeError: random_sample() takes at most 1 positional argument (2 given)
 
 x_sub
 y_sub
@@ -97,6 +125,8 @@ random.choice(['Head',"Tail"])
 
 np.random.choice(list('abc'), 10, replace=True)
 np.random.choice(['s1', 's2', 's3'], 10, replace=True)
+
+#%% selecting
 
 
 #%% 27. Shuffle

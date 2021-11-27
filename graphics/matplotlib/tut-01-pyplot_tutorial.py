@@ -16,7 +16,7 @@ description: |
 remarks:
     - Originally written in sphinx (retext).
 todo:
-    - problem 1
+    - SIMPLIFY IT !!!
 sources:
     - title: Pyplot tutorial
       link: https://matplotlib.org/stable/tutorials/introductory/pyplot.html#sphx-glr-tutorials-introductory-pyplot-py
@@ -38,8 +38,8 @@ file:
 # Intro to pyplot
 # ===============
 #
-# `matplotlib.pyplot` (we shall use `plt` for this)
-# is a collection of command style functions that make matplotlib  work like MATLAB.
+# `matplotlib.pyplot` (we shall use `plt` for this) is a collection of command style functions
+#! that make matplotlib  work like MATLAB.    !!!
 # Each `plt` function makes some change to a figure:
 # e.g., creates a figure, creates a plotting area in a figure,
 # plots some lines in a plotting area, decorates the plot with labels, etc.

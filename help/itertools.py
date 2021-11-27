@@ -156,6 +156,8 @@ The start and step arguments are optional.
 for i in islice(range(100), 5):
     print(i, end=' ')
 
+list(islice(range(100), 5))
+
 for i in islice(range(100), 5, 10):
     print(i, end=' ')
 
@@ -168,8 +170,7 @@ for i in islice(range(30), 0, 100, 10):
 
 #%% sth more useful
 def get_primes():
-    """
-    Lazy implementation of Sieve of Eratosthenes
+    """Lazy implementation of Sieve of Eratosthenes
     """
     candidate = 2     ## do not start from 1 --- infinite loop happens --- see (*) below
     found = []

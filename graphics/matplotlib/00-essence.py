@@ -1,27 +1,73 @@
+#! python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Feb  4 09:02:47 2018
+---
+# This is YAML, see: https://yaml.org/spec/1.2/spec.html#Preview
+# !!! YAML message always begin with ---
 
-@author: akasprzy
+title: Matplotlib essence
+subtitle:
+version: 1.0
+type: cheat-sheet
+keywords: [plot, axes, axis, artist, line, subplot, point]
+description: |
+    How to begin with matplot lib - the essence.
+remarks:
+todo:
+sources:
+    - title: Tutorials
+      link: https://matplotlib.org/stable/tutorials/index.html
+    - title: API (Python Module Index)
+      link: https://matplotlib.org/stable/py-modindex.html
+file:
+    usage:
+        interactive: True   # if the file is intended to be run interactively e.g. in Spyder
+        terminal: False     # if the file is intended to be run in a terminal
+    name:
+    path: E:/ROBOCZY/Python/graphics/matplotlib/
+    date: 2021-10-04
+    authors:
+        - nick: rcando
+          fullname: Arkadiusz Kasprzyk
+          email:
+              - rcando@int.pl
 """
 #%%
-import os
+import os, sys, json
 
+#%%
+ROOT = json.load(open('root.json'))
+WD = os.path.join(ROOT['Works'], "Python/graphics/matplotlib/")   #!!! adjust
+os.chdir(WD)
+
+#%%
+WD = os.getcwd()
+print(WD)
+
+#%%
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-
-root = "E:/ROBOCZY"
 
 #%%
 #%%
 plt.figure( num=None
-         , figsize=None
-         , dpi=None
+         , figsize=None, Width, height in inches
+         , dpi=None, float, default: :rc:`figure.dpi`
          , facecolor=None
          , edgecolor=None
-         , frameon=True
+         , frameon=True, If False, suppress drawing the figure frame.
          , FigureClass=<class 'matplotlib.figure.Figure'>
-         , clear=False
+         , clear=False, If True and the figure already exists, then it is cleared.
+         , tight_layout : bool or dict, default: :rc:`figure.autolayout`
+            If ``False`` use *subplotpars*. If ``True`` adjust subplot
+            parameters using `.tight_layout` with default padding.
+            When providing a dict containing the keys ``pad``, ``w_pad``,
+            ``h_pad``, and ``rect``, the default `.tight_layout` paddings will be overridden.      !!!
+         , constrained_layout : bool, default: :rc:`figure.constrained_layout.use`
+            If ``True`` use constrained layout to adjust positioning of plot elements.
+            Like ``tight_layout``, but designed to be more flexible.
+            See `/tutorials/intermediate/constrainedlayout_guide` for examples.
+            (Note: does not work with `add_subplot` or  `~.pyplot.subplot2grid`.)
          , **kwargs
          )
 ...
@@ -30,8 +76,8 @@ plt.close('all')
 
 #%% `pyplot` style
 #%% v.0
-plt.plot([1,2,3], [3,1,2], 'g',label='line1')
-plt.plot([1,2,3], [1,3,2], 'r:',label='line2', )
+plt.plot([1,2,3], [3,1,2], 'g',  label='line1')
+plt.plot([1,2,3], [1,3,2], 'r:', label='line2', )
 plt.legend()
 
 plt.xlabel('X')
@@ -52,16 +98,16 @@ ax = fig.add_subplot()
 ax.plot([1,2,3], [3,1,2])
 ...
 
-#%% v.2
-fig, ax = plt.subplots()  # a figure with a single Axes
+#%% v.2 --
+fig, ax = plt.subplots()       # a figure with a single Axes
 ax.plot([1,2,3], [3,1,2])
 ...
 
-#%% v.3
-fig, axs = plt.subplots(2, 2)  # a figure with a 2x2 grid of Axes
+#%% v.2a
+fig, axs = plt.subplots(2, 3)  # a figure with a 2x3 grid of Axes (rows x columns) -- opposite to figsize (width x height)
 axs
-# array([[<AxesSubplot:>, <AxesSubplot:>],
-#        [<AxesSubplot:>, <AxesSubplot:>]], dtype=object)
+# array([[<AxesSubplot:>, <AxesSubplot:>, <AxesSubplot:>],
+#        [<AxesSubplot:>, <AxesSubplot:>, <AxesSubplot:>]], dtype=object)
 axs[0, 0].plot([1,2,3], [3,1,2])
 ...
 
@@ -86,7 +132,7 @@ ax = fig.add_subplot(111)
 ax.plot([1,2,3], [3,1,2])
 
 #%%
-plt.figure(figsize=(2,3), facecolor='black', edgecolor='red')
+plt.figure(figsize=(2,3), facecolor='gray', edgecolor='red')
 plt.plot([1,2,3], [3,1,2])
 
 
@@ -147,7 +193,6 @@ ax_c  = fig.add_axes([.4, .4, .25, .25])   # center
 ax_c.set_facecolor('tan')
 ax_c.text(x=.5, y=.5, s="[.4, .4, .25, .25]")
 
-
 #%%
 #%% close / clear
 
@@ -205,5 +250,25 @@ mpl._color_data.BASE_COLORS
 mpl._color_data.TABLEAU_COLORS
 mpl._color_data.CSS4_COLORS
 mpl._color_data.XKCD_COLORS
+
+#%%
+dir(mpl.figure)
+help(mpl.figure.Figure)
+fig = mpl.figure.Figure()
+dir(fig)
+vars(fig)
+
+#%%
+#%% other examples
+
+#%%  scale & grid
+N = 10
+y = np.zeros(N)
+plt.semilogx(np.geomspace(1, 1000, N, endpoint=True), y + 1, 'o')
+plt.semilogx(np.geomspace(1, 1000, N, endpoint=False), y + 2, 'o')
+plt.axis([0.5, 2000, 0, 3])
+plt.grid(True, color='0.7', linestyle='-', which='both', axis='both')
+
+
 
 #%%

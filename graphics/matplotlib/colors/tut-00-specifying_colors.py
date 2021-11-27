@@ -39,13 +39,17 @@ file:
           email:
               - rcando@int.pl
 """
+#%%
+import os, json
 
 #%%
 ROOT = json.load(open('root.json'))
 WD = os.path.join(ROOT['Works'], "Python/graphics/matplotlib/")   #!!! adjust
 os.chdir(WD)
 
-print(os.getcwd())
+#%%
+WD = os.getcwd()
+print(WD)
 
 #%%
 import numpy as np
@@ -248,6 +252,8 @@ Color names where color values agree are in bold.
 import matplotlib._color_data as mcd
 import matplotlib.patches as mpatch
 
+mcd.BASE_COLORS
+mcd.TABLEAU_COLORS
 mcd.CSS4_COLORS
 mcd.XKCD_COLORS
 

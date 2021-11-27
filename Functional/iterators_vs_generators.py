@@ -119,7 +119,10 @@ next(itr)
 [k for k in [1, 2, 3]]
 
 # So what is the non trivial example of using iter()?
-# Only when we are forced to use next() directly. When?
+# Only when we are forced to use next() directly? When?
+
+# Not only!
+# See the end of file for how iter(list) works with zip().
 
 #%% infinite generator
 import random as rnd
@@ -138,8 +141,14 @@ next(rg)
 
 #
 [r for (k, r) in zip(range(10), random_gen(2))]   # try it
+[r for (k, r) in zip(range(10), random_gen(2))]   # the same seed
+
 [r for (k, r) in zip(range(10), random_gen(3))]
 
+#%% use this:
+from itertools import islice
+[r for r in islice(random_gen(), 10)]
+[r for r in islice(random_gen(), 9, 20)]
 
 #%%
 #%% iterative calculations
@@ -155,6 +164,8 @@ sqrt = sqrt_gen(9)
 next(sqrt)
 
 [r for (k, r) in zip(range(10), sqrt_gen(2))]
+[r for r in islice(sqrt_gen(2), 10)]  # the same but looks better
+[r for r in islice(sqrt_gen(2), 10, 11)]  # 11th element
 
 #%%
 #%% self-limiting iterative calculations
@@ -210,16 +221,20 @@ would take more code to build an iterator:
 """
 
 class Squares(object):
+
     def __init__(self, start, stop):
        self.start = start
        self.stop = stop
-    def __iter__(self): return self
+
+    def __iter__(self): return self     #!!!
+
     def __next__(self): # next in Python 2
        if self.start >= self.stop:
            raise StopIteration
        current = self.start * self.start
        self.start += 1
        return current
+
     """
     But, of course, with class Squares you could easily offer extra methods, e.g.
     """
@@ -252,12 +267,15 @@ Generators provide an easy, built-in way to create instances of Iterators.
 #%% Examples
 
 #%% 1. Group Adjacent Lists                                                       #!!! ???
+a = [1, 2, 3, 4, 5, 6]
 
 group_adjacent = lambda a, p: zip(*([iter(a)] * p))
 [k for k in group_adjacent(a, 3)]  # [(1, 2, 3), (4, 5, 6)]
 list(group_adjacent(a, 3))         # "
 list(group_adjacent(a, 2))         # [(1, 2), (3, 4), (5, 6)]
 list(group_adjacent(a, 1))         # [(1,), (2,), (3,), (4,), (5,), (6,)]
+
+[k for k in group_adjacent([1, 2, 3, 4, 5], 3)]  # [(1, 2, 3)]
 
 #%% step by step
 a = [1, 2, 3, 4, 5, 6]
@@ -275,10 +293,15 @@ pitera
 #   <list_iterator at 0x1968e3087f0>]
 # NOTICE exactly the same address -- all three are the same object !
 
+[k for k in zip(*pitera)]
+
+#!!! Notice that iter() is essential here !!!
+[k for k in zip(*([a]*3))]
+
+#%% BTW:
 #? What about:
-pitera = iter(a) * 3
+iter(a) * 3
     #! TypeError: unsupported operand type(s) for *: 'list_iterator' and 'int'
 
 #%%
-
 

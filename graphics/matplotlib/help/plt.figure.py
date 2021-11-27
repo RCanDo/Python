@@ -7,7 +7,12 @@ Created on Tue Oct  5 09:01:40 2021
 
 #%%
 import matplotlib as mpl
-help(mpl.figure) # too big
+help(mpl.figure) # too big -- this is sub-module !
+dir(mpl.figure)
+
+help(mpl.figure.Figure)  # it's still big!
+
+#%% see first simpler pyplot constructor
 
 import matplotlib.pyplot as plt
 help(plt.figure)
@@ -107,4 +112,51 @@ ax.plot(range(5), [3, 2, 5, 4, 1])
 
 fig.draw(...)     # ???
 
+fig.show()  # AttributeError: Figure.show works only for figures managed by pyplot,
+            # normally created by pyplot.figure()
+
+#%%
+#%%
+import matplotlib as mpl
+help(mpl.figure) # too big -- this is sub-module !
+dir(mpl.figure)
+
+help(mpl.figure.Figure)
+
+# https://matplotlib.org/stable/api/figure_api.html#module-matplotlib.figure
+"""
+Parameters:
+
+figsize : 2-tuple of floats, default: rcParams["figure.figsize"] (default: [6.4, 4.8])
+    Figure dimension (width, height) in inches.
+
+dpi : float, default: rcParams["figure.dpi"] (default: 100.0)
+    Dots per inch.
+
+facecolor : default: rcParams["figure.facecolor"] (default: 'white')
+    The figure patch facecolor.
+
+edgecolor : default: rcParams["figure.edgecolor"] (default: 'white')
+    The figure patch edge color.
+
+linewidth : float
+    The linewidth of the frame (i.e. the edge linewidth of the figure patch).
+
+frameonbool : default: rcParams["figure.frameon"] (default: True)
+    If False, suppress drawing the figure background patch.
+
+subplotpars : SubplotParams
+    Subplot parameters. If not given, the default subplot parameters rcParams["figure.subplot.*"] are used.
+
+tight_layout : bool or dict, default: rcParams["figure.autolayout"] (default: False)
+    If False use subplotpars.
+    If True adjust subplot parameters using tight_layout with default padding.
+    When providing a dict containing the keys pad, w_pad, h_pad, and rect,
+    the default tight_layout paddings will be overridden.
+
+constrained_layout : bool, default: rcParams["figure.constrained_layout.use"] (default: False)
+    If True use constrained layout to adjust positioning of plot elements.
+    Like tight_layout, but designed to be more flexible. See Constrained Layout Guide for examples. (Note: does not work with add_subplot or subplot2grid.)
+
+"""
 #%%

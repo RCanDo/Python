@@ -289,9 +289,10 @@ myfunc(D())         # myfunc_B(D)
 myfunc(E())         # myfunc_C(E)
 
 #%%
-In this example, classes D and E do not match exactly with any registered generic functions, and the function selected depends on the class hierarchy.
-
-$ python3 functools_singledispatch_mro.py
+"""
+In this example, classes D and E do not match exactly with any registered generic functions,
+and the function selected depends on the class hierarchy.
+"""
 
 myfunc_A(A)
 myfunc_B(B)

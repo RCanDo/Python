@@ -48,11 +48,14 @@ from rcando.ak.builtin import * #flatten, paste
 from rcando.ak.nppd import * #data_frame
 import os, sys, json
 
+#%%
 ROOT = json.load(open('root.json'))
 WD = os.path.join(ROOT['Works'], "Python/Pandas/User Guide/")   #!!! adjust
 os.chdir(WD)
 
-print(os.getcwd())
+#%%
+WD = os.getcwd()
+print(WD)
 
 #%% Block delimiters allows to run separated blocks of code by one key-stroke
 # e.g. Shift+Enter in Spyder

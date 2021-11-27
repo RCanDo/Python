@@ -38,11 +38,18 @@ file:
 """
 
 #%%
+from rcando.ak.builtin import * # flatten, paste
+from rcando.ak.nppd import *    # data_frame
+import os, sys, json
+
+#%%
 ROOT = json.load(open('root.json'))
 WD = os.path.join(ROOT['Works'], "Python/graphics/matplotlib/")   #!!! adjust
 os.chdir(WD)
 
-print(os.getcwd())
+#%%
+WD = os.getcwd()
+print(WD)
 
 #%%
 import numpy as np
@@ -58,8 +65,9 @@ import matplotlib.pyplot as plt
 #%%
 #%% Customized Colorbars
 """
-A colorbar needs a "mappable" (matplotlib.cm.ScalarMappable) object (typically, an image)
+A colorbar needs a "mappable" (e.g. `matplotlib.cm.ScalarMappable`) object (typically, an image)
 which indicates the colormap and the `norm` to be used.
+
 In order to create a colorbar without an attached image,
 one can instead use a `ScalarMappable` with no associated data.
 
