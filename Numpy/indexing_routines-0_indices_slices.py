@@ -139,7 +139,7 @@ a : array_like
     Array from which to extract a part.
 axis : int, optional
     Axis along which to take slices.
-    If None (default), work on the flattened array.
+   !!!  If None (default), work on the __flattened__ array.    !!!
 out : ndarray, optional
     Output array. Its type is preserved and it must be of the right shape to hold the output.
 
@@ -191,8 +191,8 @@ But this omits some subtleties. Here is a fully general summary:
 Given an “index” array (a) of integers and a sequence of n arrays (choices),
 a and each choice array are first broadcast, as necessary, to arrays of a common shape;
 calling these Ba and Bchoices[i], i = 0,…,n-1
-we have that, necessarily, Ba.shape == Bchoices[i].shape for each i.
-Then, a new array with shape Ba.shape is created as follows:
+we have that, necessarily, `Ba.shape == Bchoices[i].shape` for each i.
+Then, a new array with shape `Ba.shape` is created as follows:
     if mode='raise' (the default), then, first of all, each element of a (and thus Ba) must be in the range [0, n-1];
         now, suppose that i (in that range) is the value at the (j0, j1, ..., jm) position in Ba
         - then the value at the same position in the new array is the value in Bchoices[i] at that same position;
@@ -235,7 +235,7 @@ numpy.take_along_axis()     Preferable if choices is an array      ??? !!!  see 
 
 Notes
 To reduce the chance of misinterpretation, even though the following “abuse” is nominally supported,
-choices should neither be, nor be thought of as, a single array,
+`choices` should neither be, nor be thought of as a single array,
 i.e., the outermost sequence-like container should be either a list or a tuple.
 """
 choices = [[0, 1, 2, 3], [10, 11, 12, 13], [20, 21, 22, 23], [30, 31, 32, 33]]
@@ -253,7 +253,7 @@ np.choose([2, 4, 1, 0], choices, mode='wrap') # 4 goes to (4 mod 4)
 array([20,  1, 12,  3])
 
 # A couple examples illustrating how choose broadcasts:
-a = [[1, 0, 1], [0, 1, 0], [1, 0, 1]]
+a = [[1, 0, 1], [1, 1, 0], [0, 1, 1]]
 choices = [-10, 10]
 
 np.choose(a, choices)
@@ -279,14 +279,13 @@ np.choose(a, (c1, c2)) # result is 2x3x5, res[0,:,:]=c1, res[1,:,:]=c2
 
 #!!!  hence it may used as another way for creating grids  !!!
 
-
 #%%
 #%%   numpy.select(condlist, choicelist, default=0)[source]
 """
 Return an array drawn from elements in choicelist, depending on conditions.
 
 Parameters
-condlist : list of bool ndarrays
+condlist : list of __bool__ ndarrays        !!! for choose() we need int -- that's the difference
     The list of conditions which determine from which array in `choicelist` the output elements are taken.
     When multiple conditions are satisfied, the first one encountered in `condlist` is used.
 choicelist : list of ndarrays
@@ -313,7 +312,7 @@ condlist
 choicelist = [x, x**2]
 choicelist
 np.select(condlist, choicelist)     # array([ 0,  1,  2,  0,  0,  0, 36, 49, 64, 81])
-np.select(condlist, choicelist, default=None)     # array([ 0,  1,  2,  0,  0,  0, 36, 49, 64, 81])
+np.select(condlist, choicelist, default=None)     # array([ 0,  1,  2, None, None, None, 36, 49, 64, 81])
 
 # works also with lists
 np.select([[True,  True,  True, False, False, False, False, False, False, False],
@@ -334,8 +333,7 @@ np.select([np.array([1, 1, 1, 0, 0, 0, 0, 0, 0, 0], dtype=bool),
 np.choose( [0, 0, 0, 2, 2, 2, 1, 1, 1, 1], [x, x**2, np.zeros_like(x)])
 np.choose( [0, 0, 0, 2, 2, 2, 1, 1, 1, 1], [x, x**2, [None]*len(x)])
 
-#%%
-#%%
+
 
 
 #%%

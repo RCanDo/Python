@@ -62,7 +62,6 @@ indices : tuple of arrays.
     The n arrays of indices corresponding to the locations where
     `mask_func(np.ones((n, n)), k)` is True.
 
-
 Notes
 New in version 1.4.0.
 """
@@ -202,75 +201,212 @@ np.unravel_index(1621, (6,7,8,9))
 # (3, 1, 4, 1)
 
 #%%
-#%%   numpy.diag_indices(n, ndim=2)
-"""
-Return the indices to access the main diagonal of an array.
+#%% see also
+#  numpy.diag_indices(n, ndim=2)
+#  numpy.diag_indices_from(arr)
+#
+#
 
-This returns a tuple of indices that can be used to access the main diagonal
-of an array `a` with `a.ndim >= 2` dimensions and shape (n, n, …, n).
-For `a.ndim = 2` this is the usual diagonal,
-for `a.ndim > 2` this is the set of indices to access `a[i, i, ..., i] for i = [0..n-1]`.
+#%%
+#%%   lib.stride_tricks.sliding_window_view(x, window_shape, axis=None, *, subok=False, writeable=False)
+"""
+Create a sliding window view into the array with the given window shape.
+
+Also known as rolling or moving window,
+the window slides across all dimensions of the array
+and extracts subsets of the array at all window positions.
+New in version 1.20.0.
 
 Parameters
-nint
-    The size, along each dimension, of the arrays for which the returned indices can be used.
-ndimint, optional
-    The number of dimensions.
+x : array_like
+    Array to create the sliding window view from.
+window_shape : int or tuple of int
+    Size of window over each axis that takes part in the sliding window.
+    If axis is not present, must have same length as the number of input array dimensions.
+    Single integers i are treated as if they were the tuple (i,).
+axis : int or tuple of int, optional
+    Axis or axes along which the sliding window is applied.
+    By default, the sliding window is applied to all axes
+    and `window_shape[i]` will refer to axis `i` of `x`.
+    If `axis` is given as a tuple of int, `window_shape[i]` will refer to the axis `axis[i]` of `x`.
+    Single integers i are treated as if they were the tuple (i,).
+subok : bool, optional
+    If True, sub-classes will be passed-through,
+    otherwise the returned array will be forced to be a base-class array (default).
+writeable : bool, optional
+    When true, allow writing to the returned view.
+    The default is false, as this should be used with caution:
+    the returned view contains the same memory location multiple times,
+    so writing to one location will cause others to change.
+
+Returns
+view : ndarray
+    Sliding window view of the array.
+    The sliding window dimensions are inserted at the end,
+    and the original dimensions are trimmed as required by the size of the sliding window.
+    That is, view.shape = x_shape_trimmed + window_shape,
+    where x_shape_trimmed is x.shape with every entry reduced
+    by one less than the corresponding window size.
 
 See also
-diag_indices_from
+lib.stride_tricks.as_strided
+    A lower-level and less safe routine for creating arbitrary views from custom shape and strides.
+broadcast_to
+    broadcast an array to a given shape.
 
 Notes
-New in version 1.4.0.
+For many applications using a sliding window view can be convenient, but potentially very slow.
+Often specialized solutions exist, for example:
+    scipy.signal.fftconvolve
+    filtering functions in scipy.ndimage
+    moving window functions provided by bottleneck.
+As a rough estimate, a sliding window approach with an input size of N and a window size of W
+will scale as O(N*W) where frequently a special algorithm can achieve O(N).
+That means that the sliding window variant for a window size of 100
+can be a 100 times slower than a more specialized version.
+
+Nevertheless, for small window sizes, when no custom algorithm exists,
+or as a prototyping and developing tool, this function can be a good solution.
 """
-# Create a set of indices to access the diagonal of a (4, 4) array:
+from np.lib.stride_tricks import sliding_window_view
 
-di = np.diag_indices(4)
-di      # (array([0, 1, 2, 3]), array([0, 1, 2, 3]))
+x = np.arange(6)
+x.shape     # (6,)
 
-a = np.arange(16).reshape(4, 4)
-a
+v = sliding_window_view(x, 3)
+v.shape     # (4, 3)
+v
+#array([[0, 1, 2],
+#       [1, 2, 3],
+#       [2, 3, 4],
+#       [3, 4, 5]])
+
+# This also works in more dimensions, e.g.
+i, j = np.ogrid[:3, :4]
+
+x = 10*i + j
+x.shape     # (3, 4)
+x
 #array([[ 0,  1,  2,  3],
-#       [ 4,  5,  6,  7],
-#       [ 8,  9, 10, 11],
-#       [12, 13, 14, 15]])
+#       [10, 11, 12, 13],
+#       [20, 21, 22, 23]])
 
-a[di] = 100
-a
-#array([[100,   1,   2,   3],
-#       [  4, 100,   6,   7],
-#       [  8,   9, 100,  11],
-#       [ 12,  13,  14, 100]])
+shape = (2,2)
+v = sliding_window_view(x, shape)
+v.shape     # (2, 3, 2, 2)
+v
+#array([[[[ 0,  1],
+#         [10, 11]],
+#        [[ 1,  2],
+#         [11, 12]],
+#        [[ 2,  3],
+#         [12, 13]]],
+#       [[[10, 11],
+#         [20, 21]],
+#        [[11, 12],
+#         [21, 22]],
+#        [[12, 13],
+#         [22, 23]]]])
 
-# Now, we create indices to manipulate a 3-D array:
-d3 = np.diag_indices(2, 3)
-d3      # (array([0, 1]), array([0, 1]), array([0, 1]))
+# The axis can be specified explicitly:
+v = sliding_window_view(x, 3, 0)
+v.shape     # (1, 4, 3)
+v
+#array([[[ 0, 10, 20],
+#        [ 1, 11, 21],
+#        [ 2, 12, 22],
+#        [ 3, 13, 23]]])
 
-# And use it to set the diagonal of an array of zeros to 1:
-a = np.zeros((2, 2, 2), dtype=int)
-a[d3] = 1
-a
-#array([[[1, 0],
-#        [0, 0]],
-#       [[0, 0],
-#        [0, 1]]])
+# The same axis can be used several times. In that case, every use reduces the corresponding original dimension:
+v = sliding_window_view(x, (2, 3), (1, 1))
+v.shape     # (3, 1, 2, 3)
+v
+#array([[[[ 0,  1,  2],
+#         [ 1,  2,  3]]],
+#       [[[10, 11, 12],
+#         [11, 12, 13]]],
+#       [[[20, 21, 22],
+#         [21, 22, 23]]]])
 
-#%%  numpy.diag_indices_from(arr)
+# Combining with stepped slicing (::step), this can be used to take sliding views which skip elements:
+x = np.arange(7)
+sliding_window_view(x, 5)[:, ::2]
+#array([[0, 2, 4],
+#       [1, 3, 5],
+#       [2, 4, 6]])
+
+# or views which move by multiple elements
+x = np.arange(7)
+sliding_window_view(x, 3)[::2, :]
+#array([[0, 1, 2],
+#       [2, 3, 4],
+#       [4, 5, 6]])
+
+# A common application of sliding_window_view is the calculation of running statistics.
+# The simplest example is the moving average:
+x = np.arange(6)
+x.shape     # (6,)
+v = sliding_window_view(x, 3)
+v.shape     # (4, 3)
+v
+#array([[0, 1, 2],
+#       [1, 2, 3],
+#       [2, 3, 4],
+#       [3, 4, 5]])
+
+moving_average = v.mean(axis=-1)
+moving_average  # array([1., 2., 3., 4.])
+
+# Note that a sliding window approach is often not optimal (see Notes).
+
+#%%
+#%%  lib.stride_tricks.as_strided(x, shape=None, strides=None, subok=False, writeable=True)
 """
-Return the indices to access the main diagonal of an n-dimensional array.
-See diag_indices for full details.
+Create a view into the array with the given shape and strides.
+
+   Warning
+This function has to be used with extreme care, see notes.
+
 Parameters
-    arrarray, at least 2-D
+xndarray
+
+    Array to create a new.
+shapesequence of int, optional
+
+    The shape of the new array. Defaults to x.shape.
+stridessequence of int, optional
+
+    The strides of the new array. Defaults to x.strides.
+subokbool, optional
+
+    New in version 1.10.
+
+    If True, subclasses are preserved.
+writeablebool, optional
+
+    New in version 1.12.
+
+    If set to False, the returned array will always be readonly. Otherwise it will be writable if the original array was. It is advisable to set this to False if possible (see Notes).
+
+Returns
+view : ndarray
+
+See also
+broadcast_to
+    broadcast an array to a given shape.
+reshape
+    reshape an array.
+lib.stride_tricks.sliding_window_view
+    userfriendly and safe function for the creation of sliding window views.
+
+Notes
+as_strided creates a view into the array given the exact strides and shape.
+This means it manipulates the internal data structure of ndarray and, if done incorrectly, the array elements can point to invalid memory and can corrupt results or crash your program. It is advisable to always use the original x.strides when calculating new strides to avoid reliance on a contiguous memory layout.
+
+Furthermore, arrays created with this function often contain self overlapping memory, so that two elements are identical. Vectorized write operations on such arrays will typically be unpredictable. They may even give different results for small, large, or transposed arrays. Since writing to these arrays has to be tested and done with great care, you may want to use writeable=False to avoid accidental write operations.
+
+For these reasons it is advisable to avoid as_strided when possible.
 """
-np.diag_indices_from(ref)   #! ValueError: All dimensions of input must be of equal length
-#??? why?
-
-np.diag_indices_from(np.arange(16).reshape(4,4))    # (array([0, 1, 2, 3]), array([0, 1, 2, 3]))
-np.diag_indices_from(np.zeros((4, 4)))              # (array([0, 1, 2, 3]), array([0, 1, 2, 3]))
-np.diag_indices_from(np.zeros((4,3)))               #! ValueError: All dimensions of input must be of equal length
-
-#??? What use of it ???
-
 
 
 
