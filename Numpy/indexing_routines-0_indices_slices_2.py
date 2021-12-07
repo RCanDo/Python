@@ -268,7 +268,7 @@ can be a 100 times slower than a more specialized version.
 Nevertheless, for small window sizes, when no custom algorithm exists,
 or as a prototyping and developing tool, this function can be a good solution.
 """
-from np.lib.stride_tricks import sliding_window_view
+from numpy.lib.stride_tricks import sliding_window_view
 
 x = np.arange(6)
 x.shape     # (6,)
