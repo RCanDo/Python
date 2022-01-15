@@ -53,7 +53,9 @@ from rcando.ak.nppd import data_frame
 #%%
 """
 pandas objects can be split on any of their axes.
-! The abstract definition of grouping is to provide a _mapping_ of labels to group names.
+
+!!! The abstract definition of grouping is to provide a _mapping_ of labels to group names.  !!!
+
 To create a GroupBy object (more on what the GroupBy object is later),
 you may do the following:
 """
@@ -79,6 +81,11 @@ dfg.std()
 dfg.mean()
 
 #%%
+dir(dfg)
+dfg.get_group('bird')
+dfg.groups
+
+#%%
 dfg = df.groupby('order', axis='columns')
 dfg.sum()
 
@@ -87,19 +94,23 @@ df.groupby(['class', 'order']).count()
 
 #%%
 """
-The mapping can be specified many different ways:
+The _mapping_ can be specified many different ways:
 
 A Python function, to be called on each of the axis labels.
+
 A list or NumPy array of the same length as the selected axis.
+
 A dict or Series, providing a label -> group name mapping.
+
 For DataFrame objects, a string indicating a column to be used to group.
     Of course df.groupby('A') is just syntactic sugar for df.groupby(df['A']),
     but it makes life simpler.
+
 For DataFrame objects, a string indicating an index level to be used to group.
+
 A list of any of the above things.
 
 Collectively we refer to the grouping objects as the _keys_.
-For example, consider the following DataFrame:
 """
 df = pd.DataFrame({'A': ['foo', 'bar', 'foo', 'bar',
                          'foo', 'bar', 'foo', 'foo'],
@@ -108,7 +119,9 @@ df = pd.DataFrame({'A': ['foo', 'bar', 'foo', 'bar',
                    'C': np.random.randn(8),
                    'D': np.random.randn(8)})
 df
-#%%
+df.dtypes
+
+#%% grouping by series (for df by some of its columns)
 
 dfg = df.groupby('A')
 dfg.count()
@@ -126,6 +139,28 @@ dfg.nunique()
 dfg.sum()
 dfg.sum().unstack('B')
 
+#%%
+# series may be grouped too, eg. by another series:
+s1 = pd.Series(np.random.randn(12))
+s2 = pd.Series(['a']*4 +['b']*5 + ['c']*3)
+sg = s1.groupby(s2)
+sg
+sg.agg(len)
+sg.count()
+sg.sum()
+
+# or just by list
+sg = s1.groupby(['a']*4 +['b']*5 + ['c']*3)
+sg.agg(len)
+sg.count()
+sg.sum()
+
+# or by index (see below)
+
+sg.groups
+sg.groups.keys()
+s1[sg.groups['a']]
+sg.get_group('a')
 
 #%%
 """
@@ -148,7 +183,7 @@ df2g.sum()
 
 df2.groupby('A').sum()
 df2.groupby(list('A')).sum()
-d
+
 #%%
 """
 These will split the DataFrame on its index (rows). We could also split by the columns:
@@ -159,6 +194,7 @@ def get_letter_type(letter):
     else:
         return 'consonant'
 
+df
 dfg = df.groupby(get_letter_type, axis=1)
 dfg
 
@@ -167,8 +203,7 @@ dfg.count()
 dfg.agg(lambda x: sum(map(lambda i: isinstance(i, str), x)))
 dfg.agg(lambda x: sum(map(lambda i: isinstance(i, float), x))) ## ???
 
-
-#%%
+#%% grouping by index
 """
 pandas Index objects support duplicate values.
 If a non-unique index is used as the group key in a groupby operation,
@@ -179,6 +214,7 @@ lst = [1, 2, 3]*2
 ss = pd.Series([1, 2, 3, 10, 20, 30], lst)
 ss
 ss[1]
+ss[:1]
 ss[2]
 ss[:2]
 ss[:5]
@@ -212,7 +248,6 @@ df2
 df2.groupby(['X']).sum()
 df2.groupby(['X'], sort=False).sum()
 
-
 #%%%
 """
 Note that groupby will preserve the order in which observations are sorted within each group.
@@ -234,8 +269,6 @@ df.groupby('A').groups
 df.groupby(get_letter_type, axis=1).groups
 
 dfg = df.groupby(['A', 'B'])
-dfg
-len(dfg)
 dfg.groups
 
 #%%
@@ -260,14 +293,18 @@ df['date'] = df['date'].astype('datetime64')
 df['date'] = pd.to_datetime(df['date'])
 
 df = df.set_index('date')
+df
+df.dtypes    #!
+
 dfg = df.groupby('gender')
+dfg.groups
+#
 dfg.gender
+#  <pandas.core.groupby.generic.SeriesGroupBy object at 0x7fdac45e1040>
 dfg.height
 dfg.weight
 
-dfg.mean()   #!! DataError: No numeric types to aggregate
-df.dtypes    #!
-df
+dfg.mean()
 
 #%% GroupBy with MultiIndex
 arrays = [['bar', 'bar', 'baz', 'baz', 'foo', 'foo', 'qux', 'qux'],
@@ -309,7 +346,7 @@ df
 
 #%% Grouping DataFrame with Index levels and columns
 """
-A DataFrame may be grouped by  a combination of columns and index levels
+A DataFrame may be grouped by a combination of columns and index levels
 by specifying the column names as strings and the index levels as  pd.Grouper()  objects.
 """
 df.groupby([pd.Grouper(level=1), 'A']).sum()
@@ -682,6 +719,3 @@ df_re.groupby('group').resample('1D').ffill()
 
 
 #%%
-
-
-

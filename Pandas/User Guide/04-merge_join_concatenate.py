@@ -331,10 +331,10 @@ validate : string, default None. If specified, checks if merge is of specified t
 
 #%%
 
-dfl = data_frame(list('KAB'), range(4), ['key', 'A', 'B'])
+dfl = data_frame(list('KAB'), range(4), columns=['key', 'A', 'B'])
 dfl
 
-dfr = data_frame(list('KCD'), range(4), ['key', 'C', 'D'])
+dfr = data_frame(list('KCD'), range(4), columns=['key', 'C', 'D'])
 dfr
 
 pd.merge(dfl, dfr, on='key')
@@ -755,7 +755,3 @@ pd.merge_asof(trades, quotes, on='time', by='ticker',
 
 pd.merge_asof(trades, quotes, on='time', by='ticker',
               tolerance=pd.Timedelta('10ms'))
-
-
-
-

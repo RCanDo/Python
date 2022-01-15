@@ -121,12 +121,67 @@ arr
 #%%
 help(np.random.choice)
 
-random.choice(['Head',"Tail"])
+np.random.choice(['Head',"Tail"])
 
 np.random.choice(list('abc'), 10, replace=True)
 np.random.choice(['s1', 's2', 's3'], 10, replace=True)
 
-#%% selecting
+
+#%%
+#%% for Pandas Series / DataFrames
+import pandas as pd
+
+## simplest and best
+ss = pd.Series(list('abcdefghijk'))
+ss
+ss.sample()    ## returns! NOT inplace
+ss
+
+ss.sample(frac=1)  ## == permutation / shuffling
+# notice though that index follows values
+# when plotting cloud agains index we'd like to reindex to 0, 1, ...
+ss.sample(frac=1, ignore_index=True)   # reindexed !
+
+
+# for DataFrames:
+df = pd.DataFrame({'a' : ss, 'b': range(11)})
+df
+df.sample()  # returns! NOT inplace
+df.sample(frac=1)
+df # not changed
+df.sample(frac=1, ignore_index=True) # reindexed
+
+#%%
+## Other method from NumPy
+ss = pd.Series(np.arange(9))
+ss
+np.random.shuffle(ss)
+ss  # reindexed !!!
+
+ss = pd.Series(np.arange(9))
+ss
+idx = ss.index.to_list()
+idx
+np.random.shuffle(idx)     # inplace !!!
+idx
+ss[idx]   #
+
+## doesn't work for DataFrames
+np.random.shuffle(df)  #! KeyError: 2
+
+
+## maybe better .choice()
+np.random.choice(ss, len(ss))    # returns list
+
+# so again via index but may be in one line (because it's not inplace)
+ss = pd.Series(np.arange(9))
+ss
+ss[np.random.choice(ss.index.to_list(), len(ss), replace=False)]
+
+# the same as .permutation()
+ss = ss[np.random.permutation(ss.index.to_list())]
+ss
+
 
 
 #%% 27. Shuffle
@@ -145,6 +200,3 @@ foo
 
 
 #%%
-
-
-

@@ -33,6 +33,8 @@ p = m.pi
 '%10f' % 3.14       # 10 characters long
 
 '%10.2f' % 3.14     # 10 long, 2 post-dec digits
+'%10.2f' % .001     # 10 long, 2 post-dec digits
+'%.2f' % .001       # 2 post-decimal digits  -- oops...
 
 '%.2f' % 3.14       # 2 post-decimal digits
 '%.14f' % 3.14      # 14 post-decimal digits
@@ -55,10 +57,16 @@ print("a=%d b=%d" % (10, 20))
 #%%
 ## New style string formatting (format method) Python3
 "{} needs {} pints".format('Peter', 4)
+f"{'Peter'} needs {4} pints"
+
 "{0} needs {1} pints".format('Peter',4)
 "{1} needs {0} pints".format('Peter',4)
 
 "{name} needs {number} pints".format(name='Peter',number=4)
+
+name='Peter'
+number=4
+f"{name} needs {number} pints"
 
 ## Formatting behaviour of %f can be achieved through {:f}, (same for %d, %e, etc)
 "Pi is approx {:f}.".format(p)
@@ -85,7 +93,69 @@ print("a=%d b=%d" % (10, 20))
 ## notice that %d works for floats in old style formatting
 print("%d" % 10.4)
 
+#%%
 
+#%% significant digits
+p
+f"{p:.3}"
+"{:.3}".format(p)
+f"{p:.3g}"
+"{:.3g}".format(p)
+
+s = .000123456
+f"{s:.3}"      # '0.000123'
+f"{s:3}"       # '0.000123456'
+f"{s:.3g}"     # '0.000123'
+f"{s:3g}"      # '0.000123456'
+
+f"{s:}"        # '0.000123456'
+f"{s:g}"       # '0.000123456'
+
+bigint = 123456000
+f"{bigint:.3}"     # ValueError: Precision not allowed in integer format specifier
+f"{bigint:.3g}"    # '1.23e+08'
+f"{bigint:3g}"     # '1.23456e+08'
+f"{bigint:g}"      # '1.23456e+08'
+
+big = 123456000.
+f"{big:.3}"     # '1.23e+08'
+f"{big:}"       # '123456000.0'
+f"{big:.3g}"    # '1.23e+08'
+f"{big:g}"      # '1.23456e+08'
+
+# the diff between `g` and None
+numf = 123.
+type(numf)       # float
+f"{numf:}"       # '123.0'
+f"{numf:g}"      # '123'
+
+f"{numf:.1}"     # '1e+02'
+f"{numf:.1g}"    # '1e+02'
+
+numd = 123
+type(numd)       # int
+f"{numd:}"       # '123'
+f"{numd:g}"      # '123'
+
+f"{numd:.1}"     # ValueError: Precision not allowed in integer format specifier
+f"{numd:.1g}"    # '1e+02'
+
+# see the table at the end of section https://docs.python.org/3.7/library/string.html#format-specification-mini-language
+# (just above the https://docs.python.org/3.7/library/string.html#format-examples)
+
+num = 123456000.
+num = 1234560.
+num = 12345.6
+num = 1234.56
+num = 123.456
+f"{num:}"
+f"{num:g}"       # in general scientific notation (but not always...)
+f"{num:.1}"
+f"{num:.1g}"
+f"{num:.2}"
+f"{num:.2g}"
+
+#%%
 #%%
 
 a = 3.1415926535

@@ -117,6 +117,13 @@ N : int, optional
         N > len(colors)
     the list will be extended by repetition.
 """
+cmp = ListedColormap(['r', 'orange', 'g', 'teal', 'b', 'purple'])
+cmp
+dir(cmp)
+cmp.colors
+
+cmp = ListedColormap(['r', 'orange', 'g', 'teal', 'b', 'purple'])
+
 #%%
 help(mpl.cm.viridis)  # see __call__ description
 help(viridis)         #   "
