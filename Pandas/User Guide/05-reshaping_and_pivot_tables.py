@@ -284,6 +284,10 @@ stacked.unstack(0)
 stacked.unstack('second')
 stacked.unstack('first')
 
+stacked.unstack().unstack()
+stacked.unstack().unstack().unstack()
+stacked.unstack(1).unstack(1).unstack()
+
 #%% stack and unstack methods implicitly sort the index levels involved
 
 index = pd.MultiIndex.from_product([[2, 1], ['a', 'b']])
@@ -735,4 +739,3 @@ https://pandas.pydata.org/pandas-docs/stable/user_guide/categorical.html#categor
 and the API documentation
 """
 #%%
-

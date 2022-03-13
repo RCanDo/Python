@@ -288,6 +288,10 @@ mc.method1()
 mc.method2()
 #! TypeError: standalone() missing 1 required positional argument: 'self'
 
+mc.method3 = partialmethod(standalone)
+mc.method3()   #! TypeError: 'partialmethod' object is not callable
+
+
 #%% Acquiring Function Properties for Decorators
 """
 Updating the properties of a wrapped callable is especially useful when used in a decorator,
@@ -512,4 +516,3 @@ MyObject(5)
 """
 
 #%%
-

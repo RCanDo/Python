@@ -59,10 +59,10 @@ pd.set_option('display.max_seq_items', None)
 pd.set_option('display.expand_frame_repr', False)
 pd.set_option('display.precision', 3)
 
-# %% other df options
+# other df options
 pd.set_option('display.width', 1000)
 pd.set_option('max_colwidth', None)
-#pd.options.display.max_colwidth = 500   
+#pd.options.display.max_colwidth = 500
 # the same
 
 #%% Creating a MultiIndex (hierarchical index) object
@@ -71,8 +71,9 @@ arr = [['bar', 'bar', 'baz', 'baz', 'foo', 'foo', 'qux', 'qux'],
        ['one', 'two', 'one', 'two', 'one', 'two', 'one', 'two']]
 arr
 
-#%% construct a MultiIndex directly and automatically
-#   without use of MultiIndex...()
+#%%  (*)  !!!
+# construct a MultiIndex directly and automatically
+# without use of MultiIndex...()
 
 arr
 s = pd.Series(np.random.randn(8), index=arr)
@@ -83,7 +84,10 @@ df
 
 #%% BUT 'automatically' doesn't work for NumPy arrays or DataFrames
 
+#! 1. different orientation
 pd.Series(np.random.randn(8), index=np.array(arr))    #! ValueError: Length of passed values is 8, index implies 2.
+
+#! 2. even after transposition it's not multiindex
 pd.Series(np.random.randn(8), index=np.array(arr).T)  # not MultiIndex
 
 pd.Series(np.random.randn(8), index=\
@@ -95,11 +99,30 @@ pd.Series(np.random.randn(8), index=\
 #%% via  MultiIndex...()
 
 #%% .from_arrays()
+arr   #! it's a raw list of lists !
 index0 = pd.MultiIndex.from_arrays(arr, names=['first', 'second'])
 index0
 
 s0 = pd.Series(np.random.randn(8), index=index0)
 s0
+
+#! but it's the same as (*) above
+pd.Series(np.random.randn(8), index=arr)
+
+
+#%% .from_tuples()
+tuples = list(zip(*arr))
+tuples
+
+index = pd.MultiIndex.from_tuples(tuples, names=['first', 'second'])
+index
+
+s = pd.Series(np.random.randn(8), index=index)
+s
+
+#!!! BUT
+pd.Series(np.random.randn(8), index=tuples)
+
 
 #%% from NumPy arrays
 nparr = np.array(arr)
@@ -142,40 +165,49 @@ pd.MultiIndex.from_frame(df0)
 ## .to_frame()
 pd.MultiIndex.from_frame(df0).to_frame()   #!!! self-indexed data frame
 
-#%% .from_tuples()
-tuples = list(zip(*arr))
-tuples
-
-index = pd.MultiIndex.from_tuples(tuples, names=['first', 'second'])
-index
-
-s = pd.Series(np.random.randn(8), index=index)
-s
-
-#!!! BUT
-pd.Series(np.random.randn(8), index=tuples)
-
 #%% .from_product()
 iterables = [['bar', 'baz', 'foo', 'qux'], ['one', 'two']]
-pd.MultiIndex.from_product(iterables, names=['first', 'second'])
+index = pd.MultiIndex.from_product(iterables, names=['first', 'second'])
+index
 
 pd.MultiIndex.from_product([range(2), range(3), range(3)], names=['d', 'p', 'q'])
 
 #%% 'directly'
-midx = pd.MultiIndex(levels=[['zero', 'one'], ['x', 'y']],
+midx1 = pd.MultiIndex(levels=[['zero', 'one'], ['x', 'y']],
                      codes=[[1, 1, 0, 0], [1, 0, 1, 0]])
-midx
+midx1
+
 #%%
-midx = pd.MultiIndex(levels=[['zero', 'one'], ['x', 'y']],
+midx2 = pd.MultiIndex(levels=[['zero', 'one'], ['x', 'y']],
                      codes=[[1, 1, 0, 0, 1], [1, 0, 1, 0, 1]])
-midx
+midx2
+
+#%%  (2)
+# NOTICE the meaning of `levels` -- NOT names of index's levels !!!
+# but names of each index's level values !!! i.e. 'levels' like possible values of categorical variable
+# For names of index's levels is `names` !!!
+
+midx1.to_frame()
+
+midx3 = pd.MultiIndex(levels=[['zero', 'one'], ['x', 'y']],
+                     codes=[[1, 1, 0, 0], [1, 0, 1, 0]],
+                     names=['level_0', 'level_1'])
+midx3
+midx3.to_frame()
+midx3.to_frame(name=['a', 'b'])
+
+# btw:
+midx3.to_frame(index=False)
+midx3.to_frame(index=False, name=['a', 'b'])
 
 #%%
 index.names
 s.index.names
 df.index.names
 
-index.levels
+pd.MultiIndex.from_arrays(arr).levels
+
+index.levels    #!!!
 
 dir(index)  # ! a lot !
 
@@ -186,6 +218,9 @@ df.sample(1, axis=1)
 #%%
 # This index can back any axis of a pandas object,
 # and the number of levels of the index is up to you:
+
+df = pd.DataFrame(np.random.randn(3, 8), index=['A', 'B', 'C'], columns=arr)
+df
 
 df = pd.DataFrame(np.random.randn(3, 8), index=['A', 'B', 'C'], columns=index)
 df
@@ -201,7 +236,7 @@ with pd.option_context('display.multi_sparse', False):
 #%% Reconstructing the level labels
 #%%
 # The method get_level_values() will return a vector of the labels
-# for each location at a particular level:
+# for each location at a particular index's level:
 
 index
 index.get_level_values()  #! TypeError: get_level_values() missing 1 required positional argument: 'level'
@@ -230,7 +265,10 @@ s['qux']
 
 # See 'Cross-section with hierarchical index' below
 # for how to select on a deeper level. e.g.
-df.xs('one', level='second', axis=1)    # very complicated
+df.xs('one', axis=1, level='second')    # very complicated
+df.xs('one', 1, 'second')    #
+df.xs('one', axis=1, level=1)    # very complicated
+df.xs('one', 1, 1)    #
 
 #??? HOW TO SWAP LEVELS within DF ???
 df.swaplevel(axis=1)
@@ -239,7 +277,7 @@ df.swaplevel(axis=1)['one']
 #%% Defined levels
 #%%
 """
-The MultiIndex keeps all the defined levels of an index,
+The MultiIndex keeps all the defined levels (values) of an index,
 even if they are not actually used.
 When slicing an index, you may notice this. For example:
 """
@@ -291,13 +329,14 @@ or even a list or array of tuples:
 index
 index[:3]
 s.reindex(index[:3])   #!!!
-s.reindex([('foo', 'two'), ('bar', 'one'), ('qux', 'one'), ('baz', 'one'), ('a', 'b')])
+s.reindex([('foo', 'two'), ('bar', 'one'), ('qux', 'one'), ('baz', 'one'), ('a', 'b')])  # NaN for ('a', 'b')
 
 s[index[:3]]          # OK
 s[index[:3]].index    # OK - pruned
+s[index[:3]].index.levels    # this is not pruned, see above .remove_unused_levels()
 
 # BUT
-s[[('foo', 'two'), ('bar', 'one'), ('qux', 'one'), ('baz', 'one'), ('a', 'b')]]  #! KeyError: "Passing list-likes to .loc or [] with any missing labels is no longer supported. 
+s[[('foo', 'two'), ('bar', 'one'), ('qux', 'one'), ('baz', 'one'), ('a', 'b')]]  #! KeyError: "[('a', 'b')] not in index"
 # so we need .reindex() !
 
 #%% Advanced indexing with hierarchical index
@@ -318,7 +357,8 @@ df.loc[('bar',),]
 df.loc['one']    #! KeyError: 'one'
 
 #!!! Again, as for columns:
-df.xs('one', level='second', axis=0)    # very complicated
+df.xs('one', axis=0, level='second')    # very complicated
+df.xs('one', 0, 'second')    # very complicated
 
 #??? HOW TO SWAP LEVELS within DF ???
 df.swaplevel(axis=0)
@@ -332,6 +372,7 @@ df.loc[('baz', 'two'):'foo']            # all foos are taken!
 #!!! Passing a list of labels or tuples works similar to reindexing:
 df.loc[[('bar', 'two'), ('qux', 'one')]]
 df.loc[[('bar', 'two'), ('qux', 'one')]].index
+df.loc[[('bar', 'two'), ('qux', 'one')]].index.levels   # all levels - not pruned !
 
 """Note
 It is important to note that tuples and lists are not treated identically in pandas
@@ -385,10 +426,30 @@ dfmi
 #%%
 dfmi0 = dfmi.sample(11)
 dfmi0
+dfmi0.index.levels  # all levels from original df -- not pruned !
+
+
 dfmi0.loc['A1']
+dfmi0.loc['A1'].index
+dfmi0.loc['A1'].index.levels
+
+
+dfmi0.loc[:, 'a']
+dfmi0.loc[:, 'a'].columns
+dfmi0.loc[:, 'a'].columns.levels    #! AttributeError: 'Index' object has no attribute 'levels'
+# because  dfmi0.loc[:, 'a'].columns  is Index  NOT  MultiIndex...    Jizaz!!!!
+# and it became Index as using .loc[] for slicing  index's levels  ARE DROPPED !!!
+
 dfmi0.loc['B1']   #! KeyError: 'B1'
-dfmi0.xs('B1', level=1)
 dfmi0.loc[('A1', 'B1')]
+dfmi0.loc[('A1', 'B1')].index           #!!!  some index's levels are dropped !!!
+dfmi0.loc[('A1', 'B1')].index.levels    # but all levels (values) of non-dropped _index's levels_ are present !!!
+
+dfmi0.xs('B1', level=1)
+dfmi0.xs('B1', 0, 1)        #  xs(key, axis=0, level=None, drop_level: 'bool_t' = True)
+dfmi0.xs('B1', 0, 1, False)      #  xs(key, axis=0, level=None, drop_level: 'bool_t' = True)
+
+dfmi0.xs('B1', 0, 1).index.levels       #!!! as above
 
 #%%
 dfmi.sort_index()
@@ -400,8 +461,9 @@ dfmi.loc[(slice('A1', 'A3')), :]
 dfmi.loc[(slice('A1', 'A3'), slice(None)), :]
 #!!! slices are inside tuple !!!
 dfmi.loc[(slice('A1', 'A3'), slice(None), ['C1', 'C3']), :]
-dfmi.loc[(slice('A1', 'A3'), slice('B1', 'B1'), ['C1', 'C3']), :]  # slice('B1') doesn't work BUT
-dfmi.loc[(slice('A1', 'A3'), slice('B0'), ['C1', 'C3']), :]   # OK, because:
+dfmi.loc[(slice('A1', 'A3'), slice('B1', 'B1'), ['C1', 'C3']), :]
+dfmi.loc[(slice('A1', 'A3'), slice('B1'), ['C1', 'C3']), :]  # slice('B1') doesn't work as expected BUT
+dfmi.loc[(slice('A1', 'A3'), slice('B0'), ['C1', 'C3']), :]  # OK, because:
 
 # slics('A1') means the same as slice('A0', 'A1')
 # i.e. everything from beginning up to 'A1'
@@ -503,7 +565,7 @@ type(dft.xs(('one', 'bar'), level=('second', 'first'), axis=1))  # DF !!!
 # does NOT collapse to Series !!!
 
 dft.loc[:, ('bar', 'one')]    # pd.Series !!!
-dft.loc[:, idx['bar', 'one']] # pd.Series !!! 
+dft.loc[:, idx['bar', 'one']] # pd.Series !!!
 
 #%%
 #%% Advanced reindexing and alignment
@@ -993,6 +1055,3 @@ pd.interval_range(start=pd.Timedelta('0 days'), periods=3, freq='9H')
 
 
 #%%
-
-
-

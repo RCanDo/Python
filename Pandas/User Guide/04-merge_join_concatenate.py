@@ -181,11 +181,17 @@ df1.append([df2, df3, df4])
 #%% Ignoring indexes on the concatenation axis
 # i.e. new index after concatenation
 
+pd.concat([df1, df4])
 pd.concat([df1, df4], ignore_index=False)  # default
 pd.concat([df1, df4], ignore_index=True)
 pd.concat([df1, df4], ignore_index=True, sort=False)
 
 df1.append(df4, ignore_index=True, sort=False)
+
+
+pd.concat([df1, df4], axis=1)
+pd.concat([df1, df4], ignore_index=True, axis=1)
+
 
 #%% Concatenating with mixed ndims
 # You can concatenate a mix of Series and DataFrame objects.

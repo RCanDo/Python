@@ -38,12 +38,12 @@ file:
 import rcando.ak as ak
 import os
 
-ROOT = "E:/"
+ROOT = "~"
 #ROOT = "~"
-PYWORKS = os.path.join(ROOT, "ROBOCZY/Python")
+PYWORKS = os.path.join(ROOT, "Roboczy/Python")
 ##
 #DATA = os.path.join(ROOT, "Data/eco")           ## adjust !!!
-WD = os.path.join(PYWORKS, "Objects/")  ## adjust !!!
+WD = os.path.join(PYWORKS, "Objects")  ## adjust !!!
 
 os.chdir(WD)
 print(os.getcwd())
@@ -291,7 +291,7 @@ class Deck:
     cards: List[PlayingCard] = field(default_factory=make_french_deck)
 
 """
-The argument to default_factory can be any zero parameter callable.
+The argument to default_factory() can be any zero parameter callable.
 Now it is easy to create a full deck of playing cards:
 """
 Deck()
@@ -505,6 +505,9 @@ deck  # ♡Q ♠A
 deck.cards[0] = ImmutableCard('7', '♢')
 deck  # ♢7 ♠A
 #!!!
+
+deck.cards.append(ImmutableCard('K', '♣'))
+deck
 
 #%%
 #%% Inheritance
