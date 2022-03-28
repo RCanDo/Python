@@ -11,7 +11,22 @@ version: 1.0
 type: tutorial
 keywords: [itertools]
 description: |
-    Itertools library
+    Itertools library:
+    chain()
+    chain.from_iterable()
+    islice()
+    zip_longest()
+    tee()
+    starmap()
+    count()
+    cycle()
+    repeat()
+    dropwhile()
+    takewhile()
+    filter()
+    filterfalse()
+    compress()
+    groupby()
 remarks:
     - etc.
 todo:
@@ -146,7 +161,7 @@ list(zip_longest(r1, r2, fillvalue=-1))
 
 #%%  islice()
 """
-The islice() function returns an iterator which returns selected items
+The islice() function returns an  iterator  which returns selected items
 from the input iterator, by index.
 islice() takes the same arguments as the slice operator for lists:
     start, stop, and step.
@@ -167,6 +182,20 @@ for i in islice(range(100), 0, 100, 10):
 for i in islice(range(30), 0, 100, 10):
     print(i, end=' ')
 # 0 10 20
+
+#%%
+lst = list('abhgfjkelopswy')
+lst
+next(lst)   # TypeError: 'list' object is not an iterator
+next(iter(lst))   # 'a'
+next(iter(lst))   # 'a'
+
+next(islice(lst, 2))  # 'a'
+next(islice(lst, 2, 4))  # 'h'
+next(islice(lst, 2, 4, 1))  # 'h'
+
+next(range(3))    #! TypeError: 'range' object is not an iterator
+next(iter(range(3)))  # 0
 
 #%% sth more useful
 def get_primes():
@@ -257,14 +286,15 @@ print()
 print('i1:', list(i1))
 print('i2:', list(i2))
 
-"""
+""" !!!
 If values are consumed from the original input, the new iterators will not produce those values.
-BUT copies works independently of each other
+BUT copies works independently of each other !!!
 """
 
 r = islice(count(), 10)
 i1, i2 = tee(r)
 list(islice(i1, 4))  # [0, 1, 2, 3]
+##list(r)
 list(islice(i2, 8))  # [0, 1, 2, 3, 4, 5, 6, 7]
 # but they influence original
 list(r)  # [8, 9]
@@ -298,12 +328,12 @@ r2 = range(5, 10)
 for i in map(multiply, r1, r2):
     print('{} * {} = {}'.format(*i))
 
-#%% notice how map() works when iterators are no aligned
+#%% notice how map() works when iterators are not aligned
 print('\nStopping:')
 r1 = range(5)
 r2 = range(2)
 for i in map(multiply, r1, r2):
-    print(i)
+    print('{} * {} = {}'.format(*i))
 
 #%%
 #%% count()
@@ -450,12 +480,13 @@ for i in map(lambda x, y: (x, y, x * y), repeat(2), range(5)):
 
 #%%  dropwhile()
 """
-The dropwhile() function returns an iterator that produces elements of the input iterator
-after a condition becomes __False for the first time__ !!!
+The dropwhile() function returns an iterator that
+PRODUCES elements of the input iterator
+AFTER a condition becomes __False for the first time__ !!!
 """
 
 def should_drop(x):
-    print('Testing:', x)
+    print(f'Testing - {x < 1}:', x)
     return x < 1
 
 for i in dropwhile(should_drop, [-1, 0, 1, 2, -2]):
@@ -465,9 +496,9 @@ for i in dropwhile(should_drop, [-1, 0, 1, 2, -2]):
 dropwhile() does not filter every item of the input;
 after the condition is False the first time, all of the remaining items in the input are returned.
 """
-#  Testing: -1
-#  Testing: 0
-#  Testing: 1
+#  Testing - True: -1
+#  Testing - True: 0
+#  Testing - False: 1       #! the first is still NOT yielding !
 #  Yielding: 1
 #  Yielding: 2
 #  Yielding: -2
@@ -475,12 +506,13 @@ after the condition is False the first time, all of the remaining items in the i
 #%%  takewhile()
 """
 The opposite of dropwhile() is takewhile().
-It returns an iterator that returns items from the input iterator as long as the test function returns true.
+It returns an iterator that RETURNS items from the input iterator
+AS LONG AS the test function returns true.
 """
 
 def should_take(x):
-    print('Testing:', x)
-    return x < 2
+    print(f'Testing - {x < 1}:', x)
+    return x < 1
 
 for i in takewhile(should_take, [-1, 0, 1, 2, -2]):
     print('Yielding:', i)
@@ -488,20 +520,18 @@ for i in takewhile(should_take, [-1, 0, 1, 2, -2]):
 """
 As soon as should_take() returns False, takewhile() stops processing the input.
 """
-#  Testing: -1
+#  Testing - True: -1
 #  Yielding: -1
-#  Testing: 0
+#  Testing - True: 0
 #  Yielding: 0
-#  Testing: 1
-#  Yielding: 1
-#  Testing: 2
+#  Testing - False: 1   # not yielding
 
 #%%  filter()
 """
 The built-in function filter() returns an iterator that includes only items for which the test function returns true.
 """
 def check_item(x):
-    print('Testing:', x)
+    print(f'Testing - {x < 1}:', x)
     return x < 1
 
 for i in filter(check_item, [-1, 0, 1, 2, -2]):
@@ -511,21 +541,21 @@ for i in filter(check_item, [-1, 0, 1, 2, -2]):
 filter() is different from dropwhile() and takewhile() in that every item is tested before it is returned.
 """
 
-#  Testing: -1
-#  Yielding: -1
-#  Testing: 0
-#  Yielding: 0
-#  Testing: 1
-#  Testing: 2
-#  Testing: -2
-#  Yielding: -2
+# Testing - True: -1
+# Yielding: -1
+# Testing - True: 0
+# Yielding: 0
+# Testing - False: 1
+# Testing - False: 2
+# Testing - True: -2
+# Yielding: -2
 
 #%%  filterfalse()
 """
 filterfalse() returns an iterator that includes only items where the test function returns false.
 """
 def check_item(x):
-    print('Testing:', x)
+    print(f'Testing - {x < 1}:', x)
     return x < 1
 
 for i in filterfalse(check_item, [-1, 0, 1, 2, -2]):
@@ -535,18 +565,18 @@ for i in filterfalse(check_item, [-1, 0, 1, 2, -2]):
 The test expression in check_item() is the same, so the results in this example with filterfalse()
 are the opposite of the results from the previous example.
 """
-#  Testing: -1
-#  Testing: 0
-#  Testing: 1
-#  Yielding: 1
-#  Testing: 2
-#  Yielding: 2
-#  Testing: -2
+# Testing - True: -1
+# Testing - True: 0
+# Testing - False: 1
+# Yielding: 1
+# Testing - False: 2
+# Yielding: 2
+# Testing - True: -2
 
 #%%  compress(data, selectors)  ==  lookup operator
 """
 Return data elements corresponding to true selector elements.
-!!!  Notice that `selctor` is recycled to the lenght of `data`  !!!
+!!!  Notice that `selector` is recycled to the lenght of `data`  !!!
 
 compress() offers another way to filter the contents of an iterable.
 Instead of calling a function, it uses the values in another iterable to indicate
@@ -560,10 +590,16 @@ indicating which elements to take from the data input
 every_third = cycle([False, False, True])
 data = range(1, 10)
 
-for i in compress(data, every_third):
+for i in compress(data, every_third):    # selector is recycled !
     print(i, end=' ')
 
 # 3 6 9
+
+some_pattern = [1, 0, 0, 1, 0, 1, 1, 0]
+for i in compress(data, some_pattern):
+    print(i, end=' ')
+# 1 4 6 7
+
 
 #%%
 #%%  Grouping Data
@@ -622,6 +658,7 @@ pprint(data, width=35)
 #   (0, 6)]
 #%% the same as
 list(map(Point, cycle(range(3)), range(7)))
+list(starmap(Point, zip_longest(range(3), range(7))))    # no!  -- Nones appear
 
 #%% Try to group the unsorted data based on X values
 
@@ -653,8 +690,10 @@ pprint(data, width=35)
 #   (2, 5)]
 
 #%% Group the sorted data based on X values
-#!!! The input sequence needs to be sorted on the key value in order for the groupings to work out as expected.
+#!!! The input sequence needs to be sorted on the key value
+#    in order for the groupings to work out as expected.
 
+data.sort()  # in-place !!!
 print('Grouped, sorted:')
 for k, g in groupby(data, op.attrgetter('x')):
     print(k, list(g))

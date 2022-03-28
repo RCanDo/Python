@@ -50,7 +50,7 @@ import matplotlib.pyplot as plt
 
 #%%
 #%%
-plt.figure( num=None
+plt.figure( num=None  #!!!  number or label for a figure;
          , figsize=None, Width, height in inches
          , dpi=None, float, default: :rc:`figure.dpi`
          , facecolor=None
@@ -251,12 +251,53 @@ mpl._color_data.TABLEAU_COLORS
 mpl._color_data.CSS4_COLORS
 mpl._color_data.XKCD_COLORS
 
+# or
+plt.colormaps()
+
 #%%
 dir(mpl.figure)
 help(mpl.figure.Figure)
 fig = mpl.figure.Figure()
 dir(fig)
 vars(fig)
+
+#%%
+#%%  multiple figures
+""" help(plt.sublots)
+num : integer or string, optional, default: None
+     A `.pyplot.figure` keyword that sets the figure number or label.
+"""
+
+f1 = plt.figure(1)
+ax = f1.add_subplot()
+ax.plot([1,2,3], [3,1,2])
+
+f2, axs = plt.subplots(1, 2, figsize=(10, 5), num='qq') #!!! num = .. providing number or label for the _figure_
+axs[0].scatter([1, 2, 3], [-1, 1, 0])
+axs[1].plot([1, 2, 3], [-1, 1, 0])
+
+plt.gcf()   # <Figure size 1000x500 with 4 Axes>     # get current figure
+i = plt.gcf()   # get current figure
+i   # <Figure size 1000x500 with 4 Axes>
+
+plt.get_fignums()       # [1, 2]
+plt.get_figlabels()     # ['', 'qq']
+
+# changing current figure:
+plt.figure(1)    # now the first is active
+plt.gcf()   # <Figure size 640x480 with 1 Axes>
+plt.plot([0, 1, 2], [1, 2, 0])
+
+axs[0].plot([0, 3], [0, 0], c='gray')
+plt.gcf()   # <Figure size 640x480 with 1 Axes>   still Fig 1 is 'current'
+
+plt.figure('qq')    # now 'qq' first is active
+plt.plot([0, 2], [0, 0], '*:r')
+axs[0].plot([0, 2], [1, 1], marker='*', linestyle=':', color='g', linewidth=3)
+plt.plot([0, 2], [-1, -1], '*:b')
+plt.plot([0, 2], [-1, -1], '*:k')   # always last axis ???
+
+plt.close("all")
 
 #%%
 #%% other examples
@@ -268,7 +309,5 @@ plt.semilogx(np.geomspace(1, 1000, N, endpoint=True), y + 1, 'o')
 plt.semilogx(np.geomspace(1, 1000, N, endpoint=False), y + 2, 'o')
 plt.axis([0.5, 2000, 0, 3])
 plt.grid(True, color='0.7', linestyle='-', which='both', axis='both')
-
-
 
 #%%

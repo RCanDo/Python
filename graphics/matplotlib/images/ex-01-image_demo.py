@@ -23,7 +23,7 @@ file:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
     name: tut-03-images.py
-    path: E:/ROBOCZY/Python/graphics/matplotlib/images/
+    path: ~/ROBOCZY/Python/graphics/matplotlib/images/
     date: 2021-10-16
     authors:
         - nick: rcando
