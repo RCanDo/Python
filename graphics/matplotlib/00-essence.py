@@ -115,7 +115,7 @@ axs[0, 0].plot([1,2,3], [3,1,2])
 
 #%%
 fig = mpl.figure.Figure()
-
+...
 
 #%% style and params
 #%%

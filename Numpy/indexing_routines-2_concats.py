@@ -134,6 +134,8 @@ np.r_['1,2,0', [1,2,3], [4,5,6]]
 #array([[1, 4],
 #       [2, 5],
 #       [3, 6]])
+np.r_['1,2,1', [1,2,3], [4,5,6]]
+#array([[1, 2, 3, 4, 5, 6]])
 
 # Using ‘r’ or ‘c’ as a first string argument creates a matrix.
 

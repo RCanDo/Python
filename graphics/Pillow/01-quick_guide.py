@@ -15,6 +15,8 @@ remarks:
     - my version of v1
 todo:
 sources:
+    - title: PIL homepage
+      link: https://pillow.readthedocs.io/en/latest/index.html
     - title: Pillow Quick Guide
       link: https://www.tutorialspoint.com/python_pillow/python_pillow_quick_guide.htm
     - title: Pillow Concepts

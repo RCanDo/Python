@@ -47,6 +47,12 @@ import importlib ## may come in handy
 
 # importlib.reload(fibo)
 
+#%%
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+import numpy as np
 
 #%%
 '''
@@ -54,8 +60,6 @@ Getting started
 ===============
 '''
 
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
@@ -65,16 +69,22 @@ Line plots
 ----------
 '''
 
-import matplotlib as mpl
-from mpl_toolkits.mplot3d import Axes3D
-import numpy as np
-import matplotlib.pyplot as plt
-
 mpl.rcParams['legend.fontsize'] = 10
 
 fig = plt.figure()
-ax = fig.gca(projection='3d')
+ax = fig.gca(projection='3d')   # depricated
+"""
+Calling gca() with keyword arguments was deprecated in Matplotlib 3.4.
+Starting two minor releases later, gca() will take no keyword arguments.
+The gca() function should only be used to get the current axes,
+or if no axes exist, create new axes with default keyword arguments.
+To create a new axes with non-default arguments, use plt.axes() or plt.subplot().
+HENCE, the former is better:
+"""
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
 
+#%%
 # Prepare arrays x, y, z
 theta = np.linspace(-4 * np.pi, 4 * np.pi, 100)
 z = np.linspace(-2, 2, 100)
@@ -96,16 +106,12 @@ plt.show()
 Demonstration of a basic scatterplot in 3D.
 '''
 
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
-import numpy as np
-
 # Fixing random state for reproducibility
 np.random.seed(19680801)
 
 def randrange(n, vmin, vmax):
     '''
-    Helper function to make an array of random numbers having shape (n, )
+    array of random numbers having shape (n, )
     with each number distributed Uniform(vmin, vmax).
     '''
     return (vmax - vmin)*np.random.rand(n) + vmin

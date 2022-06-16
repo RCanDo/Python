@@ -12,7 +12,7 @@ class TestClass(object):
             distance(None, 0, 0, 1)
 
     def test_value_error(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             distance('aoeu', 0, 0, 1)
 
     def test_corners(self):

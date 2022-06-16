@@ -109,10 +109,15 @@ ls
 with open('shopping_list.txt', 'tr') as f:
     lines = f.readlines()
 print(lines)
+# ['bread       1   1.39\n', 'tomatoes    6   0.26\n', 'milk        3   1.45\n', 'cofee       3   2.99\n']
 
 ## check
 for l in lines:
     print(l, end='')
+# bread       1   1.39
+# tomatoes    6   0.26
+# milk        3   1.45
+# cofee       3   2.99
 
 #%%
 ## solution
@@ -183,7 +188,3 @@ Reading and writing binary data is outside the scope of
 this introductory module. If you need it, do learn about
 the 'struct' module.
 '''
-
-
-
-

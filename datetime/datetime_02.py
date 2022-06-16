@@ -6,7 +6,7 @@
 # !!! YAML message always begin with ---
 
 title: Current Time and Date
-subtitle: 
+subtitle:
 version: 1.0
 type: help, examples
 keywords: [time, date, now, datetime, ]
@@ -16,7 +16,7 @@ todo:
 sources:
     - title: Python Get Current time
       link: https://www.programiz.com/python-programming/datetime/current-time
-      date: 
+      date:
       authors:
           - nick:
             fullname:
@@ -56,10 +56,10 @@ import time
 
 time.time()           # float
 tt = time.time()
-tt                    # costant  
+tt                    # costant
 
 t = time.localtime()
-t                     # constat    
+t                     # constat
 type(t)               # time.struct_time ==  .timetuple()            #!!! (*)
 time.strftime("%H:%M:%S", t)
 dir(t)
@@ -75,14 +75,16 @@ np.prod(t)
 import datetime as dt
 now = dt.datetime.now()
 now
-# run it few times - it's constant - the moment of creation       
+# run it few times - it's constant - the moment of creation
 type(now)
 
 now.strftime("%H:%M:%S")
+now.strftime("%y-%m-%d")
+now.strftime("%Y-%m-%d")
 
 dir(now)
 now.time()                # constant, only time
-now.date()                 
+now.date()
 now.toordinal()           # constant
 now.today()               # changes - time of running                #!!!
 
@@ -120,7 +122,7 @@ now_au
 
 now_pl.today()
 now.today()
-now_au.today()     # not AU time... ??? 
+now_au.today()     # not AU time... ???
 
 
 #%%

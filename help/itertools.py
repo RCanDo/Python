@@ -872,3 +872,8 @@ show(combinations_with_replacement('abcd', r=3))
 #  ddd
 
 #%%
+"""!!!
+Notice though that itertools.combinations is very slow!
+e.g. in comparison with numpy: see combinations.py in this folder.
+About 100 times slower !!!
+"""
