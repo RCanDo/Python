@@ -1,6 +1,6 @@
 
-lin 1
-lin 2
+line 1
+line 2
 another line
 yet another line
 ...

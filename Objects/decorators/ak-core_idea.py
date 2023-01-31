@@ -8,7 +8,7 @@ Created on Tue Sep 21 15:09:05 2021
 """
 Decorator is every function which modifies another function, i.e.
  - takes function f as argument
- - returns another function g which takes the same set of arguments as f
+ - returns another function g which takes __the same set of arguments as f__ !!! see (*) in the code
 """
 
 #%% here is an absurd example which shows the technical core of a decorator
@@ -21,7 +21,7 @@ def obfuscator(f):
 
         print("we're really don't bother about the result of f = {}".format(result))
         # we could completely ignore the result of `f`,
-        # the core problem is to process the same set of arguments as `f` !
+        #!!! the core problem is to process the same set of arguments as `f` !!!    (*)
 
         lst = [*args]
         dic = {**kwargs}
@@ -54,5 +54,19 @@ def super_fun(p, q, r, s):
 
 obfus_super_fun = obfuscator(super_fun)
 obfus_super_fun(1, 2, r=3, s=4)      # ([1, 2], {'r': 3, 's': 4})
+
+#%% NOTICE that the schema below is not possible as decorator (because of (*))
+def decor(f):
+
+    def g(x, *args, **kwargs):
+
+        y = h(x)
+
+        # ... process( *args, **kwargs )
+
+        result = f( y, *args, **kwargs)
+
+        # ...
+
 
 #%%

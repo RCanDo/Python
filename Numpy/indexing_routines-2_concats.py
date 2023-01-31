@@ -137,6 +137,11 @@ np.r_['1,2,0', [1,2,3], [4,5,6]]
 np.r_['1,2,1', [1,2,3], [4,5,6]]
 #array([[1, 2, 3, 4, 5, 6]])
 
+a3 = np.expand_dims(a, 2)
+a3
+np.r_['2,3', a3, a3, a3]
+
+
 # Using ‘r’ or ‘c’ as a first string argument creates a matrix.
 
 np.r_['r',[1,2,3], [4,5,6]]

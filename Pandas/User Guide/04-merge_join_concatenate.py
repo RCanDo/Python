@@ -93,7 +93,6 @@ result
 pd.concat(frames, axis=1)
 
 #%%%
-
 pd.concat(objs, axis=0, join='outer', ignore_index=False, keys=None,
           levels=None, names=None, verify_integrity=False, copy=True)
 """
@@ -106,10 +105,18 @@ axis : {0, 1, …}, default 0. The axis to concatenate along.
 join : {‘inner’, ‘outer’}, default ‘outer’. How to handle indexes on other axis(es).
     Outer for union and inner for intersection.
 ignore_index : boolean, default False. If True, do not use the index values
-    on the concatenation axis. The resulting axis will be labeled 0, …, n - 1.
+    on the "concatenation axis"
+    (the one indicated by `axis` - which will be elongated;
+     the second, let's say "join axis", is more important: joining is done by
+     pairing indices on these axes).
+    The resulting axis will be labeled 0, …, n - 1.
     This is useful if you are concatenating objects where the concatenation axis
     does not have meaningful indexing information.
-    Note the index values on the other axes are still respected in the join.
+    Note the index values on the other axes are still respected in the join.   !!!
+    !!! i.e. it is not about joining wrt "join axis"
+        but about reindexing "concatenation axis" after join !!!
+    ! To ignore index on "join axis" before joining one needs to do it manually
+    ! by reindexing frames first.
 keys : sequence, default None. Construct hierarchical index using the passed keys
     as the outermost level. If multiple levels passed, should contain tuples.
 levels : list of sequences, default None.
@@ -133,6 +140,7 @@ We can do this using the keys argument:
 result = pd.concat(frames, keys=list('xyz'))
 result
 result.loc['y']
+result.T
 
 #%%
 df4 = data_frame(list('BDF'), [2, 3, 6, 7])
@@ -140,9 +148,12 @@ df4.index = [1,2,3,4]
 df4
 pd.concat([df1, df4])
 pd.concat([df1, df4], axis=0)
+pd.concat([df1, df4], axis=0, ignore_index=True)
 pd.concat([df1, df4], axis=0, join='inner')
+
 pd.concat([df1, df4], axis=1)
 pd.concat([df1, df4], 1)
+pd.concat([df1, df4], 1, ignore_index=True)
 pd.concat([df1, df4], 1, 'inner')
 pd.concat([df1, df4], 1, 'left') #! ValueError: Only can inner (intersect) or outer (union) join the other axis
 pd.concat([df1, df4], axis=1, join='inner')
@@ -170,13 +181,14 @@ pd.concat([df1, df4], 1)
 #%% .append() == .concat(., axis=0)
 df1.append(df2)
 
-# In the case of DataFrame, the indexes must be disjoint
+# In the case of DataFrame, the indices must be disjoint
 # but the columns do not need to be:
 df1.append(df4, sort=False)
 
 #%%
 df1.append([df2, df3])
 df1.append([df2, df3, df4])
+df1.append([df2, df3, df4], ignore_index=True)
 
 #%% Ignoring indexes on the concatenation axis
 # i.e. new index after concatenation
@@ -188,10 +200,8 @@ pd.concat([df1, df4], ignore_index=True, sort=False)
 
 df1.append(df4, ignore_index=True, sort=False)
 
-
 pd.concat([df1, df4], axis=1)
 pd.concat([df1, df4], ignore_index=True, axis=1)
-
 
 #%% Concatenating with mixed ndims
 # You can concatenate a mix of Series and DataFrame objects.
@@ -227,6 +237,7 @@ pd.concat(frames, keys=['x', 'y', 'z'])
 
 pieces = {'x': df1, 'y': df2, 'z': df3}
 pieces
+pd.concat(pieces)
 result = pd.concat(pieces, keys=['z', 'y'])
 result
 # The MultiIndex created has levels that are constructed from the passed keys
@@ -282,7 +293,7 @@ left: A DataFrame or named Series object.
 right: Another DataFrame or named Series object.
 
 how: One of 'left', 'right', 'outer', 'inner'.
-    Defaults to inner. See below for more detailed description of each method.
+    Defaults to `inner`. See below for more detailed description of each method.
 
 on: Column or index level names to join on.
     Must be found in both the left and right DataFrame and/or Series objects.

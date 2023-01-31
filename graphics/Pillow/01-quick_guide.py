@@ -43,9 +43,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 path_data = Path("/home/arek/Data/pictures/")
+#path_data = Path("/home/arek/QuantUp/FU/fu-qu/data/meshcnn1/test/image/")
 
 #%% Open image using Image module
 im = Image.open(path_data / "P1280422.JPG")
+#im = Image.open(path_data / "shrec__1_0_r270,-150,0.png")
 #Show actual Image
 im.show()
 
@@ -85,6 +87,10 @@ imrgba
 
 imrgba_np = np.array(imrgba)
 imrgba_np.shape     # (96, 96, 4)
+
+#%%
+#imrgb = im.convert("RGB")
+#imrgb.getbands()
 
 #%% saving (to other formats)
 im.save('szp2016.jpg')

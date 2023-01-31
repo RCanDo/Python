@@ -7,9 +7,52 @@ Created on Sat Jan 20 19:27:25 2018
 
 random examples
 """
+# %%
+# %% random date-time
+# https://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
+
+# mamba install radar
+from faker import Faker
+fake = Faker()
+
+fake.date_between(start_date='today', end_date='+30y')
+# datetime.date(2025, 3, 12)
+
+fake.date_time_between(start_date='-30y', end_date='now')
+# datetime.datetime(2007, 2, 28, 11, 28, 16)
+
+# Or if you need a more specific date boundaries, provide the start
+# and end dates explicitly.
+import datetime
+start_date = datetime.date(year=2015, month=1, day=1)
+fake.date_between(start_date=start_date, end_date='+30y')
+
+dir(fake)
+
+import pandas as pd
+fake.date_time_between_dates(pd.Timestamp('2021-09-30 12:00:00'), pd.Timestamp('2022-08-10 12:00:00'))
+help(fake.date_time_between_dates)
+
+# %%
+# pip install radar
+import radar
+
+# Generate random datetime (parsing dates from str values)
+radar.random_datetime(start='2000-05-24', stop='2013-05-24T23:59:59')
+
+# Generate random datetime from datetime.datetime values
+radar.random_datetime(
+    start = datetime.datetime(year=2000, month=5, day=24),
+    stop = datetime.datetime(year=2013, month=5, day=24)
+)
+
+# Just render some random datetime. If no range is given, start defaults to
+# 1970-01-01 and stop defaults to datetime.datetime.now()
+radar.random_datetime()
 
 
-#%%
+# %%
+# %%
 import numpy as np
 
 #%%

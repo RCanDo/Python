@@ -40,9 +40,9 @@ from rcando.ak.builtin import flatten, paste
 from rcando.ak.nppd import data_frame
 import os, json
 
-ROOTS = json.load(open('roots.json'))
-WD = os.path.join(ROOTS['Works'], "Python/Pandas/User Guide/")
-os.chdir(WD)
+# ROOTS = json.load(open('roots.json'))
+# WD = os.path.join(ROOTS['Works'], "Python/Pandas/User Guide/")
+# os.chdir(WD)
 
 print(os.getcwd())
 
@@ -70,8 +70,7 @@ np.random.seed([3, 1415])
 n=20
 cols = np.array(['key', 'row', 'item', 'col'])
 
-df = cols + pd.DataFrame( (np.random.randint(5, size=(n, 4))
-                          // [2, 1, 2, 1]).astype(str) )
+df = cols + pd.DataFrame( (np.random.randint(5, size=(n, 4)) // [2, 1, 2, 1]).astype(str) )
 df.columns = cols
 df
 

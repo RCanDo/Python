@@ -84,13 +84,24 @@ The second argument `N` gives the size of the list of colors used to define the 
 """
 viridis = mpl.cm.get_cmap('viridis', 8)
 viridis
-    # matplotlib.colors.ListedColormap
+type(viridis)   # matplotlib.colors.ListedColormap
+viridis.colors
+mpl.cm.get_cmap('viridis', 111)
+mpl.cm.get_cmap('viridis', 111).colors
 """
 !!! The object viridis is a __callable__,
 that when passed a float between 0 and 1 returns an RGBA value from the colormap:
 """
 viridis(.56, .6) #  (0.122312, 0.633153, 0.530398, .6)
 # second argument is `alpha` (see help on __call__(self, X, alpha, bytes) )
+viridis(np.linspace(0., 1., 22))
+viridis(np.linspace(0., 1., 22), .3)
+viridis(np.linspace(0., 1., 22), np.linspace(0.3, 0.7, 22))
+#
+ListedColormap(viridis(np.linspace(0., 1., 22)))
+ListedColormap(mpl.cm.get_cmap('viridis', 111)(np.linspace(0., 1., 22)))
+ListedColormap(viridis(np.linspace(0., 1., 111)))
+ListedColormap(viridis(np.linspace(0., 1., 9)))
 help(viridis)
 # the same as
 help(ListedColormap)
@@ -122,7 +133,8 @@ cmp
 dir(cmp)
 cmp.colors
 
-cmp = ListedColormap(['r', 'orange', 'g', 'teal', 'b', 'purple'])
+ListedColormap(['r', 'orange', 'g', 'teal', 'b', 'purple'], 3).colors
+ListedColormap(['r', 'orange', 'g', 'teal', 'b', 'purple'], 3)(np.linspace(0., 1., 22))
 
 #%%
 help(mpl.cm.viridis)  # see __call__ description
@@ -148,6 +160,11 @@ Parameters
     Tuple of RGBA values if X is scalar, otherwise an array of
     RGBA values with a shape of ``X.shape + (4, )``.
 """
+viridis
+viridis.colors
+viridis(.5)
+viridis(4)
+viridis(0)
 
 #%% notice that each colormap may be called directly
 
@@ -160,16 +177,19 @@ How to pass `N`?
 Notice that `mpl.cm.viridis` is an instance of `ListedColormap`
 and `N` may be passed only on the initialisation of new instance (it's arg of __init__).
 
-mpl.cm.get_cmap() is a way to call initialiser which
-recreates given colormap with additional parameters like `N`
-(probably from a template instance `mpl.cm.<colormap>`).
+The original colormap:
 """
+mpl.cm.viridis
+type(mpl.cm.viridis)   # matplotlib.colors.ListedColormap
 mpl.cm.viridis.colors  #
 len(mpl.cm.viridis.colors) # 256 colors
 mpl.cm.viridis.N           # 256
-viridis.colors    # only 8 colors
-viridis.N         # 8
 
+"""
+mpl.cm.get_cmap() is a way to call initialiser which
+recreates given colormap with additional parameters like `N`
+(from a template/original/full instance `mpl.cm.<colormap>`).
+"""
 dir(viridis)
 viridis.monochrome   # False
 viridis.name         # 'viridis'
@@ -195,6 +215,11 @@ All the colormaps:
 dir(mpl.cm)
 help(mpl.cm)
 """
+!!!  There are also   `matplotlib.colors.LinearSegmentedColormap`s
+and using  mpl.cm.get_cmap()  on them also returns  `..LinearSegmentedColormap`
+They do not have  .colors  attribute!
+How to use them - see below.
+
 colormap refernece
 https://matplotlib.org/stable/gallery/color/colormap_reference.html
 """
@@ -315,6 +340,7 @@ viridis_big.colors.shape      # 512,4   notice repeated values
     # original `viridis` colormap has only 256 colors
 
 newcmp = ListedColormap(viridis_big(np.linspace(0.25, 0.75, 256)))
+newcmp.colors
 plot_examples([viridis, newcmp])
 
 #%% and we can easily concatenate two colormaps:
@@ -370,6 +396,7 @@ or with a float array between 0 and 1.
 mpl.cm.copper
     # matplotlib.colors.LinearSegmentedColormap
 dir(mpl.cm.copper)
+mpl.cm.copper.colors    # ! AttributeError: 'LinearSegmentedColormap' object has no attribute 'colors'
 
 copper = mpl.cm.get_cmap('copper', 8)
 copper
@@ -380,9 +407,18 @@ dir(copper)     # no .colors  attr.
 copper(range(8))            # still returns array of 8 colors
 copper(np.linspace(0, 1, 8))
 
+ListedColormap(copper)      # ! TypeError: object of type 'LinearSegmentedColormap' has no len()
+# but
+ListedColormap(copper(np.linspace(0, 1, 8)))
+ListedColormap(copper(np.linspace(0, 1, 22)))
+
+copper256 = mpl.cm.get_cmap('copper', 256)
+ListedColormap(copper256(np.linspace(0, 1, 22)))
+ListedColormap(copper256(np.linspace(0, 1, 128)))
+
 #%%
 #%% Creating linear segmented colormaps
-#!!! see the end of file for most convenient solution !!!
+#!!! see the end of file for most convenient solution !!!  ->  LinearSegmentedColormap.from_list(...)
 """
 `LinearSegmentedColormap` class specifies colormaps
 using anchor points between which RGB(A) values are interpolated.
@@ -511,7 +547,7 @@ plot_linearmap(cdict)
 
 plot_examples([mpl.cm.viridis, LinearSegmentedColormap('qq', segmentdata=cdict, N=256)])
 
-#%% Directly creating a segmented colormap from a list
+#%% !!!  Directly creating a segmented colormap from a list  -- very convenient and powerful !!!
 """
 The above described is a very versatile approach,
 but admittedly a bit cumbersome to implement.
@@ -535,4 +571,67 @@ cmap2 = LinearSegmentedColormap.from_list("mycmap", list(zip(nodes, colors)))
 plot_examples([cmap1, cmap2])
 
 #%%
+#%%  leveled luminosity from  TABLEAU_COLORS  (which is default cycler)
+"""this colormap have well leveled luminosity
+what is a big problem for all other predifined colormaps (in  mpl.cm)
+see https://matplotlib.org/stable/tutorials/colors/colormaps.html#lightness-of-matplotlib-colormaps
+"""
+mpl.colors.TABLEAU_COLORS
+[c for c in mpl.colors.TABLEAU_COLORS]
+
+default_cycler = ['#1f77b4',  # tab:blue
+                  '#ff7f0e',  # tab:orange
+                  '#2ca02c',  # tab:green
+                  '#bcbd22',  # tab:olive (green-yellow-grey)
+                  '#d62728',  # tab:red
+                  '#9467bd',  # tab:purple (violet)
+                  #'#8c564b',  # tab:brown
+                  '#e377c2',  # tab:pink
+                  '#7f7f7f',  # tab:grey  (medium dark)
+                  '#17becf']  # tab:cyan  (~teal)
+cmap3 = LinearSegmentedColormap.from_list("from_tab", default_cycler)
+type(cmap3)     # LinearSegmentedColormap
+cmap3
+
+#%%
+cmap3.colors    #!  AttributeError: 'LinearSegmentedColormap' object has no attribute 'colors'
+
+ListedColormap(cmap3)  #! TypeError: object of type 'LinearSegmentedColormap' has no len()
+
+cat_colors = cmap3(np.linspace(0., 1., 22))[:, :3]
+cat_colors
+
+ListedColormap(cat_colors)
+ListedColormap(cat_colors).colors
+
+#%%
+def brightness(p, l):
+    if l > 1.:
+        l = 1 / l
+        p = p * l + (1 - l)
+    elif l >= 0:
+        p = p * l
+    else:
+        raise Exception("`l` must be >= 0")
+    return p
+
+cat_colors_b = brightness(cat_colors, 2)
+ListedColormap(cat_colors_b)
+ListedColormap(brightness(cat_colors, .5))
+
+#%%
+default_cycler = [
+                  (0.0, '#17becf'),  # tab:cyan  (~teal)
+                  (0.1, '#2ca02c'),  # tab:green
+                  (0.2, '#7f7f7f'),  # tab:grey  (medium dark)
+                  (0.35, '#ff7f0e'),  # tab:orange
+                  (0.5, '#bcbd22'),  # tab:olive (green-yellow-grey)
+                  (0.65, '#d62728'),  # tab:red
+                  (0.75, '#9467bd'),  # tab:purple (violet)
+                  #'#8c564b',  # tab:brown
+                  (0.85, '#e377c2'),  # tab:pink
+                  (1.0, '#1f77b4'),  # tab:blue
+                  ]
+LinearSegmentedColormap.from_list("from_tab", default_cycler)
+
 #%%

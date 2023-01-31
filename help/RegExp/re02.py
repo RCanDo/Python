@@ -16,5 +16,10 @@ for ss in ll: print(re.search('^[a-z]+', ss))
 list(filter(lambda ss: re.search('^[a-z]+', ss), ll))
 
 dir(re)
+#%%
+
+for ss in ll: print(re.match('^[a-z]+', ss))
+list(filter(lambda ss: re.match('^[a-z]+', ss), ll))
+
 
 #%%

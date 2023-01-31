@@ -88,23 +88,84 @@ plt.style.use('dark_background')
 from scipy import linalg, stats, sparse
 
 #%%
+#%%
 import numpy as np
 
-rng = np.random.default_rng()
+rng = np.random.default_rng()   # Generator(PCG64) at 0x7F04F7B4A200
+# may be used as  random_state=rng  but it's too much randomness
+# we'd like to have reproducible results here so better resort to random_state as fixed numbers
+
 
 from scipy.stats import norm
 
 dist = norm(loc=2, scale=4)  # our "unknown" distribution
 
-data = dist.rvs(size=100, random_state=rng)
+data = dist.rvs(size=100, random_state=1234)
+plt.hist(data)
+
+std_true = dist.std()      # the true value of the statistic
+# 4.0
+
+std_sample = np.std(data)  # the sample statistic
+# 3.982739401341612
+
+#%% We can calculate a 90% confidence interval of the statistic using bootstrap.
+
+from scipy.stats import bootstrap
+
+data = (data,)  # samples must be in a sequence
+
+res = bootstrap(data, np.std, confidence_level=0.9)
+res     # BootstrapResult(
+        #   confidence_interval = ConfidenceInterval(low=3.508889643797191, high=4.697198500798465),
+        #        standard_error = 0.3505826727429452
+        #   )
+
+print(res.confidence_interval)
+# ConfidenceInterval(low=3.503351156364158, high=4.6698952294272145)
+res.confidence_interval.low   # 3.503351156364158
+res.confidence_interval.high  # ..
 
 #%%
+n_trials = 1000
 
+ci_contains_true_std = 0
+
+for i in range(n_trials):
+
+   data = (dist.rvs(size=100, random_state=rng),)
+
+   ci = bootstrap(data, np.std, confidence_level=0.9, n_resamples=1000,
+
+                  random_state=rng).confidence_interval
+
+   if ci[0] < std_true < ci[1]:
+
+       ci_contains_true_std += 1
+
+print(ci_contains_true_std)
+875
+
+
+....
 
 #%%
-
-
 #%%
+from scipy.stats import t
+t.ppf(.95, 100-1)
+
+t.interval(.95, 100-1)
+t.interval(.95, 9999)
 
 
-#%%
+norm.interval(.95)
+
+# %%
+from statsmodels.stats import proportion
+dir()
+help(proportion.proportion_confint)
+ci = proportion.proportion_confint(13, 23, .05)
+ci
+p = 13/23
+p
+np.mean(ci)

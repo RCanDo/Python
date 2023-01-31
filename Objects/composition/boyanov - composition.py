@@ -43,3 +43,45 @@ with the interface we need (again those pesky ducks).
 Composition is elegant and natural to Python.
 """
 #%%
+
+class C0(object):
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+        self.sum = self.a + self.b
+
+    def info(self):
+        print(f"a : {self.a}")
+        print(f"b : {self.b}")
+
+    @property
+    def diff(self):
+        return self.a - self.b
+
+class C1(object):
+    def __init__(self, a, b):
+        self.c0 = C0(a, b)
+
+    def __getattr__(self, attr):
+        return getattr(self.c0, attr)
+
+    @property
+    def mean(self):
+        return (self.a + self.b) / 2
+
+    def weighted(self, wa, wb):
+        return wa * self.a + wb * self.b
+
+#%%
+
+c1 = C1(2, 5)
+c1
+c1.a
+c1.b
+c1.sum
+c1.diff
+c1.mean
+c1.info()
+c1.weighted(.1, .3)
+
+#%%

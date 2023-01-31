@@ -9,13 +9,13 @@ title: Time series / date functionality
 subtitle:
 version: 1.0
 type: tutorial
-keywords: [., NumPy, Pandas]   # there are always some keywords!
+keywords: [time series, dates, NumPy, Pandas]   # there are always some keywords!
 description: |
 remarks:
 todo:
 sources:
     - title: Pandas 1.1 User Guide
-      chapter:
+      chapter: Time series / date functionality
       link: https://pandas.pydata.org/docs/user_guide/timeseries.html
       usage: |
           not only copy
@@ -23,7 +23,7 @@ file:
     usage:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
-    name: "14-time_series_and_dates.py"
+    name: "17-time_series_and_dates.py"
     path: "D:/ROBOCZY/Python/Pandas/User Guide/"
     date: 2019-11-13
     authors:
@@ -40,7 +40,7 @@ from rcando.ak.nppd import data_frame
 import os
 
 #PYWORKS = "D:/ROBOCZY/Python"
-PYWORKS = "/home/arek/Works/Python"
+PYWORKS = "/home/arek/Roboczy/Python"
 
 os.chdir(PYWORKS + "/Pandas/User Guide/")
 print(os.getcwd())
@@ -64,25 +64,48 @@ pd.Timestamp(2012, 5, 1)               # Timestamp('2012-05-01 00:00:00')
 pd.Timestamp(dt.datetime(2012, 5, 1))  # Timestamp('2012-05-01 00:00:00')
 pd.Timestamp('2020-01')                # Timestamp('2020-01-01 00:00:00')
 
+type(dt.datetime(2012, 5, 1))               # datetime.datetime
+type(pd.Timestamp('2020-01'))               # pandas._libs.tslibs.timestamps.Timestamp    ???
+type(pd.Timestamp('2020-01').to_numpy())    # numpy.datetime64
+
+pd.Timestamp('2020-01').dtype               #! AttributeError: 'Timestamp' object has no attribute 'dtype'
+pd.Series(pd.Timestamp('2020-01')).dtype    # dtype('<M8[ns]')
+pd.Series(pd.Timestamp('2020-01')).dtype.__str__()    # 'datetime64[ns]'
+
+
+#%%
 pd.Period(2012, 5, 1)  #! AttributeError: 'NoneType' object has no attribute 'n'
 pd.Period(dt.datetime(2012, 5, 1))  #! ValueError: Must supply freq for datetime value
 pd.Period(dt.datetime(2012, 5, 1), 'M')   # Period('2012-05', 'M')
 pd.Period('2020-01')                      # Period('2020-01', 'M')
 
+type(pd.Period('2020-01'))             # pandas._libs.tslibs.period.Period
+type(pd.Period('2020-01').to_numpy())  #! AttributeError: 'Period' object has no attribute 'to_numpy'
+
+pd.Period('2020-01').dtype             #! AttributeError: 'Period' object has no attribute 'dtype'
+pd.Series(pd.Period('2020-01')).dtype            # period[M]
+pd.Series(pd.Period('2020-01')).dtype.__str__()  # 'period[M]'
+pd.Series(pd.Period('2020-01')).to_numpy().dtype  # dtype('O')
+pd.Series(pd.Period('2020-01')).to_numpy().dtype.__str__()  # object
+
 #%% https://pandas.pydata.org/docs/user_guide/timeseries.html#converting-to-python-datetimes
 dr = pd.date_range('2020-08-30', periods=3)
 dr
-dr.to_native_types()
-pd.to_datetime(dr)
+type(dr)                               # pandas.core.indexes.datetimes.DatetimeIndex
+type(dr.to_numpy().dtype)              # numpy.dtype[datetime64]
+
+dr.to_native_types()  #! The 'to_native_types' method is deprecated and will be removed in a future version.
+                      # Use 'astype(str)' instead.
+pd.to_datetime(dr)    # the same
+pd.to_datetime(dr) == dr    # array([ True,  True,  True])
 
 # ???
 
 #%%
-
 dti = pd.to_datetime(['2018-01-21', '21/1/2018',
                       np.datetime64('2018-01-21'),
                       dt.datetime(2018, 1, 21)])
-dti
+dti     # DatetimeIndex(['2018-01-21', '2018-01-21', '2018-01-21', '2018-01-21'], dtype='datetime64[ns]', freq=None)
 
 dti = pd.date_range('2018-01-01', periods=3, freq='H')
 dti
@@ -100,16 +123,24 @@ ts = pd.Series(range(len(idx)), index=idx)
 ts
 
 ts.resample('2H').mean()
+ts.resample('3H').mean()
+#???
 
 #%%
 idx = pd.date_range('2018-01-01', periods=5, freq='3H')
-idx
+idx     # DatetimeIndex(['2018-01-01 00:00:00', '2018-01-01 03:00:00', '2018-01-01 06:00:00', '2018-01-01 09:00:00', '2018-01-01 12:00:00'],
+        #               dtype='datetime64[ns]', freq='3H')
 
 idx = pd.date_range('2018-01-01', periods=5, freq='3D')
 idx
 
 idx = pd.date_range('2018-01-01', periods=5, freq='3M')
 idx
+
+idx = pd.date_range('2018-01-01', periods=5, freq='5m')
+idx
+
+help(pd.date_range)
 
 #%%
 day1 = pd.Timestamp('2018-01-05')
@@ -123,7 +154,22 @@ day3.day_name()
 
 #%%  !!!
 pd.period_range('01/12/2011', freq='M', periods=3)   # american format M/D/Y - default
-pd.period_range('13/12/2011', freq='M', periods=3)   # NORMAL format M/D/Y - inferred from 13 (no such month)
+pd.period_range('13/12/2011', freq='M', periods=3)   # NORMAL format D/M/Y - inferred from 13 (no such month)
+    #! ... Provide format (???) or specify infer_datetime_format=True for consistent parsing.
+
+help(pd.period_range)
+#! no  format  in arguments ...
+
+pd.period_range('01/12/2011', freq='M', periods=3, format="DD/MM/YYYY")
+#! TypeError: period_range() got an unexpected keyword argument 'format'
+
+# BUT
+pd.to_datetime('01/12/2011', format="DD/MM/YYYY")   #! ValueError: time data '01/12/2011' does not match format 'DD/MM/YYYY' (match)
+pd.to_datetime('01/12/2011', format="%d/%m/%Y")     # Timestamp('2011-12-01 00:00:00')
+# american is default:
+pd.to_datetime('01/12/2011')     # Timestamp('2011-01-12 00:00:00')
+# ...
+
 
 #%% !!! USE ISO !!! - no ambiguities
 pd.period_range('2011-12-01', freq='M', periods=3)
@@ -194,12 +240,15 @@ pd.Timestamp('2012-05-01')
 pd.Timestamp('1/12/2012')
 pd.Timestamp('13/12/2012')
 
+pd.Timestamp('1/12/2012', format="%d/%m/%Y")    #! TypeError: __new__() got an unexpected keyword argument 'format'
+
 #%%
 #%%
 pd.Period('2020-01')
 pd.Period('2020-01', 'M')    # default
 pd.Period('2020-01-01')
 pd.Period('2020-01-01', 'M') # not default
+pd.Period('2020-01-01', 'D') # default
 
 #%%
 dates = [pd.Timestamp('2020-05-01'), pd.Timestamp('2020-05-02'), pd.Timestamp('2020-05-03')]

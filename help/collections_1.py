@@ -304,8 +304,6 @@ docs = [d.lower() for d in map(partial(repl, noise="!?,.()"),  corpus)]
 [d.lower() for d in map(lambda s: reduce(lambda s, z: s.replace(z, ""), list("!?,.()"), s),  corpus)]
 
 #%%
-from collections import Counter
-
 counter = Counter()
 
 for d in docs:
@@ -334,8 +332,6 @@ dd              # {'a': 1, 'b': 2, 'c': 0, 'd': -1}
 """
 By contrast, defaultdict lets the caller specify the default up front when the container is initialized.
 """
-import collections
-
 d = defaultdict('default value')   #! TypeError: first argument must be callable or None
 
 # hence one must define some function returning constant, e.g.
@@ -355,6 +351,9 @@ d.update(ryqu=-1)
 d      # defaultdict(<function __main__.default_factory()>,
        #     {'foo': 'bar', 'bar': 'default value', 'qq': 'default value', 'ryqu': -1})
 
+"""
+THUS items are created on call if not defined earlier; then they get default value.
+"""
 #%% example ak2
 #%% built-in  dict.setdefault()
 import numpy as np

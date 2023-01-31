@@ -8,10 +8,11 @@ str.ljust()
 str.rjust()
 str.upper()
 str.capitalize()
-str.counts()
+str.count()
 str.endswith()
 str.split()
-str....()
+str.startswith()
+...
 
 #%%
 f'{2*3}'

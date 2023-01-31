@@ -163,7 +163,6 @@ show_details('myfunc', myfunc)
 #%%
 p1 = partial(myfunc, b=4)
 show_details('raw wrapper', p1)
-
 #  raw wrapper:
 #    object: functools.partial(<function myfunc at 0x000001968E32A8B0>, b=4)
 #    __name__: (no __name__)
@@ -288,10 +287,27 @@ mc.method1()
 mc.method2()
 #! TypeError: standalone() missing 1 required positional argument: 'self'
 
+#%% HOWEVER:
+
+# add  partialmethod(f,...)  to instance
 mc.method3 = partialmethod(standalone)
 mc.method3()   #! TypeError: 'partialmethod' object is not callable
+dir(mc)
 
+# add partialmethod(f,...)  to class
+MyClass.method3 = partialmethod(standalone)
+mc3 = MyClass()
+mc3.method3()
+# called standalone with: (<__main__.MyClass object at 0x7f3dcc5456d0>, 1, 2)
+# self.attr = instance attribute
 
+dir(MyClass)
+dir(mc3)
+
+"""!!! HENCE
+one CAN add  partialmethod(f,...)  to class
+but CANNOT add it to its instance (i.e. can but it won't work properly -- it's not even callable!)
+"""
 #%% Acquiring Function Properties for Decorators
 """
 Updating the properties of a wrapped callable is especially useful when used in a decorator,

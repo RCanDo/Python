@@ -58,9 +58,12 @@ f
 #%%
 ## Use text file f as an iterable object: process one line in each iteration (important for large files):
 f = open("test.txt", "r")
+type(f)     # _io.TextIOWrapper
 
 for line in f:
     print(line, end="")
+
+# only once -- works like f is iterator
 
 #%%
 ## using context manager i.e. with()

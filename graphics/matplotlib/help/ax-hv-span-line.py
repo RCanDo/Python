@@ -26,10 +26,11 @@ plt.axhline(1, .2, .5, color='k')
 plt.axvline(2, color='k')
 plt.axvline(4, .1, .9, color='k')
 
+plt.axvline(3, color='b')
 
 #%%
-
-
+fig, ax = plt.subplots()
+help(ax.vlines)
 
 #%%
 

@@ -23,7 +23,7 @@ file:
     usage:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
-    name: "12-group_by-split_apply_combine.py"
+    name: "15-group_by-split_apply_combine.py"
     path: "D:/ROBOCZY/Python/Pandas/User Guide/"
     date: 2019-11-13
     authors:
@@ -70,7 +70,6 @@ df = pd.DataFrame([('bird', 'Falconiformes', 389.0),
 df
 
 #%%
-
 dfg = df.groupby('class')
 dfg
 dfg.sum()
@@ -86,8 +85,10 @@ dfg.get_group('bird')
 dfg.groups
 
 #%%
-dfg = df.groupby('order', axis='columns')
+dfg = df.groupby('order')
 dfg.sum()
+dfg = df.groupby('order', axis='columns')
+dfg.sum()   # ValueError: len(index) != len(labels)
 
 df.groupby(['class', 'order']).sum()
 df.groupby(['class', 'order']).count()
@@ -135,9 +136,9 @@ dfg.agg(lambda x: (min(x), max(x)))
 
 dfg = df.groupby(['A', 'B'])
 dfg.count()
-dfg.nunique()
+dfg.nunique()                                                                   #!!!
 dfg.sum()
-dfg.sum().unstack('B')
+dfg.sum().unstack('B')                                                          #!!!
 
 #%%
 # series may be grouped too, eg. by another series:
@@ -178,6 +179,8 @@ df
 df2 = df.set_index(list('AB'))
 df2
 
+df2g = df2.groupby(level='B')
+df2g.sum()
 df2g = df2.groupby(level=df2.index.names.difference(['B']))
 df2g.sum()
 
@@ -260,8 +263,9 @@ df3.groupby(['X']).get_group('B')
 
 #%% GroupBy object attributes
 """
-The groups attribute is a dict whose keys are the computed unique groups and corresponding
-values being the axis labels belonging to each group.
+The groups attribute is a dict
+whose keys are the computed unique groups and corresponding   # ???
+values being the axis labels belonging to each group.         # ???
 In the above example we have:
 """
 df
@@ -346,7 +350,8 @@ df
 
 #%% Grouping DataFrame with Index levels and columns
 """
-A DataFrame may be grouped by a combination of columns and index levels
+A DataFrame may be grouped by
+!!!  a combination of columns and index levels
 by specifying the column names as strings and the index levels as  pd.Grouper()  objects.
 """
 df.groupby([pd.Grouper(level=1), 'A']).sum()
@@ -406,7 +411,6 @@ for name, group in df.groupby(['A', 'B']):
 
 # See [Iterating through groups](https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#timeseries-iterating-label).
 
-
 #%% Selecting a group
 #%%
 
@@ -444,6 +448,7 @@ dfg.size()             # Series
 #%%
 
 dfgab = df.groupby(['A', 'B'])
+dfgab.sum()
 dfgab.size()             # Series
 dfgab.describe()
 
@@ -451,7 +456,7 @@ dfgab.aggregate(sum)
 dfgab.sum()
 dfgab.sum().reset_index()
 
-dfgab = df.groupby(['A', 'B'], as_index=False)
+dfgab = df.groupby(['A', 'B'], as_index=False)                                  #!!!
 dfgab.sum()
 dfgab.size()             # Series
 
@@ -475,7 +480,8 @@ dfg.agg([lambda x: min(x),
 
 #%% Named aggregation
 """
-To support column-specific aggregation with control over the output column names, pandas accepts the special syntax in GroupBy.agg(), known as “named aggregation”, where
+To support column-specific aggregation with control over the output column names,
+pandas accepts the special syntax in GroupBy.agg(), known as “named aggregation”, where
 - The keywords are the output column names
 - The values are tuples whose first element is the column to select
   and the second element is the aggregation to apply to that column.
@@ -504,7 +510,6 @@ animals_kind.agg(min_height=('height', 'mean'),
                 )
 #%% If your desired output column names are not valid python keywords,
 # construct a dictionary and unpack the keyword arguments
-
 animals_kind.agg(**{'total weight': pd.NamedAgg('weight', sum),
                     'mean weight': ('weight', np.mean)})
 

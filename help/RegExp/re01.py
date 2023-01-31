@@ -7,6 +7,8 @@ Created on Thu May  2 11:30:53 2019
 import re
 
 phoneNumRegex = re.compile(r'\d\d\d-\d\d\d-\d\d\d\d')
+dir(phoneNumRegex)
+
 mo = phoneNumRegex.search('My number is 415-555-4242.')
 print('Phone number found: ' + mo.group())
 dir(mo)
@@ -30,14 +32,12 @@ mo.groups()[0]
 
 import os
 
-cd D:\ROBOCZY\Python\help\RegExp
-ls 
-
 pth = os.getcwd()
 
 reg = re.compile(r'^.+help')
 m1 = reg.search(pth)
 m1.group()
+dir(m1)
 
 pth1 = reg.sub(".", pth)
 pth1

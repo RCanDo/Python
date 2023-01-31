@@ -89,6 +89,11 @@ X.ndim
 X.shape
 
 row = np.array([1, 0, 2])
+X[row]
+X[row, :]   # the same
+X[[1, 0, 2]]       # so it's possible to index with ordinary lists
+X[[1, 0, 2, 2]]    # repetitions allowed
+
 X[row, 1]
 X[[1, 0, 2], 1]       # so it's possible to index with ordinary lists
 X[[1, 0, 2, 2], 1]    # repetitions allowed

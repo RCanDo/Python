@@ -63,6 +63,28 @@ import matplotlib.pyplot as plt
 # see `plt.style.available` for list of available styles
 
 #%%
+#%%
+import matplotlib._color_data as mcd
+import matplotlib.patches as mpatch
+
+mcd.BASE_COLORS
+mcd.TABLEAU_COLORS
+mcd.CSS4_COLORS
+mcd.XKCD_COLORS
+
+# the same
+mpl.colors.BASE_COLORS
+mpl.colors.TABLEAU_COLORS
+mpl.colors.CSS4_COLORS
+mpl.colors.XKCD_COLORS
+
+mpl.colors.cnames
+dir(mpl.colors.cbook)  # ...
+
+len(mpl.colors.cnames)  # 148
+len(mpl.colors.CSS4_COLORS)  # 148
+
+#%%
 #%%  Colors - Example 1: Color Demo
 ##   https://matplotlib.org/stable/gallery/color/color_demo.html#sphx-glr-gallery-color-color-demo-py
 #
@@ -300,4 +322,3 @@ plt.show()
 
 #%%
 #%%
-
