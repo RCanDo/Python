@@ -35,8 +35,8 @@ file:
 """
 
 #%%
-from rcando.ak.builtin import flatten, paste
-from rcando.ak.nppd import data_frame
+from utils.ak.builtin import flatten, paste
+from utils.ak.nppd import data_frame
 import os
 
 #PYWORKS = "D:/ROBOCZY/Python"
@@ -60,6 +60,7 @@ pd.set_option('display.expand_frame_repr', False)
 #%% Intro
 
 dt.datetime(2012, 5, 1)                # datetime.datetime(2012, 5, 1, 0, 0)
+
 pd.Timestamp(2012, 5, 1)               # Timestamp('2012-05-01 00:00:00')
 pd.Timestamp(dt.datetime(2012, 5, 1))  # Timestamp('2012-05-01 00:00:00')
 pd.Timestamp('2020-01')                # Timestamp('2020-01-01 00:00:00')
@@ -72,6 +73,25 @@ pd.Timestamp('2020-01').dtype               #! AttributeError: 'Timestamp' objec
 pd.Series(pd.Timestamp('2020-01')).dtype    # dtype('<M8[ns]')
 pd.Series(pd.Timestamp('2020-01')).dtype.__str__()    # 'datetime64[ns]'
 
+# %%
+pd.to_datetime('2020-01')       # Timestamp('2020-01-01 00:00:00')
+type(pd.to_datetime('2020-01'))         # pandas._libs.tslibs.timestamps.Timestamp
+
+pd.to_datetime(2012, 5, 1)  #! AssertionError
+pd.to_datetime('2020/01')       # Timestamp('2020-01-01 00:00:00')
+
+#%%
+pd.Timedelta(5, 'h')    # value, unit; default unit is 'ns' (nanoseconds) !
+pd.Timedelta('5h')
+
+type(pd.Timedelta('5h'))             # pandas._libs.tslibs.timedeltas.Timedelta
+type(pd.Timedelta('5h').to_numpy())  # numpy.timedelta64
+
+pd.Timedelta('5h').dtype             #!AttributeError: 'Timedelta' object has no attribute 'dtype'
+pd.Series(pd.Timedelta('5h')).dtype            # dtype('<m8[ns]')
+pd.Series(pd.Timedelta('5h')).dtype.__str__()  # 'timedelta64[ns]'
+pd.Series(pd.Timedelta('5h')).to_numpy().dtype  # dtype('<m8[ns]')
+pd.Series(pd.Timedelta('5h')).to_numpy().dtype.__str__()  # 'timedelta64[ns]'
 
 #%%
 pd.Period(2012, 5, 1)  #! AttributeError: 'NoneType' object has no attribute 'n'
@@ -151,6 +171,9 @@ day2.day_name()
 
 day3 = day1 + pd.offsets.BDay()
 day3.day_name()
+
+day4 = day3 + pd.offsets.BDay()
+day4.day_name()
 
 #%%  !!!
 pd.period_range('01/12/2011', freq='M', periods=3)   # american format M/D/Y - default

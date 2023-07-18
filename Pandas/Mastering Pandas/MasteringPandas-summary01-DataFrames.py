@@ -10,12 +10,6 @@ summary01. DataFrames
 """
 ## •
 
-%reset
-
-pwd
-cd c:/PROJECTS/Python/tuts/Mastering pandas/
-ls
-
 import importlib ## may come in handy
 
 import pandas as pd
@@ -78,14 +72,14 @@ stockDF
 pd.DataFrame(stockSummaries, index = ['Closing price','EPS', 'Shares Outstanding(M)', 'P/E'
                                       ,'Market Cap(B)','Beta'])
 
-pd.DataFrame(stockSummaries, index = ['Closing price','EPS', 'Shares Outstanding(M)', 'P/E']) 
+pd.DataFrame(stockSummaries, index = ['Closing price','EPS', 'Shares Outstanding(M)', 'P/E'])
 
 ## setting columns (selection and order)
 pd.DataFrame(stockSummaries, index=['Closing price','EPS','Shares Outstanding(M)','P/E'
                                     ,'Market Cap(B)','Beta'],
              columns=['FB','TWTR','SCNW'])
 
-## 
+##
 stockDF.columns
 stockDF.index
 
@@ -98,8 +92,8 @@ algos={'search'  : ['DFS','BFS','Binary Search','Linear','ShortestPath (Djikstra
        'sorting' : ['Quicksort','Mergesort', 'Heapsort','Bubble Sort', 'Insertion Sort'],
        'machine learning': ['RandomForest','K Nearest Neighbor','Logistic Regression',
                             'K-Means Clustering','Linear Regression']}
-       
-algos       
+
+algos
 
 algoDF = pd.DataFrame(algos)
 algoDF
@@ -119,13 +113,13 @@ aa1 = np.array([ [1, 2, 3],
                  [4, 5, 6],
                  [7, 8, 9],
                  [10, 11, 12] ] )
-aa1       
+aa1
 
 pd.DataFrame(aa1)
 pd.DataFrame(aa1, columns=['a', 'b', 'c'])
 pd.DataFrame(aa1, columns=['x', 'y', 'z'], index=['a', 'b', 'c', 'd'])
   pd.DataFrame(aa1, index=['x', 'y', 'z'], columns=['a', 'b', 'c', 'd'])   ## ERROR
-pd.DataFrame(aa1.T, index=['x', 'y', 'z'], columns=['a', 'b', 'c', 'd'])   
+pd.DataFrame(aa1.T, index=['x', 'y', 'z'], columns=['a', 'b', 'c', 'd'])
 
 
 #%%
@@ -190,7 +184,7 @@ memberDF
 """
 Using Series
 """
-currSeries = pd.Series( ["yuan","euro","yen","peso","naira","pound","dollar"] , 
+currSeries = pd.Series( ["yuan","euro","yen","peso","naira","pound","dollar"] ,
                         index = ["China","Germany","Japan","Mexico","Nigeria","UK","US"]
                        )
 currSeries
@@ -239,9 +233,9 @@ memberDF
 
 ### Insertion
 memberDF.insert(2,'isSenior',memberDF['Age']>60)
-memberDF 
+memberDF
 
-memberDF.insert(3,'isLight',memberDF['Weight']<150); 
+memberDF.insert(3,'isLight',memberDF['Weight']<150);
 memberDF
 
 #%%
@@ -274,7 +268,7 @@ pd.DataFrame(np.array(ore1DF)[:,1:2] + np.array(ore1DF.T)[1,:])
 #%%
 """
 More on indexing on DataFrames in separate chapter/file
-C:\PROJECTS\Python\tuts\Mastering Pandas\MasteringPandas-04-Indexing.ipynb  
+C:\PROJECTS\Python\tuts\Mastering Pandas\MasteringPandas-04-Indexing.ipynb
 or
 C:\PROJECTS\Python\tuts\Mastering Pandas\MasteringPandas-04-Indexing.py
 """

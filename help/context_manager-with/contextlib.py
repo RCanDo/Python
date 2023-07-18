@@ -24,8 +24,6 @@ file:
     usage:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
-    name: contextlib.py
-    path: .../Python/help/context_manager-with/
     date: 2021-09-20
     authors:
         - nick: rcando
@@ -35,18 +33,9 @@ file:
 """
 
 #%%
-from rcando.ak.builtin import * #flatten, paste
-from rcando.ak.nppd import * #data_frame
+import utils.ak as ak
+import utils.builtin as bi
 import os, sys, json
-
-ROOT = json.load(open('root.json'))
-WD = os.path.join(ROOT['Works'], "Python/Pandas/User Guide/")   #!!! adjust
-os.chdir(WD)
-
-print(os.getcwd())
-
-#%%
-#%% Context Manager API
 
 from contextlib import ContextDecorator, contextmanager
 
@@ -54,6 +43,9 @@ from contextlib import ContextDecorator, contextmanager
 with open('/tmp/pymotw.txt', 'wt') as f:
     f.write('contents go here')
 # file is automatically closed
+# (but not removed! for real temporary file use  tempfile  lib)
+
+os.listdir("/tmp")
 
 #%%
 """
@@ -112,6 +104,7 @@ The `__enter__()` method can return any object to be associated with a name
 specified in the `as` clause of the `with` statement.
 In this example, the Context returns an object that uses the open context.
 """
+
 class WithinContext:
 
     def __init__(self, context):
@@ -187,9 +180,11 @@ with Context(False):
 
 #%%
 """
-If the context manager is meant to handle the exception,
-__exit__() must return a `True` value
+!!!
+If the context manager is meant  to handle the exception,
+    __exit__() must return a `True` value
 what indicates that the exception does not need to be propagated.
+!!!
 
 Returning `False` causes the exception to be re-raised after __exit__() returns,
 i.e. exception is propagated.
@@ -224,36 +219,41 @@ to let them be used as _function decorators_ as well as _context managers_.
 """
 from contextlib import ContextDecorator
 
-class Context(contextlib.ContextDecorator):
+class Context(ContextDecorator):
 
     def __init__(self, how_used):
         self.how_used = how_used
-        print('__init__({})'.format(how_used))
+        print('Context.__init__({})'.format(how_used))
 
     def __enter__(self):
-        print('__enter__({})'.format(self.how_used))
+        print('Context.__enter__({})'.format(self.how_used))
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        print('__exit__({})'.format(self.how_used))
+        print('Context.__exit__({})'.format(self.how_used))
 
 @Context('as decorator')
 def func(message):
     print(message)
- # __init__(as decorator)
+ # Context.__init__(as decorator)
 
 #%%
 with Context('as context manager'):
     print('Doing work in the context')
 
 func('Doing work in the wrapped function')
- # __init__() executes at definition !
+ # Context.__init__() executes at definition !
 
 #%%
 """
+!!!
 One difference with using the context manager as a decorator is that
-the value returned by __enter__() is not available inside the function being decorated,
+    the value returned by __enter__()
+    is not available
+    inside the function being decorated,
 unlike when using `with` and `as`.
+!!!
+
 Arguments passed to the decorated function are available in the usual way.
 
 __init__(as context manager)
@@ -337,12 +337,13 @@ ValueError: this exception is not handled
 def normal():
     print('  inside with statement')
 
+print('Normal:')
+normal()
+# notice that `value` = {} is not returned
+
 @make_context()
 def throw_error(err):
     raise err
-
-print('Normal:')
-normal()
 
 print('\nHandled error:')
 throw_error(RuntimeError('showing example of handling an error'))

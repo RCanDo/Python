@@ -28,8 +28,6 @@ file:
     usage:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
         terminal: False     # if the file is intended to be run in a terminal
-    name: cm-00.py
-    path: D:/ROBOCZY/Python/help/context_manager-with/
     date: 2019-12-11
     authors:
         - nick: rcando

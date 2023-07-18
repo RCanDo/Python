@@ -34,11 +34,11 @@ file:
 
 #%% This is block delimiter very useful for interactive work like e.g. in Spyder (part of Anaconda)
 
-import rcando.ak as ak
+import utils.ak as ak
 import os
 
-ROOT = "E:/"
-#ROOT = "~"
+#ROOT = "E:/"
+ROOT = "~"
 PYWORKS = os.path.join(ROOT, "ROBOCZY/Python")
 ##
 WD = os.path.join(PYWORKS, "datetime")  ## adjust !!!
@@ -61,23 +61,24 @@ dt.timedelta()
 dt.timezone()
 dt.tzinfo()
 
-dt.date # datetime.date
+dt.date     # datetime.date
 type(dt.date)   # type             ???
 dt.date(year, month, day)    # class
 dir(dt.date)
 
-dt.datetime
+dt.datetime     # datetime.datetime
 type(dt.datetime)  # type
 dt.datetime(year, month, day, hour, minute, second, microsecond, tzinfo, fold)   #
 dir(dt.datetime)
 
-dt.time # datetime.time
+dt.time     # datetime.time
 type(dt.time)   # type
 dt.time(hour, minute, second, microsecond, tzinfo, fold)
 dir(dt.time)
 
 dt.timedelta   # datetime.timedelta
 type(dt.timedelta)   # type
+dt.timedelta()
 dt.timedelta(minutes, hours, days, seconds, microseconds, weeks, fold)
 dir(dt.timedelta)
 
@@ -102,8 +103,10 @@ today.isoweekday()  # 1, ..., 6, 7  where  1 = Monday, ..., 7 = Sunday
 dir(today)
 
 dt.datetime.today()  # == dt.datetime.now()
+
+# !!! BUT !!!
 dt.date.now()        #! ERROR
-dt.time.now()        #! ERROR
+dt.time.now()        # !!! ERROR !!!  this is really strange !!!
 
 # %%
 d1 = dt.date(2021, 4, 12)
@@ -118,7 +121,7 @@ d1.month
 d1.day
 d1.resolution   # datetime.timedelta(days=1)
 d1.ctime()      #  'Mon Apr 12 00:00:00 2021'
-d1.isocalendar()   # (2021, 15, 1)
+d1.isocalendar()   # datetime.IsoCalendarDate(year=2021, week=15, weekday=1)
 d1.isoformat()     # '2021-04-12'
 d1.isoweekday()    # ISO:    1 = Monday, ..., 7 = Sunday,
 d1.weekday()       # Python: 0 = Monday, ..., 6 = Sunday,
@@ -187,8 +190,8 @@ t2.strftime(.)
 ## date and time together
 dt1 = dt.datetime(2021, 4, 12, 17, 30, 15, 123456)
 dt1   # datetime.datetime(2021, 4, 12, 17, 30, 15, 123456)
-str(dt1)   # '2021-04-12 17:30:15.123456'
-print(dt1) # 2021-04-12 17:30:15.123456
+str(dt1)    # '2021-04-12 17:30:15.123456'
+print(dt1)  # 2021-04-12 17:30:15.123456
 
 #%%
 dir(dt1)
@@ -198,6 +201,7 @@ dt1.timestamp()   #! 1618241415.123456  !!!
 
 dt1.resolution    # datetime.timedelta(microseconds=1)
 dt1.isoformat()   # '2021-04-12T17:30:15.123456'
+dt1.tzinfo  # None
 ...
 
 #%%

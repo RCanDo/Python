@@ -34,12 +34,6 @@ file:
               - arek@staart.pl
 """
 #%%
-pwd
-cd E:/ROBOCZY/Python/Numpy/
-cd ~/Works/Python/Numpy/
-ls
-
-#%%
 import numpy as np
 rand = np.random.RandomState(42)
 
@@ -63,13 +57,12 @@ Fancy indexing is conceptually simple:
 it means passing an array of indices to access multiple array elements at once.
 For example, consider the following array:
 """
-#%%
 x = rand.randint(100, size=10)
 x
-#%%
-[x[3], x[7], x[2]]
 
-x[[3, 7, 2]]
+#%%
+[x[3], x[7], x[2]]  # array([71, 86, 14])
+x[[3, 7, 2]]        # array([71, 86, 14])
 
 """
 When using fancy indexing, the shape of the result

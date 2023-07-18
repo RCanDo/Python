@@ -35,19 +35,13 @@ file:
 """
 
 #%%
-
-cd "D:/ROBOCZY/Python/Pandas/User Guide/"
-pwd
-ls
-
-#%%
 import numpy as np
 import pandas as pd
 
 #%%  see the file  04-merge_join_concatenate.py
 
-from rcando.ak.builtin import paste
-from rcando.ak.nppd import data_frame
+from utils.builtin import paste
+from utils.ak.nppd import data_frame
 
 #%% Splitting an object into groups
 #%%
@@ -446,7 +440,6 @@ dfg.agg(sum)
 dfg.size()             # Series
 
 #%%
-
 dfgab = df.groupby(['A', 'B'])
 dfgab.sum()
 dfgab.size()             # Series
@@ -461,7 +454,6 @@ dfgab.sum()
 dfgab.size()             # Series
 
 #%%
-
 dfg.agg([sum, np.mean, np.std])
 dfg['X'].agg([sum, np.mean, np.std])
 
@@ -482,9 +474,9 @@ dfg.agg([lambda x: min(x),
 """
 To support column-specific aggregation with control over the output column names,
 pandas accepts the special syntax in GroupBy.agg(), known as “named aggregation”, where
-- The keywords are the output column names
-- The values are tuples whose first element is the column to select
-  and the second element is the aggregation to apply to that column.
+- The  keywords  are the  output column names
+- The  values  are  tuples  whose first element is the  column  to select
+  and the second element is the  aggregation  to apply to that column.
   Pandas provides the pandas.NamedAgg namedtuple with the fields ['column', 'aggfunc']
   to make it clearer what the arguments are.
   As usual, the aggregation can be a callable or a string alias.
@@ -562,7 +554,6 @@ For example, suppose we wished to standardize the data within each group:
 #%%
 idx = pd.date_range('1999-10-01', periods=1100)
 ts = pd.Series(np.random.normal(.5, 2, 1100), idx)
-ts.head()
 ts.head(10)
 ts.tail()
 ts.count()   # 1100
@@ -716,6 +707,15 @@ df_re = pd.DataFrame({'date': pd.date_range(start='2016-01-01', periods=4, freq=
 df_re
 
 df_re.groupby('group').resample('1D').ffill()
+
+
+# %%
+df_re = pd.DataFrame({'date': pd.date_range(start='2016-01-01', periods=72, freq='H'),
+                      'group': np.random.choice([0, 1], 72),
+                      'val': np.random.sample(size=72)}).set_index('date')
+df_re
+
+df_re.groupby('group').resample('1D').agg(**{'val': pd.NamedAgg(column='val', aggfunc=np.mean)})
 
 #%%
 #%% Filtration

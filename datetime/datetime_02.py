@@ -56,10 +56,12 @@ import time
 
 time.time()           # float
 tt = time.time()
-tt                    # costant
+tt                    # 1681894459.7691448   costant
 
 t = time.localtime()
 t                     # constat
+# time.struct_time(tm_year=2023, tm_mon=4, tm_mday=19, tm_hour=10, tm_min=54, tm_sec=37, tm_wday=2, tm_yday=109, tm_isdst=1
+
 type(t)               # time.struct_time ==  .timetuple()            #!!! (*)
 time.strftime("%H:%M:%S", t)
 dir(t)
@@ -81,6 +83,7 @@ type(now)
 now.strftime("%H:%M:%S")
 now.strftime("%y-%m-%d")
 now.strftime("%Y-%m-%d")
+now.isoformat()
 
 dir(now)
 now.time()                # constant, only time

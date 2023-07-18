@@ -132,6 +132,7 @@ m = ChainMap(aa, bb)
 m['c']          # 'C'
 aa['c'] = 'E'
 m['c']          # 'E'
+m.maps          # [{'a': 'A', 'c': 'E'}, {'b': 'B', 'c': 'D'}]
 
 aa['p'] = 0
 m['p']          # 0
@@ -139,6 +140,7 @@ m['p']          # 0
 m['a'] = 'AA'
 m['a']          # 'AA'
 aa['a']         # 'AA'
+m.maps          # [{'a': 'AA', 'c': 'E', 'p': 0}, {'b': 'B', 'c': 'D'}]
 
 m['c'] = 1
 m['c']          # 1   but which 'c' ?
@@ -159,10 +161,10 @@ at the front of the maps list to make it easy to avoid modifying the existing un
 """
 m1 = ChainMap(aa, bb)
 m2 = m1.new_child()
-m2              # ChainMap({},         {'a': 'A', 'c': 'C'}, {'b': 'B', 'c': 'D'})
+m2              # ChainMap({},  {'a': 'AA', 'c': 1, 'p': 0}, {'b': 'B', 'c': 'D', 'a': 'BB'})
 
 m2['c'] = 'E'
-m2              # ChainMap({'c': 'E'}, {'a': 'A', 'c': 'C'}, {'b': 'B', 'c': 'D'})
+m2              # ChainMap({'c': 'E'},  {'a': 'AA', 'c': 1, 'p': 0},  {'b': 'B', 'c': 'D', 'a': 'BB'})
 
 #%%
 """

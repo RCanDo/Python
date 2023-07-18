@@ -13,7 +13,6 @@ sources:
       link: https://pymotw.com/3/io/index.html
       description: |
 file:
-    name: mesh_to_solid.py
     date: 2022-06-13
     authors:
         - email: arkadiusz.kasprzyk@quantup.pl

@@ -36,11 +36,6 @@ file:
 import os, sys, json
 
 #%%
-ROOT = json.load(open('root.json'))
-WD = os.path.join(ROOT['Works'], "Python/graphics/matplotlib/")   #!!! adjust
-os.chdir(WD)
-
-#%%
 WD = os.getcwd()
 print(WD)
 
@@ -51,13 +46,13 @@ import matplotlib.pyplot as plt
 #%%
 #%%
 plt.figure( num=None  #!!!  number or label for a figure;
-         , figsize=None, Width, height in inches
-         , dpi=None, float, default: :rc:`figure.dpi`
+         , figsize=None,        # Width, height in inches
+         , dpi=None, float,     # default: :rc:`figure.dpi`
          , facecolor=None
          , edgecolor=None
-         , frameon=True, If False, suppress drawing the figure frame.
+         , frameon=True,        # If False, suppress drawing the figure frame.
          , FigureClass=<class 'matplotlib.figure.Figure'>
-         , clear=False, If True and the figure already exists, then it is cleared.
+         , clear=False,         # If True and the figure already exists, then it is cleared.
          , tight_layout : bool or dict, default: :rc:`figure.autolayout`
             If ``False`` use *subplotpars*. If ``True`` adjust subplot
             parameters using `.tight_layout` with default padding.
@@ -268,11 +263,13 @@ num : integer or string, optional, default: None
      A `.pyplot.figure` keyword that sets the figure number or label.
 """
 
-f1 = plt.figure(1)
+f1 = plt.figure(1)      # == plt.figure(num=1);
+                        # num : int or str or `.Figure` or `.SubFigure`, optional
+                        #    A unique identifier for the figure.
 ax = f1.add_subplot()
 ax.plot([1,2,3], [3,1,2])
 
-f2, axs = plt.subplots(1, 2, figsize=(10, 5), num='qq') #!!! num = .. providing number or label for the _figure_
+f2, axs = plt.subplots(1, 2, figsize=(10, 5), num='qq')  #!!! num = .. providing number or label for the _figure_
 axs[0].scatter([1, 2, 3], [-1, 1, 0])
 axs[1].plot([1, 2, 3], [-1, 1, 0])
 
@@ -293,9 +290,15 @@ plt.gcf()   # <Figure size 640x480 with 1 Axes>   still Fig 1 is 'current'
 
 plt.figure('qq')    # now 'qq' first is active
 plt.plot([0, 2], [0, 0], '*:r')
+
 axs[0].plot([0, 2], [1, 1], marker='*', linestyle=':', color='g', linewidth=3)
-plt.plot([0, 2], [-1, -1], '*:b')
+plt.gca()   # get current axis, but...
+plt.plot([0, 2], [-1, -1], '*:b')   # still the last in the current figure ( axs[1] ) is active
 plt.plot([0, 2], [-1, -1], '*:k')   # always last axis ???
+
+axs[0].plot([1, 3], [1.5, 1.5], marker='*', linestyle='-', color='r', linewidth=3)
+plt.gca().plot([0, 0], [-1.5, 1.5], marker='*', linestyle='-', color='r', linewidth=3)
+# !  hence the last axis of the current figure is always "current axis"
 
 plt.close("all")
 

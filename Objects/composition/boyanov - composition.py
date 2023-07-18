@@ -63,7 +63,9 @@ class C1(object):
         self.c0 = C0(a, b)
 
     def __getattr__(self, attr):
-        return getattr(self.c0, attr)
+        if attr in self.c0.__dict__:
+            attr = getattr(self.c0, attr)
+        return attr
 
     @property
     def mean(self):

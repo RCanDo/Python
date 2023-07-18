@@ -42,16 +42,34 @@ file:
 """
 
 #%% This is block delimiter very useful for interactive work like e.g. in Spyder (part of Anaconda)
+import os
+from pathlib import Path
+
+# internal libraries (under proper wd - root project folder)
+
+# working directory set to [project_root] folder (where .git resides)
+# !!! it's assumed THIS file is anywhere in [project_root] or deeper !!!
+pth = Path().absolute()
+while not list(pth.glob(".git")):
+    pth = pth.parent
+os.chdir(pth)
+
+WD = os.getcwd()
+print(WD)
 
 #%%
-from rcando.ak.builtin import * #flatten, paste
-from rcando.ak.nppd import * #data_frame
+from common.ak.builtin import * #flatten, paste
+from common.ak.nppd import * #data_frame
 import os, sys, json
 
 #%%
-ROOT = json.load(open('root.json'))
-WD = os.path.join(ROOT['Works'], "Python/Pandas/User Guide/")   #!!! adjust
-os.chdir(WD)
+import common.builtin as bi
+import common.data_utils as du
+import common.df as cdf
+import common.plots as pl
+from common.project import Paths
+from common.config import pandas_options
+pandas_options()
 
 #%%
 WD = os.getcwd()

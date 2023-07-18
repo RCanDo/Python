@@ -58,11 +58,13 @@ print(now)
 
 dt.time(now.hour, now.minute, now.second)
 
+# notice that:
+dt.time.now()   # !!! ERROR !!!
+
 today = dt.date.today()
 today
 print(today)
 today.weekday()
-
 
 dt.datetime.combine(today, dt.time(now.hour, now.minute, now.second))
 

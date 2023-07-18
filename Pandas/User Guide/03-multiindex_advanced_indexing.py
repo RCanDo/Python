@@ -35,19 +35,11 @@ file:
 """
 
 #%%
-from rcando.ak.builtin import flatten, paste
-from rcando.ak.nppd import data_frame
-import os, json
-
-ROOTS = json.load(open('roots.json'))
-WD = os.path.join(ROOTS['Works'], "Python/Pandas/User Guide/")
-os.chdir(WD)
-
-print(os.getcwd())
-
-#%%
 import numpy as np
 import pandas as pd
+
+from utils.builtin import flatten, paste
+from utils.ak import data_frame
 
 #%%
 #pd.options.display.width = 0  # autodetects the size of your terminal window - does it work???
@@ -359,6 +351,7 @@ df.loc['one']    #! KeyError: 'one'
 #!!! Again, as for columns:
 df.xs('one', axis=0, level='second')    # very complicated
 df.xs('one', 0, 'second')    # very complicated
+df.xs('one', 0, 1)    # very complicated
 
 #??? HOW TO SWAP LEVELS within DF ???
 df.swaplevel(axis=0)

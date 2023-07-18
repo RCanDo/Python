@@ -178,7 +178,7 @@ df4 # all vaues retained -- ony labels of index changed!
 # now
 pd.concat([df1, df4], 1)
 
-#%% .append() == .concat(., axis=0)
+#%% .append() == .concat(., axis=0)         # Pandas < 2.
 df1.append(df2)
 
 # In the case of DataFrame, the indices must be disjoint

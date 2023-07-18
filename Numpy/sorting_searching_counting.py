@@ -48,9 +48,9 @@ counts
 dict(zip(unique, counts))
 
 #%%
-np.count_nonzero(a)
-np.count_nonzero(a == 0)
-np.count_nonzero(a == 1)
+np.count_nonzero(a)         # 8
+np.count_nonzero(a == 0)    # 7
+np.count_nonzero(a == 1)    # 4
 
 #%%
 (a == 0).sum()
@@ -99,6 +99,11 @@ but produces a result of the correct shape for a 0D array.
 The output of argwhere is not suitable for indexing arrays.
 For this purpose use `np.nonzero(a)` instead.
 """
+
+x = np.array([3, 2, 2, 0, 3, 4, 2, 4, 3])
+np.argwhere(x==4)
+# array([[5],
+#        [7]])
 
 x = np.arange(6).reshape(2,3)
 x
@@ -228,11 +233,12 @@ If minlength is specified, there will be at least this number of bins in the out
 (though it will be longer if necessary, depending on the contents of x).
 Each bin gives the number of occurrences of its index value in x.
 """
-np.bincount(np.arange(5))   #array([1, 1, 1, 1, 1])
+np.bincount(np.arange(5))   # array([1, 1, 1, 1, 1])
 np.bincount(np.array([0, 1, 1, 3, 2, 1, 7]))    # array([1, 3, 1, 1, 0, 0, 0, 1])
 
 x = np.array([0, 1, 1, 3, 2, 1, 7, 23])
 
+np.bincount(x)
 #! The input array needs to be of integer dtype, otherwise a TypeError is raised:
 np.bincount(np.arange(5, dtype=float))  #! TypeError: Cannot cast array data from dtype('float64') to dtype('int64') according to the rule 'safe'
 
@@ -250,6 +256,9 @@ np.bincount(x,  weights=w)  # array([ 0.3,  0.7,  1.1])
 
 # hence len(x) == len(w) !!! else
 np.bincount(x,  weights=[.1, .2])  #! ValueError: The weights and list don't have the same length.
+
+# ! nonitegers are rounded
+np.bincount([0, 0.5, 1.1])  # array([2, 1])
 
 #%%
 
