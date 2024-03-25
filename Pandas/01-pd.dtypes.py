@@ -15,6 +15,14 @@ remarks:
     - see also next file  02-negation.py
 todo:
 sources:
+    - title: pandas arrays, scalars, and data types
+      link: https://pandas.pydata.org/docs/reference/arrays.html
+    - title: dtypes
+      link: https://pandas.pydata.org/docs/user_guide/basics.html#dtypes
+    - title: object conversion
+      link: https://pandas.pydata.org/docs/user_guide/basics.html#object-conversion
+    - title: DataFrame.convert_dtypes      !!!
+      link: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.convert_dtypes.html#pandas.DataFrame.convert_dtypes
 file:
     usage:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
@@ -31,8 +39,8 @@ file:
 #%%
 import numpy as np
 import pandas as pd
-from rcando.ak.builtin import flatten, paste
-from rcando.ak.nppd import data_frame
+from utils.builtin import flatten, paste
+from utils.ak import data_frame
 
 #%%
 """Conclusion:
@@ -42,7 +50,6 @@ type, usually 'str' (which is 'object' in pd.DataFrame).
 """
 
 #%%
-
 df = pd.DataFrame([[1, 2], [3, 4]]).add_prefix('V')
 df
 df.dtypes
@@ -91,7 +98,8 @@ dtype: object
 # we need to do manual conversions column by column... (no shortcuts!!!)
 df['V0'] = df['V0'].astype('str')
 df['V1'] = df['V1'].astype('int')
-
+df
+df.dtypes
 # notice that 'str' is the same as 'object';
 # by default everything is 'object' i.e. 'str'.
 
@@ -109,7 +117,6 @@ df['V1'] = pd.to_object(df['V1'])  #! AttributeError: module 'pandas' has no att
 df = pd.DataFrame(np.array([[1, 2], [2, 4]])).add_prefix('V')
 df.dtypes
 df['V0'] = df['V0'].astype('str')
-
 
 #%% sth more complicated
 
@@ -137,7 +144,10 @@ label            object
 data     datetime64[ns]
 """
 # the same as
-df['data'] = df['date'].astype('datetime64')   #! tricky name!!!
+df['data'] = df['date'].astype('datetime64')    # ! TypeError: Casting to unit-less dtype 'datetime64' is not supported.
+                                                # Pass e.g. 'datetime64[ns]' instead.
+df['data'] = df['date'].astype('datetime64[s]') # tricky name!!!
+df.dtypes
 
 #%% when using np.array() things become more complicated
 
@@ -155,7 +165,7 @@ value    object
 label    object
 """
 # the best way to set the proper types is to write some loop:
-types = ['datetime64', 'int', 'float', 'str']
+types = ['datetime64[s]', 'int', 'float', 'str']
 for c, t in zip(df.columns, types):
     df[c] = df[c].astype(t)
 
@@ -163,4 +173,6 @@ df.dtypes
 df
 
 #%%
+df['nr'] = df['nr'].astype('float')
+
 #%%

@@ -40,17 +40,17 @@ s
 ~s
 -s
 np.invert(s)
-pd.np.invert(s)
+pd.np.invert(s)     # ! AttributeError: module 'pandas' has no attribute 'np' (but it used to have)
 
 #%%
 %timeit ~s
-# 84.5 µs ± 2.06 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+# 15.2 µs ± 181 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
 
 %timeit (-s)
-# 93.8 µs ± 907 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+# 16.5 µs ± 233 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
 
 %timeit np.invert(s)
-# 105 µs ± 1.65 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+# 45.2 µs ± 811 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 
 #%% in numpy
 
@@ -61,6 +61,7 @@ np.invert(arr)
 
 -arr  #! TypeError: The numpy boolean negative, the `-` operator, is not supported,
       # use the `~` operator or the logical_not function instead.
+np.logical_not(arr)
 
 np.invert([True, False, True])
 np.invert((True, False, True))
@@ -68,27 +69,30 @@ np.invert({True, False, True})   #! TypeError: bad operand type for unary ~: 'se
 
 #%%
 df = pd.DataFrame({'A':[True, False, False], 'B':[True, False, True]})
+df
 df.dtypes
 
 ~df
 -df
 np.invert(df)
-pd.np.invert(df)
+pd.np.invert(df)    # ! AttributeError: module 'pandas' has no attribute 'np'
 
 #%% beware of NaNs
 """
 just wanted to add a warning that your mask needs to be dtype 'bool', not 'object'.
-Ie your mask can't have ever had any nan's. !!!
+I.e. your mask can't have ever had any nan's. !!!
 See here - even if your mask is nan-free now, it will remain 'object' type.
 
 The inverse of an 'object' series won't throw an error,
 instead you'll get a garbage mask of ints that won't work as you expect.
 """
 df = pd.DataFrame({'A':[True, False, np.nan], 'B':[True, False, True]})
+df
 df.dtypes
 ~df['A']      #! TypeError: bad operand type for unary ~: 'float'
 
 df.dropna(inplace=True)
+df
 df.dtypes
 ~df['A']      #! no error but col A is still object==string hence ~ gives int...
 

@@ -1,9 +1,6 @@
 #! python3
 """
-# This is YAML, see: https://yaml.org/spec/1.2/spec.html#Preview
-
 title: What is the difference between iterators and generators?
-subtitle:
 version: 1.0
 type: examples and explanations
 keywords: [iterators, generators, yield]
@@ -13,18 +10,7 @@ sources:
       usage: examples and explanations
       remark: READ IT!!
 file:
-    usage:
-        interactive: True   # if the file is intended to be run interactively e.g. in Spyder
-        terminal: False     # if the file is intended to be run in a terminal
-    name: iterators_vs_generators.py
-    path: D:/ROBOCZY/Python/help/
     date: 2019-07-13
-    authors:
-        - nick: RCanDo
-          fullname: Arkadiusz Kasprzyk
-          email:
-              - arek@staart.pl
-              - akasp666@google.com
 """
 
 #%% 1.
@@ -51,31 +37,38 @@ is basically "done for you" by the frame getting suspended and resumed.
 For example, a generator such as:
 """
 def squares(start, stop):
+    """
+    this is __generator function__ not a __generator__ itself;
+    __generator__ is what this function returns;
+    """
     for i in range(start, stop):
         yield i * i
 
-dir(squares)        #!!! no __next__ nor __iter__ because this is a _generator function_  !!!
-dir(squares(2, 5))  #!!! "__next__" and "__iter__"  !!!
+dir(squares)        #! no __next__ nor __iter__ because this is a _generator function_  !
+dir(squares(2, 5))  #! "__next__" and "__iter__"  !
 
-generator = squares(2, 5)
-dir(generator)  # "__next__" and "__iter__"
+gen = squares(2, 5)
+dir(gen)    # "__next__" and "__iter__"
+gen         # <generator object squares at ...>
+type(gen)   # generator
 
-next(generator)
-[k for k in generator]
-next(generator)  # StopIteration
-[k for k in generator]  # empty because `generator` is fully 'utilised'
+next(gen)
+[k for k in gen]
+next(gen)  # StopIteration
+[k for k in gen]  # empty because `generator` is fully 'utilised'
 
 [k for k in squares(2, 5)]  # generator here is recreated
 
 """
-or the equivalent generator expression (genexp)
+or the equivalent  generator expression (genexp)  which returns __generator__
 """
-generator = (i*i for i in range(2, 5))
-dir(generator)  # "__next__" and "__iter__"
+gen = (i*i for i in range(2, 5))
+dir(gen)    # "__next__" and "__iter__"
+type(gen)   # generator
 
-[k for k in generator]
-next(generator)  # StopIteration
-[k for k in generator]  # empty
+[k for k in gen]
+next(gen)  # StopIteration
+[k for k in gen]  # empty
 
 #%% the simplest generator function:
 
@@ -88,7 +81,8 @@ def gen0():
 dir(gen0)   # no __next__ nor __iter__ because this is a _generator function_
 gen = gen0()
 dir(gen)    # __next__ and __iter__  present :)
-gen    # _generator_
+gen         # <generator object gen0 at ...>
+type(gen)   # generator
 
 next(gen)  # 1
 next(gen)  # 2
@@ -107,6 +101,7 @@ gen = gen0()
 #%% even easier way of creating iterators:
 
 itr = iter([1, 3, 2, 5, 0])
+type(itr)   # list_iterator
 dir(itr)    # __next__ and __iter__  present :)
 next(itr)
 next(itr)
@@ -132,6 +127,8 @@ def random_gen(seed=0):
         yield rnd.randint(0, 100)
 
 rg = random_gen(0)
+rg          # <generator object squares at ...>
+type(rg)    # generator
 next(rg)
 
 #  [k for k in rg]   !!! DANGER !!! infinite loop !!!
@@ -162,6 +159,9 @@ def sqrt_gen(number):
 
 sqrt = sqrt_gen(9)
 next(sqrt)
+
+type(sqrt)      # generator
+dir(sqrt)       # __next__ and __iter__  present
 
 [r for (k, r) in zip(range(10), sqrt_gen(2))]
 [r for r in islice(sqrt_gen(2), 10)]  # the same but looks better
@@ -247,6 +247,7 @@ class Squares(object):
 iterator = Squares(2, 5)
 
 #%%
+type(iterator)   # __main__.Squares
 dir(iterator)    #
 iterator.current()
 next(iterator)
@@ -294,6 +295,7 @@ pitera
 # NOTICE exactly the same address -- all three are the same object !
 
 [k for k in zip(*pitera)]
+list(zip(*pitera))      # "
 
 #!!! Notice that iter() is essential here !!!
 [k for k in zip(*([a]*3))]

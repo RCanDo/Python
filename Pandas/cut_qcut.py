@@ -123,6 +123,7 @@ pd.qcut(x,
         precision,
         deplicates
        )
+help(pd.qcut)
 
 #%%
 pd.qcut(range(5), 4)

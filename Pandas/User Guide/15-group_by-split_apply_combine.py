@@ -42,6 +42,8 @@ import pandas as pd
 
 from utils.builtin import paste
 from utils.ak.nppd import data_frame
+from utils.config import pandas_options
+pandas_options()
 
 #%% Splitting an object into groups
 #%%
@@ -75,8 +77,10 @@ dfg.mean()
 
 #%%
 dir(dfg)
-dfg.get_group('bird')
 dfg.groups
+dfg.get_group('bird')                                                           #!!!
+df.loc[dfg.groups['bird']]
+
 
 #%%
 dfg = df.groupby('order')
@@ -124,7 +128,7 @@ dfg.nunique()
 
 # any aggregate -- outer functions:
 dfg.agg(len)
-dfg.agg(lambda x: sum(np.log(abs(x))))
+dfg.agg(lambda x: sum(np.log(abs(x))))      # TypeError: bad operand type for abs(): 'str'
 dfg.agg(lambda x: (len(x), len(x)**2))
 dfg.agg(lambda x: (min(x), max(x)))
 
@@ -154,13 +158,13 @@ sg.sum()
 
 sg.groups
 sg.groups.keys()
-s1[sg.groups['a']]
 sg.get_group('a')
+s1[sg.groups['a']]      # .iloc not necessary as it's Series
 
 #%%
 """
 Note
-A string passed to groupby may refer to either a column or an index level.
+A string passed to groupby may refer to either a  column  or an  index level.
 If a string matches both a column name and an index level name,
 a ValueError will be raised.
 """
@@ -173,7 +177,7 @@ df
 df2 = df.set_index(list('AB'))
 df2
 
-df2g = df2.groupby(level='B')
+df2g = df2.groupby(level='B')                               #!!!  grouping wrt index
 df2g.sum()
 df2g = df2.groupby(level=df2.index.names.difference(['B']))
 df2g.sum()
@@ -207,7 +211,7 @@ If a non-unique index is used as the group key in a groupby operation,
 all values for the same index value will be considered to be in one group
 and thus the output of aggregation functions will only contain unique index values:
 """
-lst = [1, 2, 3]*2
+lst = [1, 2, 3] * 2
 ss = pd.Series([1, 2, 3, 10, 20, 30], lst)
 ss
 ss[1]
@@ -218,7 +222,7 @@ ss[:5]
 ss[3]
 ss[3][:1]
 
-ssg = ss.groupby(level=0)
+ssg = ss.groupby(level=0)                                   #!!!  grouping wrt index
 ssg.count()
 ssg.nunique()
 ssg.last()
@@ -258,16 +262,17 @@ df3.groupby(['X']).get_group('B')
 #%% GroupBy object attributes
 """
 The groups attribute is a dict
-whose keys are the computed unique groups and corresponding   # ???
-values being the axis labels belonging to each group.         # ???
+whose keys are the computed unique groups                                                   # ???
+and corresponding values being the axis labels (indices!) belonging to each group.          # ???
 In the above example we have:
 """
 df
-df.groupby('A').groups
-df.groupby(get_letter_type, axis=1).groups
+df.groupby('A').groups                      # {'bar': [1, 3, 5], 'foo': [0, 2, 4, 6, 7]}
+df.groupby(get_letter_type, axis=1).groups  # {'consonant': ['B', 'C', 'D'], 'vowel': ['A']}
 
 dfg = df.groupby(['A', 'B'])
 dfg.groups
+# {('bar', 'one'): [1], ('bar', 'three'): [3], ('bar', 'two'): [5], ('foo', 'one'): [0, 6], ('foo', 'three'): [7], ('foo', 'two'): [2, 4]}
 
 #%%
 df = pd.DataFrame(  [
@@ -286,7 +291,7 @@ df = pd.DataFrame(  [
 df
 df.dtypes
 ## it's always better to keep proper types
-df['date'] = df['date'].astype('datetime64')
+df['date'] = df['date'].astype('datetime64[s]')
 # or
 df['date'] = pd.to_datetime(df['date'])
 
@@ -312,15 +317,23 @@ index = pd.MultiIndex.from_arrays(arrays, names=['first', 'second'])
 ss = pd.Series(np.random.randint(0, 10, 8), index=index)
 ss
 
-ssg = ss.groupby(level=0)
+ssg = ss.groupby(level=0)                                   #!!!  grouping wrt index
 ssg.sum()
 ssg.min()
 ssg.max()
+ssg.groups
+# {'bar': [('bar', 'one'), ('bar', 'two')],
+#  'baz': [('baz', 'one'), ('baz', 'two')],
+#  'foo': [('foo', 'one'), ('foo', 'two')],
+#  'qux': [('qux', 'one'), ('qux', 'two')]}
 
 ssg = ss.groupby(level=1)
 ssg.sum()
+ssg.groups
+# {'one': [('bar', 'one'), ('baz', 'one'), ('foo', 'one'), ('qux', 'one')],
+#  'two': [('bar', 'two'), ('baz', 'two'), ('foo', 'two'), ('qux', 'two')]}
 
-ssg = ss.groupby(level=[0, 1])
+ssg = ss.groupby(level=[0, 1])                              #!!!  grouping wrt index
 ssg.sum()
 
 ssg = ss.groupby(level='second')
@@ -329,28 +342,33 @@ ssg.sum()
 ssg = ss.groupby(['first', 'second'])
 ssg.sum()
 
-
-#%% Grouping DataFrame with Index levels and columns
-
+#%% !!!  Grouping DataFrame with  Index levels  and  columns  !!!
 arrays = [['bar', 'bar', 'baz', 'baz', 'foo', 'foo', 'qux', 'qux'],
           ['one', 'two', 'one', 'two', 'one', 'two', 'one', 'two']]
 
-index = pd.MultiIndex.from_arrays(arrays, names=['first', 'second'])
+index = pd.MultiIndex.from_arrays(arrays, names=['level_1', 'level_2'])
 
 df = pd.DataFrame({'A': [1, 1, 1, 1, 2, 2, 3, 3],
                    'B': np.arange(8)},
                     index=index)
 df
 
-#%% Grouping DataFrame with Index levels and columns
 """
 A DataFrame may be grouped by
-!!!  a combination of columns and index levels
+    !!!  a combination of columns and index levels  !!!
 by specifying the column names as strings and the index levels as  pd.Grouper()  objects.
 """
-df.groupby([pd.Grouper(level=1), 'A']).sum()
-df.groupby([pd.Grouper(level='second'), 'A']).sum()
-df.groupby(['second', 'A']).sum()     ## .Grouper() not needed when index levels are named
+df.groupby([pd.Grouper(level=1), 'A']).sum()                                    # !!!
+df.groupby([pd.Grouper(level=1), 'A']).groups
+# {('one', 1): [('bar', 'one'), ('baz', 'one')],
+#  ('one', 2): [('foo', 'one')],
+#  ('one', 3): [('qux', 'one')],
+#  ('two', 1): [('bar', 'two'), ('baz', 'two')],
+#  ('two', 2): [('foo', 'two')],
+#  ('two', 3): [('qux', 'two')]}
+
+df.groupby([pd.Grouper(level='level_2'), 'A']).sum()
+df.groupby(['level_2', 'A']).sum()     ## .Grouper() not needed when index levels are named
 
 #%% DataFrame column selection in GroupBy
 """
@@ -369,6 +387,7 @@ df
 grouped = df.groupby(['A'])
 grouped.sum()
 grouped.groups
+# {'a0': [0, 1, 2, 3], 'a1': [4, 5, 6, 7], 'a2': [8, 9, 10, 11]}
 
 grouped_C = grouped['C']
 grouped_C
@@ -389,12 +408,13 @@ grouped_B.sum()
 With the GroupBy object in hand, iterating through the grouped data is very natural
 and functions similarly to itertools.groupby():
 """
-
 grouped = df.groupby('A')
 grouped.groups
+# {'a0': [0, 1, 2, 3], 'a1': [4, 5, 6, 7], 'a2': [8, 9, 10, 11]}
 grouped.groups['a1']
+# Index([4, 5, 6, 7], dtype='int64')
 
-for name, group in grouped:      # !!!
+for name, group in grouped:                                                     # !!!
     print(name)
     print(group)
 
@@ -407,11 +427,8 @@ for name, group in df.groupby(['A', 'B']):
 
 #%% Selecting a group
 #%%
-
 grouped.get_group('a2')
-
 df.groupby(['A', 'B']).get_group(('a2', 'b2'))
-
 
 #%% Aggregation
 #%%
@@ -423,11 +440,10 @@ These operations are similar to the
 [window functions API](https://pandas.pydata.org/pandas-docs/stable/user_guide/computation.html#stats-aggregate),
 and [resample API](https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#timeseries-aggregate).
 """
-
 df
 
 dfg = df.groupby('A')
-dfg.size()             # Series
+dfg.size()             # Series                                                 # !!!
 dfg.describe()
 
 dfg.aggregate(sum)
@@ -454,21 +470,24 @@ dfgab.sum()
 dfgab.size()             # Series
 
 #%%
-dfg.agg([sum, np.mean, np.std])
+dfg.agg([sum, np.mean, np.std])             # ! TypeError: Could not convert b0b1b2b0 to numeric
 dfg['X'].agg([sum, np.mean, np.std])
+dfg[['X', 'Y']].agg([sum, np.mean, np.std])
 
-dfg.agg([sum, np.mean, np.std]).rename(columns={'sum':'agg1', 'mean':'agg2', 'std':'agg3'})
+dfgxy = dfg[['X', 'Y']]
+
+dfgxy.agg([sum, np.mean, np.std]).rename(columns={'sum':'agg1', 'mean':'agg2', 'std':'agg3'})
 # cannot be done via list:
-dfg.agg([sum, np.mean, np.std]).rename(columns=['agg1', 'agg2', 'agg3']) #! TypeError: 'list' object is not callable
+dfgxy.agg([sum, np.mean, np.std]).rename(columns=['agg1', 'agg2', 'agg3']) #! TypeError: 'list' object is not callable
 
 #%%
-dfg.agg([sum, sum])  #! SpecificationError: Function names must be unique, found multiple named sum
+dfgxy.agg([sum, sum])  #! SpecificationError: Function names must be unique, found multiple named sum
 # but you may use lambdas
-dfg.agg([lambda x: min(x),
-         lambda x: np.mean(x)])
+dfgxy.agg([lambda x: min(x),
+           lambda x: np.mean(x)])
 # so this will work
-dfg.agg([lambda x: min(x),
-         lambda x: min(x)])
+dfgxy.agg([lambda x: min(x),
+           lambda x: min(x)])
 
 #%% Named aggregation
 """
@@ -507,7 +526,7 @@ animals_kind.agg(**{'total weight': pd.NamedAgg('weight', sum),
 
 #%% agg for Series -- no more need for column name within agg
 animals_kind['height'].agg(min_height='min', max_height='max')
-animals_kind.height.agg(**{'min height':min, 'max height':max})
+animals_kind.height.agg(**{'min height': min, 'max height': max})
 
 #%%  when output names are not important you may simply write
 

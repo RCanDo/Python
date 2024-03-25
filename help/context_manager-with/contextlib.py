@@ -40,12 +40,12 @@ import os, sys, json
 from contextlib import ContextDecorator, contextmanager
 
 #%%
-with open('/tmp/pymotw.txt', 'wt') as f:
+with open('pymotw.txt', 'wt') as f:
     f.write('contents go here')
 # file is automatically closed
 # (but not removed! for real temporary file use  tempfile  lib)
 
-os.listdir("/tmp")
+os.listdir(".")
 
 #%%
 """
@@ -70,7 +70,7 @@ class Context:
         print('__enter__()')
         return self                  #!!!
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb):      # type, value, traceback
         print('__exit__()')
 
 
@@ -137,10 +137,10 @@ with Context() as c:
 """
 Context.__init__()
 Context.__enter__()
-WithinContext.__init__(<__main__.Context object at 0x101f046d8>)
+WithinContext.__init__(<__main__.Context object at 0x7f90844b56f0>)
+WithinContext.__del__               # ??? why here ???
 WithinContext.do_something()
 Context.__exit__()
-WithinContext.__del__
 
 The value associated with the variable `c` is the object returned by `__enter__()`,
 which is not necessarily the Context instance created in the `with` statement.        !!!
@@ -168,15 +168,17 @@ class Context:
         return self.handle_error                # !!!
 
 
+# %%
 with Context(True):
     raise RuntimeError('error message handled')
     # if `handle_error = True` error is handled (supressed and no info)
+print('qq')     # is printed
 
-print()
-
+# %%
 with Context(False):
     raise RuntimeError('error message propagated')
     # if `handle_error = False` error is propagated (breaks execution and info displayed)
+print('qq')     # not printed as error was propagated (not supressed) -- execution of the whole program broken
 
 #%%
 """
@@ -223,6 +225,7 @@ class Context(ContextDecorator):
 
     def __init__(self, how_used):
         self.how_used = how_used
+        self.value = 1
         print('Context.__init__({})'.format(how_used))
 
     def __enter__(self):
@@ -232,17 +235,34 @@ class Context(ContextDecorator):
     def __exit__(self, exc_type, exc_val, exc_tb):
         print('Context.__exit__({})'.format(self.how_used))
 
+with Context('as context manager') as c:
+    print('Doing work in the context')
+    print(c.value)
+
+# %%
+"""
+Context.__init__(as context manager)
+Context.__enter__(as context manager)
+Doing work in the context
+1
+Context.__exit__(as context manager)
+"""
+
+#%%
 @Context('as decorator')
 def func(message):
     print(message)
  # Context.__init__(as decorator)
 
-#%%
-with Context('as context manager'):
-    print('Doing work in the context')
-
 func('Doing work in the wrapped function')
  # Context.__init__() executes at definition !
+
+# %%
+"""
+Context.__enter__(as decorator)
+Doing work in the wrapped function
+Context.__exit__(as decorator)
+"""
 
 #%%
 """
@@ -254,22 +274,14 @@ One difference with using the context manager as a decorator is that
 unlike when using `with` and `as`.
 !!!
 
+??? Hence what's the point of such context ??? (ak)
+! Give some sensible useful example !
+
 Arguments passed to the decorated function are available in the usual way.
-
-__init__(as context manager)
-__enter__(as context manager)
-Doing work in the context
-__exit__(as context manager)
-
-__enter__(as decorator)
-Doing work in the wrapped function
-__exit__(as decorator)
 """
 
 #%%
 #%%  From Generator to Context Manager
-
-#%%
 """
 Creating context managers the traditional way,
 by writing a class with __enter__() and __exit__() methods, is not difficult.
@@ -284,47 +296,58 @@ so it also works as a function decorator.
 from contextlib import contextmanager
 
 @contextmanager
-def make_context():
-    print('  entering')
-    try:
-        yield {}    # not accesible when `make_context()` used as decorator
+def make_context(arg):
+    try:                # __enter__(self):
+        print('  entering')
+        print("  ...do sth on entering the context...")
+        # ...           #     ...
+        yield {arg,}    #     return {arg,}   # not accesible when `make_context()` used as decorator
     except RuntimeError as err:
         print('  ERROR:', err)
-    finally:
+    finally:            # __exit__(self, ...)
         print('  exiting')
 
 #%% with ... as ...
 
 print('Normal:')
-with make_context() as value:
+with make_context(1) as value:
     print('  inside with statement:', value)
 
-print('\nHandled error:')
-with make_context() as value:
+print('Handled error:')
+with make_context(1) as value:
     raise RuntimeError('showing example of handling an error')
+    print('  inside with statement:', value)
 
-print('\nUnhandled error:')
-with make_context() as value:
+print('Unhandled error:')
+with make_context(1) as value:
     raise ValueError('this exception is not handled')
+    print('  inside with statement:', value)
 
 #%%
 """
-The generator should initialize the context, yield exactly one time, then clean up the context.
+The generator should
+    initialize the context,
+    yield exactly one time,
+    then clean up the context.
 The value yielded, if any, is bound to the variable in the `as` clause of the `with` statement.
+
 Exceptions from within the `with` block are re-raised inside the generator, so they can be handled there.
 
 Normal:
   entering
-  inside with statement: {}
+  ...do sth on entering the context...
+  inside with statement: {1}
   exiting
 
 Handled error:
   entering
+  ...do sth on entering the context...
   ERROR: showing example of handling an error
   exiting
 
 Unhandled error:
   entering
+  ...do sth on entering the context...
   exiting
 Traceback (most recent call last):
   File "contextlib_contextmanager.py", line 33, in <module>
@@ -333,22 +356,22 @@ ValueError: this exception is not handled
 """
 #%%  as decorator
 
-@make_context()
+@make_context(1)
 def normal():
     print('  inside with statement')
 
 print('Normal:')
 normal()
-# notice that `value` = {} is not returned
+# notice that `value` = {1} is not returned
 
-@make_context()
+@make_context(1)
 def throw_error(err):
     raise err
 
-print('\nHandled error:')
+print('Handled error:')
 throw_error(RuntimeError('showing example of handling an error'))
 
-print('\nUnhandled error:')
+print('Unhandled error:')
 throw_error(ValueError('this exception is not handled'))
 
 #%%
@@ -361,16 +384,19 @@ as demonstrated by throw_error() in this example.
 
 Normal:
   entering
+  ...do sth on entering the context...
   inside with statement
   exiting
 
 Handled error:
   entering
+  ...do sth on entering the context...
   ERROR: showing example of handling an error
   exiting
 
 Unhandled error:
   entering
+  ...do sth on entering the context...
   exiting
 Traceback (most recent call last):
   File "contextlib_contextmanager_decorator.py", line 43, in <module>
@@ -384,8 +410,6 @@ ValueError: this exception is not handled
 
 #%%
 #%%  Closing Open Handles
-
-#%%
 """
 The file class supports the context manager API directly,
 but some other objects that represent open handles do not.
@@ -415,7 +439,7 @@ print('  outside with statement: {}'.format(door.status))
 
 print('  outside with statement: {}'.format(Door().status))
 
-print('\nError handling example:')
+print('Error handling example:')
 try:
     with closing(Door()) as door:
         print('  raising from inside with statement')
@@ -438,7 +462,20 @@ Error handling example:
   raising from inside with statement
   close()
   Had an error: error message
+
+Hence it works like __enter__(...) of contextmanager returns False -- no error suppressing :(
+help(closing)
+
+? What's the point of using it ?
+Very little "simplification" while less explicit code. Nonsense!
 """
+
+# %%
+with closing(Door()) as door:
+    print('  raising from inside with statement')
+    raise RuntimeError('error message')
+print('sth after')      # not printed as non suppresed error occured within `with` statement.
+
 
 #%%
 #%%  Ignoring Exceptions
@@ -466,7 +503,7 @@ except NonFatalError:
 
 print('continue: NonFatalError ignored')
 
-# In this case, the operation fails and the error is ignored.
+# In this case, the operation fails but the error is ignored.
 
 #%%
 """
@@ -478,10 +515,11 @@ from contextlib import suppress
 with suppress(NonFatalError):
     print('trying non-idempotent operation')
     non_idempotent_operation()
-    print('succeeded!')
+    print('succeeded!')         # not printed
 
-print('continue: NonFatalError ignored')
+print('continue: NonFatalError ignored')    # printed but only if NonFatalError occures (or no error)
 
+# %%
 #%% Redirecting Output Streams
 """
 Poorly designed library code may write directly to sys.stdout or sys.stderr,

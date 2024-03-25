@@ -98,6 +98,9 @@ chr(122)
 
 {k: chr(k) for k in range(256)}    # dict
 
+# the reverse is
+ord('A')
+
 #%%
 """ RECURSION
 """

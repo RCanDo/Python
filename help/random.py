@@ -54,12 +54,17 @@ radar.random_datetime()
 # %%
 # %%
 import numpy as np
+import random
 
 #%%
 dir(np.random)
+dir(random)
 
-#%%
+# they differ
 help(np.random.random_sample)
+help(random.sample)
+
+# %%
 # Return random floats in the half-open interval [0.0, 1.0).
 np.random.random_sample()
 np.random.sample()             # just alias !

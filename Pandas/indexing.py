@@ -1,12 +1,135 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Jan 20 13:45:28 2018
+Created on Wed Feb 28 08:10:45 2024
 
-@author: kasprark
+@author: arek
+"""
+# %%
+import numpy as np
+import pandas as pd
+
+# %%
+np.random.seed(1)
+df = pd.DataFrame(
+    {'A': list('abcdefgh'), 'B': range(8), 'C': np.random.randint(-8, 8, 8), 'D': np.random.sample(8)},
+    index=[2,4,3,5,8,7,0,9])
+df
+"""
+   A  B  C         D
+2  a  0 -3  0.146756
+4  b  1  3  0.092339
+3  c  2  4  0.186260
+5  d  3  0  0.345561
+8  e  4  7  0.396767
+7  f  5  1  0.538817
+0  g  6  3  0.419195
+9  h  7 -3  0.685220
+"""
+# %%
+df[:4]
+"""
+   A  B  C         D
+2  a  0 -3  0.146756
+4  b  1  3  0.092339
+3  c  2  4  0.186260
+5  d  3  0  0.345561
+"""
+df.loc[:4]              # !!!
+"""
+   A  B  C         D
+2  a  0 -3  0.146756
+4  b  1  3  0.092339
+"""
+df.iloc[:4]
+"""
+   A  B  C         D
+2  a  0 -3  0.146756
+4  b  1  3  0.092339
+3  c  2  4  0.186260
+5  d  3  0  0.345561
 """
 
-## http://pandas.pydata.org/pandas-docs/stable/indexing.html
+# %% boolean index -- on index by default
+df.index.isin([3,7,9])
+# array([False, False,  True, False, False,  True, False,  True])
+df[df.index.isin([3,7,9])]
+"""
+   A  B  C         D
+3  c  2  4  0.186260
+7  f  5  1  0.538817
+9  h  7 -3  0.685220
+"""
 
+df.loc[df.index.isin([3,7,9])]
+df.iloc[df.index.isin([3,7,9])]
+"""
+   A  B  C         D
+3  c  2  4  0.186260
+7  f  5  1  0.538817
+9  h  7 -3  0.685220
+"""
+
+# on columns
+df.columns.isin(list('BC'))
+# array([False,  True,  True, False])
+df[df.columns.isin(list('BC'))]     # ! ValueError: Item wrong length 4 instead of 8.
+
+df.loc[:, df.columns.isin(list('BC'))]
+df.iloc[:, df.columns.isin(list('BC'))]
+"""
+   B  C
+2  0 -3
+4  1  3
+3  2  4
+5  3  0
+8  4  7
+7  5  1
+0  6  3
+9  7 -3
+"""
+
+# %%
+df[[1,3]]       # ! KeyError: "None of [Index([1, 3], dtype='int64')] are in the [columns]"
+
+df.loc[[1,3]]   # ! KeyError: '[1] not in index'
+df.loc[[2,3]]
+"""
+   A  B  C         D
+2  a  0 -3  0.146756
+3  c  2  4  0.186260
+"""
+
+df.iloc[[1,3]]
+"""
+   A  B  C         D
+4  b  1  3  0.092339
+5  d  3  0  0.345561
+"""
+df.iloc[[2,3]]
+"""
+   A  B  C         D
+3  c  2  4  0.186260
+5  d  3  0  0.345561
+"""
+
+# %% on columns
+df.loc[:,[2,3]]     # ! KeyError: "None of [Index([2, 3], dtype='int64')] are in the [columns]"
+df.iloc[:,[2,3]]
+"""
+   C         D
+2 -3  0.146756
+4  3  0.092339
+3  4  0.186260
+5  0  0.345561
+8  7  0.396767
+7  1  0.538817
+0  3  0.419195
+9 -3  0.685220
+"""
+# %%
+
+# %% other
 #%%
 %reset
 import importlib ## may come in handy
@@ -122,4 +245,3 @@ x.z    ## .z is just another attribute
 Slicing ranges
 --------------
 '''
-

@@ -42,13 +42,19 @@ import io
 
 # Writing to a buffer
 output = io.StringIO()
-output.write('This goes into the buffer. ')
-print('And so does this.', file=output)
+output.write('This goes into the buffer. ')     # no newline
+print('And so does this.', file=output)         # newline
+print('And so does this!!!', file=output)
 
 # Retrieve the value written
 print(output.getvalue())
 
+dir(output)
+
 output.close()  # discard buffer memory
+print(output.getvalue())    # ! ValueError: I/O operation on closed file
+
+output  # but it still exists
 
 #%% Initialize a read buffer
 input = io.StringIO('Inital value for read buffer')
@@ -63,6 +69,8 @@ print(input.read())
 input = io.StringIO('Inital value for read buffer')
 for l in input.readlines(): print(l)
 # only once, works like iterator
+
+print(input.getvalue())
 
 #%%
 """

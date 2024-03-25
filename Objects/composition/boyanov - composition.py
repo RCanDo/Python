@@ -63,7 +63,7 @@ class C1(object):
         self.c0 = C0(a, b)
 
     def __getattr__(self, attr):
-        if attr in self.c0.__dict__:
+        if attr in dir(self.c0):
             attr = getattr(self.c0, attr)
         return attr
 

@@ -75,7 +75,7 @@ a
 a = [0]
 a.extend(int(k) for k in list('12x4'))  #! ValueError: invalid literal for int() with base 10: 'x'
 a
-# Oooops!!! operation failed in the middle but there is no ROLLBACK!
+# Oooops! operation failed in the middle but there is no ROLLBACK.
 # state of `a` has changed!
 
 #%% SOLUTION
@@ -114,7 +114,7 @@ class Context(object):
     def add(self, k):
         self.sum += int(k)
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb):      # type, value, traceback
         """things to do when we exit the context"""
         # return False # exceptions revealed - in case of Exception
                       # - stops executing after exiting context
@@ -142,9 +142,9 @@ with Context(s) as c:
     s = c.sum
     print(f's={s} within context')
 print(f's={s} out of context')
+s
 
 #! ValueError: invalid literal for int() with base 10: 'x'
-s
 # Notice that `s` did not changed i.e. `with` gives kind of a ROLLBACK
 # in case of Exception. This is really good!!!
 #

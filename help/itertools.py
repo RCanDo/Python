@@ -54,15 +54,8 @@ file:
 #%% This is block delimiter very useful for interactive work like e.g. in Spyder (part of Anaconda)
 
 #%%
-from rcando.ak.builtin import * #flatten, paste
-from rcando.ak.nppd import * #data_frame
-import os, sys, json
-
-ROOT = json.load(open('root.json'))
-WD = os.path.join(ROOT['Works'], "Python/help/")   #!!! adjust
-os.chdir(WD)
-
-print(os.getcwd())
+import utils.ak as ak
+import utils.builtin as bi
 
 #%%
 from itertools import *
@@ -89,6 +82,24 @@ the examples in this section also rely on some of the built-in functions for ite
 
 #%% Merging and Splitting Iterators
 
+# %%
+accumulate
+combinations
+combinations_with_replacement
+pairwise
+permutations
+product
+
+# %%
+prod = product(list("abc"), range(2), list("ABC"), [0, -1])
+prod    # <itertools.product at 0x7f14f82a4080>
+
+for k in prod:
+    print(k)
+
+for k in prod:
+    ["/".join(map(str, p)) for p in prod]
+
 #%%  chain()
 """
 The chain() function takes several iterators as arguments and returns a single iterator
@@ -110,6 +121,11 @@ chain.from_iterable() can be used to construct the chain instead.
 def make_iterables_to_chain():
     yield [1, 2, 3]
     yield ['a', 'b', 'c']
+
+it = make_iterables_to_chain()
+it  # <generator object make_iterables_to_chain at 0x7f33b41e0890>
+list(it)    # [[1, 2, 3], ['a', 'b', 'c']]
+next(it)    # ! StopIteration
 
 for i in chain.from_iterable(make_iterables_to_chain()):
     print(i, end=' ')
@@ -294,14 +310,18 @@ BUT copies works independently of each other !!!
 r = islice(count(), 10)
 i1, i2 = tee(r)
 list(islice(i1, 4))  # [0, 1, 2, 3]
-##list(r)
+# list(r)
 list(islice(i2, 8))  # [0, 1, 2, 3, 4, 5, 6, 7]
 # but they influence original
 list(r)  # [8, 9]
 
+# %%
+i1, i2 = tee(r, 2)  # the second argument means number of replicas, default is 2.
+
 #%%
 list(map(lambda x, y: (x, y), cycle(range(3)), chain( *tee(range(5), 2) ) ))
-list(map(tuple, zip(cycle(range(3)), chain( *tee(range(5), 2) ) ) ))
+list(zip(cycle(range(3)), chain( *tee(range(5), 2) ) ) )
+list(map(list, zip(cycle(range(3)), chain( *tee(range(5), 2) ) ) ))
 
 #%%
 #%% starmap()
@@ -325,7 +345,7 @@ def multiply(x, y):
 print('\nMultiples:')
 r1 = range(5)
 r2 = range(5, 10)
-for i in map(multiply, r1, r2):
+for i in map(multiply, r1, r2):         # r1, r2 must be passed as separate arguments
     print('{} * {} = {}'.format(*i))
 
 #%% notice how map() works when iterators are not aligned
@@ -343,7 +363,7 @@ The first number can be passed as an argument (the default is zero).
 There is no upper bound argument (see the built-in range() for more control over the result set).
 """
 
-#This example stops because the list argument is consumed.
+# This example stops because the list argument is consumed.
 for i in zip(count(1), ['a', 'b', 'c']):
     print(i)
 
@@ -627,7 +647,7 @@ class Point:
         return (self.x, self.y) == (other.x, other.y)
 
     def __gt__(self, other):
-        return (self.x, self.y) > (other.x, other.y)
+        return (self.x, self.y) > (other.x, other.y)    # only first elements are compared !
 
     #!!! notice that __eq__ and __gt__ determines all other comparison methods
 
@@ -690,7 +710,7 @@ pprint(data, width=35)
 #   (2, 5)]
 
 #%% Group the sorted data based on X values
-#!!! The input sequence needs to be sorted on the key value
+#!!! The input sequence needs to be sorted on the key value !!!
 #    in order for the groupings to work out as expected.
 
 data.sort()  # in-place !!!

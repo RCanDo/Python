@@ -44,12 +44,6 @@ from rcando.ak.builtin import * #flatten, paste
 from rcando.ak.nppd import * #data_frame
 import os, sys, json
 
-ROOT = json.load(open('root.json'))
-WD = os.path.join(ROOT['Works'], "Python/help/")   #!!! adjust
-os.chdir(WD)
-
-print(os.getcwd())
-
 #%%
 from pprint import pprint
 from functools import lru_cache, reduce, singledispatch

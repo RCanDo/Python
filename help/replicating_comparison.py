@@ -22,7 +22,7 @@ def rep_loop_app(p, n):
     for k in range(n):
         l.append(p)
     return l
-    
+
 def rep_loop_plus(p, n):
     l = []
     for k in range(n):
@@ -36,7 +36,7 @@ def rep_recur_app(p, n):
     else:
         l = [p]
     return l
-    
+
 def rep_recur_plus(p, n):
     if n>1:
         l = rep_recur_plus(p, n-1)
@@ -44,7 +44,7 @@ def rep_recur_plus(p, n):
     else:
         l = [p]
     return l
-    
+
 def rep_ft(p, n):
     return ft.reduce(lambda l, v: l + [l[-1]], [p]*(n - 1), [p])
 
@@ -82,13 +82,17 @@ def rep_ft_2(p, n):
 # n=10000
 
 p=.9; n=10000
+# free numbers
 %timeit for k in range(n): p**k     # 113 µs ± 1.01 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
                                     # 1.45 ms ± 8.67 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+# list of numbers
 %timeit [p**k for k in range(n)]    # 129 µs ± 824 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
                                     # 1.53 ms ± 2.5 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+# replacing Nones (placeholders) in a list
 ll = [None]*n
 %timeit for k in range(n): ll[k] = p**k   # 162 µs ± 2.46 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
                                     # 1.93 ms ± 46.5 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+# " & Horner schema (recurrence)
 ll = [1] + [None]*(n-1)
 %timeit for k in range(1, n): ll[k] = ll[k-1]*p   # 143 µs ± 5.1 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 
@@ -97,7 +101,7 @@ ll = [1] + [None]*(n-1)
 
 def powseq(p):
     lk=1
-    for k in range(1, n): 
+    for k in range(1, n):
         lk = lk*p
         ll[k] = lk
 
@@ -112,7 +116,7 @@ def powseq_ft(p):
     def multi(q, p):
         return q*p
     ft.reduce(multi, ll, 1)
-    
+
 %timeit powseq_ft(p)  # 77.4 µs ± 1.38 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
                       # 766 µs ± 8.61 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
 
@@ -121,7 +125,7 @@ ll = [p]*(n-1)
 
 def powseq_ft_op(p):
     ft.reduce(op.mul, ll, 1)
-    
+
 %timeit powseq_ft_op(p)  # 40 µs ± 731 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
                          # 407 µs ± 6.1 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
 

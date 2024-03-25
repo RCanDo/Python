@@ -98,4 +98,7 @@ if isinstance(fl,float):
 if isinstance(d,int):
     print("Integer %d" % d)
 
+print("int %d, float %fl" % (d, fl))
+print("int {}, float {}".format(d, fl))
+
 #%%
