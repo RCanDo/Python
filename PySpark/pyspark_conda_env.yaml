@@ -1,0 +1,46 @@
+name: pyspark
+channels:
+  - conda-forge
+  - default
+dependencies:
+  ## tech
+  - dill
+  - dvc
+  # - dvc-s3
+  - flake8
+  - flake8-nb
+  - pytest
+  - pytest-cov
+  - pytest-xdist
+  - python
+  ## sci
+  - numpy
+  - pandas
+  - statsmodels
+  - scipy
+  - scikit-learn
+  - scikit-optimize
+  - scikit-plot
+  - py-xgboost
+  - pyspark         # !
+  - matplotlib
+  - matplotlib-inline
+  # - plotly
+  # - seaborn
+  - unidecode
+  - xgboost
+  # - pytorch
+  # - catboost
+  # - networkx
+  # - python-graphviz
+  # - u8darts-all
+  ## interface
+  - spyder
+  - spyder-notebook
+  - jupyter
+  - jupyterlab
+  - nbconvert
+  - pypandoc
+  - pyyaml
+  - tqdm
+

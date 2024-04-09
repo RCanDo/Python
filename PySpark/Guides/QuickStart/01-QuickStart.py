@@ -34,7 +34,7 @@ file:
               - arek@staart.pl
 """
 
-#%% do it now! 
+#%% do it now!
 #! after initializing session changing directory has no effect
 # cd ~/Works/Python/PySpark/Guides/QuickStart/
 
@@ -44,13 +44,13 @@ dir(SparkConf())
 SparkConf().getAll()
 # ...
 
-#%% 
+#%%
 from pyspark.sql import SparkSession
 spark = SparkSession.builder \
         .master('local') \
-        .appName("SimpleApp").getOrCreate() 
-                            #.config("spark.some.config.option", "some-value").getOrCreate() 
-        
+        .appName("SimpleApp").getOrCreate()
+                            #.config("spark.some.config.option", "some-value").getOrCreate()
+
 type(spark)   # pyspark.sql.session.SparkSession
 # https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.SparkSession
 
@@ -67,26 +67,40 @@ data.columns
 data.printSchema()
 data.describe().show()
 
-data.select('value').show()
-data.select('value').show(99, False)
 data['value']
 data.value
+type(data.value)    # pyspark.sql.column.Column
+data.value.show()   # ! TypeError: 'Column' object is not callable
+
+type(data.select('value'))   # pyspark.sql.dataframe.DataFrame
+data.select('value').show()  # OK
+data.select('value').show(99, False)
+
+
 data.select(data['value']).show()
 data.select(data.value).show()
 
-
-#%%
-nrows = data.count()
-print("Number of rows: %i" % nrows)
+data.count()    # 26
+data.collect()  # list of rows
+# [Row(value='This is some file'),
+#  Row(value='created only as an example'),
+#  Row(value='to present abilities'),
+#  Row(value='of PySpark package'),
+#  ...
 
 #%%
 firstrow = data.first()  # == .head()
-print(firstrow)
-print(firstrow.value)
+firstrow
+type(firstrow)      # pyspark.sql.types.Row
 dir(firstrow)
-firstrow.index(1)   #! ???
-firstrow.count(0)   # ?
-firstrow.asDict()
+
+firstrow.value      # although it's not in dir() !
+firstrow['value']   # the same
+
+firstrow.index(1)   #! ???  ValueError: tuple.index(x): x not in tuple
+firstrow.count(0)   # 0
+firstrow.count('This is some file')   # 1
+firstrow.asDict()   # {'value': 'This is some file'}
 
 #%%
 linesWithSpark = data.filter(data.value.contains("Spark"))
@@ -96,35 +110,71 @@ for r in linesWithSpark.collect():
     print(r)
     print(r.value)
     print('-')
-    
-nspark = linesWithSpark.count()
-print("Lines with Spark: %i" %nspark)
+
+linesWithSpark.count()      # 3
 
 #%%
 import pyspark.sql.functions as psf
 
+psf.split(data.value, '\s+')    # Column<'split(value, \s+, -1)'>
+psf.split(data.value, '\s+').show()     # ! TypeError: 'Column' object is not callable
+
+data.select(psf.split(data.value, '\s+')).show()    # OK
+data.select(psf.size(psf.split(data.value, '\s+'))).show()
+
 d2 = data.select(psf.size(psf.split(data.value, '\s+')).name("numWordsInLine"))
-# d2.show(100)
-maxNumWordsInLine = d2.agg(psf.max(psf.col("numWordsInLine"))).head()[0]
-print("Maximum number of words in one line: %i" %maxNumWordsInLine)
+d2.show(100)
+
+psf.col("numWordsInLine")   # Column<'numWordsInLine'>
+psf.col("numWordsInLine").count()
+data.select(psf.col("numWordsInLine")).show()   # ! AnalysisException: [UNRESOLVED_COLUMN.WITH_SUGGESTION] A column or function parameter with name `numWordsInLine` cannot be resolved.
+d2.select(psf.col("numWordsInLine")).show()     # OK
+d2.show()   # the same stuff
+d2.select(psf.max(psf.col("numWordsInLine"))).show()
+# +-------------------+
+# |max(numWordsInLine)|
+# +-------------------+
+# |                  7|
+# +-------------------+
+d2.agg(psf.max(psf.col("numWordsInLine"))).show()   # the same
+
+d2.agg(psf.max(psf.col("numWordsInLine"))).head()       # Row(max(numWordsInLine)=7)    !
+type(d2.agg(psf.max(psf.col("numWordsInLine"))).head()) # pyspark.sql.types.Row
+d2.agg(psf.max(psf.col("numWordsInLine"))).head()['max(numWordsInLine)']    # 7
+d2.agg(psf.max(psf.col("numWordsInLine"))).head()[0]    # 7
+d2.agg(psf.max(psf.col("numWordsInLine"))).head().asDict()      # {'max(numWordsInLine)': 7}
 
 #%%
 d2 = data.select(psf.explode(psf.split(data.value, '\s+')).alias("word"))
-# d2.show(100)
+d2.show(100)
+
+d2 = data.select(psf.explode(psf.split(data.value, '\s+')).name("word"))     # the same
+d2.show(100)
+
 d2.groupBy('word').count().show()      # DataFrame
 d2.groupBy('word').count().collect()   # list of rows
+# [Row(word='some', count=1),
+#  Row(word='...', count=1),
+#  Row(word='present', count=1),
+#  Row(word='not', count=1),
+#  ...
+
 ll = [list(row.asDict().values()) for row in d2.groupBy('word').count().collect()]
-for l in ll:
-    print("{}: {}".format(*l))
-    
-#%%
-
+ll
 
 #%%
-numAs = data.filter(data.value.contains('a')).count()
-numBs = data.filter(data.value.contains('b')).count()
+data.filter(data.value.contains('a')).count()   # 15
+data.filter(data.value.contains('a')).show()
 
-print("Lines with a: %i; lines with b: %i" % (numAs, numBs))
+data.filter(data.value.contains('b')).count()   # 3
+data.filter(data.value.contains('b')).show()
+
+# %%
+type(d2.groupBy('word').count()['count'])       # pyspark.sql.column.Column
+dir(d2.groupBy('word').count()['count'])
+
+d2.filter(d2.groupBy('word').count()['count'].contains(2)).show()
+# !? AnalysisException: [MISSING_ATTRIBUTES.RESOLVED_ATTRIBUTE_MISSING_FROM_INPUT] Resolved attribute(s) "count" missing from "word"
 
 spark.stop()
 
