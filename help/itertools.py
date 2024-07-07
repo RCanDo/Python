@@ -51,8 +51,6 @@ file:
               - rcando@int.pl
 """
 
-#%% This is block delimiter very useful for interactive work like e.g. in Spyder (part of Anaconda)
-
 #%%
 import utils.ak as ak
 import utils.builtin as bi
@@ -342,18 +340,31 @@ for i in starmap(lambda x, y: (x, y, x * y), zip(range(5), range(5, 10))):
 def multiply(x, y):
     return (x, y, x * y)
 
-print('\nMultiples:')
 r1 = range(5)
 r2 = range(5, 10)
 for i in map(multiply, r1, r2):         # r1, r2 must be passed as separate arguments
     print('{} * {} = {}'.format(*i))
 
 #%% notice how map() works when iterators are not aligned
-print('\nStopping:')
 r1 = range(5)
 r2 = range(2)
+
 for i in map(multiply, r1, r2):
     print('{} * {} = {}'.format(*i))
+
+# the same
+for i in starmap(multiply, zip(r1, r2)):
+    print('{} * {} = {}'.format(*i))
+
+#%% star-map on product
+
+for i in map(multiply, *zip(*product(r1, r2))):
+    print('{} * {} = {}'.format(*i))
+
+# the same but here ther is some advantage of using starmap
+for i in starmap(multiply, product(r1, r2)):
+    print('{} * {} = {}'.format(*i))
+
 
 #%%
 #%% count()

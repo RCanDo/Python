@@ -34,7 +34,7 @@ f"{x:float_format}"     #! ValueError: Invalid format specifier
 f"{x:{float_format}}"   # '1,234.57'
 
 # %%  :e  on integers
-n: int = 1620000000
+n: int = 1_620_000_000
 f"{n:e}"    # '1.620000e+09'
 f"{n:.2e}"  # '1.62e+09'
 f"{n:.2}"   #! ValueError: Precision not allowed in integer format specifier

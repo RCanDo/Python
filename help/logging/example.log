@@ -1,0 +1,13 @@
+2024-07-01 10:32:21 AM | ERROR | tut-basic | And non-ASCII stuff, too, like Øresund and Malmö
+2024-07-01 10:33:24 AM | INFO | tut-basic | So should this
+2024-07-01 10:33:24 AM | INFO | tut-basic | 2024-07-01 10:33:24.690367
+2024-07-01 10:33:24 AM | WARNING | tut-basic | And this, too
+2024-07-01 10:33:24 AM | ERROR | tut-basic | And non-ASCII stuff, too, like Øresund and Malmö
+2024-07-01 05:44:40 PM | INFO | tut-basic | So should this
+2024-07-01 05:44:40 PM | INFO | tut-basic | 2024-07-01 17:44:40.906565
+2024-07-01 05:45:16 PM | INFO | tut-basic | So should this
+2024-07-01 05:45:16 PM | INFO | tut-basic | 2024-07-01 17:45:16.832914
+2024-07-01 05:45:16 PM | INFO | module | I'm a module.fun(1).
+2024-07-01 05:45:16 PM | INFO | module | I'm a module.fun(qq!).
+2024-07-01 05:45:16 PM | WARNING | tut-basic | And this, too
+2024-07-01 05:45:16 PM | ERROR | tut-basic | And non-ASCII stuff, too, like Øresund and Malmö
