@@ -5,7 +5,7 @@ Created on Tue May 17 15:23:26 2022
 
 @author: arek
 
-https://docs.pytest.org/en/7.1.x/getting-started.html#getstarted
+https://docs.pytest.org/en/stable/getting-started.html#create-your-first-test
 """
 # content of test_sample.py
 def func(x):

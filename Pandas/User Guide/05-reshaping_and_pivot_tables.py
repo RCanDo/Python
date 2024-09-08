@@ -284,7 +284,7 @@ stacked.unstack('second')
 stacked.unstack('first')
 
 stacked.unstack().unstack()
-stacked.unstack().unstack().unstack()
+stacked.unstack().unstack().unstack()       # !!! pd.Series !!!
 stacked.unstack(1).unstack(1).unstack()
 
 #%% stack and unstack methods implicitly sort the index levels involved
@@ -319,7 +319,7 @@ df.stack()
 df.stack(0)
 df.stack(1)
 df.stack(2)
-df.stack([0,2])
+df.stack([0, 2])
 df.stack(['exp', 'hair_length'])
 
 #%%
@@ -383,9 +383,8 @@ dfc.columns
 dfc.pivot(index='first', columns='quantity', values='value')
 dfc.pivot(index='first', columns='quantity')
 
-#%% BUT
-dfc.pivot(index='first', columns=['quantity'], values='value') #! KeyError: 'Level quantity not found'
-dfc.pivot(index='first', columns=['last', 'quantity'], values=['value']) #! ...
+dfc.pivot(index='first', columns=['quantity'], values='value')
+dfc.pivot(index='first', columns=['last', 'quantity'], values=['value'])
 
 #%% pd.wide_to_long()
 #%%
@@ -405,7 +404,7 @@ dftw = pd.wide_to_long(dft, ["A", "B"], i="id", j="year")
 dftw
 dftw.index
 
-# !?!?!?!?!? magic!
+help(pd.wide_to_long)
 
 #%% Combining with stats and GroupBy
 #%%
