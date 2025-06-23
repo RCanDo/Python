@@ -28,20 +28,10 @@ file:
               - arkadiusz.kasprzyk@quantup.pl
 """
 # %%
-import pandas as pd
-pd.set_option("display.max_columns", None)
-pd.set_option("display.max_rows", None)
-# pd.options.display.max_rows = 500         # the same
-pd.set_option('display.max_seq_items', None)
-
-pd.set_option('display.expand_frame_repr', False)
-pd.set_option('display.precision', 3)
-
-pd.set_option('display.width', 1000)
-pd.set_option('max_colwidth', None)
-
-# %%
 import numpy as np
+import pandas as pd
+from quantup_utils.config import pandas_options
+pandas_options()
 
 from sklearn.model_selection import train_test_split
 from sklearn import datasets
@@ -51,8 +41,7 @@ X, y = datasets.load_iris(return_X_y=True)
 X.shape, y.shape
 
 # %%
-X_train, X_test, y_train, y_test = \
-    train_test_split(X, y, test_size=0.4, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=0)
 
 X_train.shape, y_train.shape
 X_test.shape, y_test.shape
@@ -125,7 +114,7 @@ scores      # array([0.96658312, 1.        , 0.96658312, 0.96658312, 1.        ]
 
 # %%
 """
-It is also possible to use other cross validation strategies by passing a  cross validation iterator  instead,
+It is also possible to use other cross validation strategies by passing a  __cross validation iterator__  instead,
 for instance:
 """
 from sklearn.model_selection import ShuffleSplit
@@ -134,14 +123,43 @@ from sklearn.model_selection import ShuffleSplit
 cv = ShuffleSplit(n_splits=5, test_size=0.3, random_state=0)    # cross-validation iterator
 cross_val_score(clf, X, y, cv=cv)
 
+type(cv)    # sklearn.model_selection._split.ShuffleSplit
+dir(cv)     # ! in fact it is NOT proper Python iterator – it has not methods __iter__ and __next__ !
+
 # %%  how it works:
 cv = ShuffleSplit(n_splits=5, test_size=0.3, random_state=0)
-[(train, test) for train, test in cv.split(X)]  # cool!
+[(train, test) for train, test in cv.split(X)]                  # cool!!!
+# list of 5 tuples of 2 arrays of  __indices__
+# [
+#  (array([ 60, 116, ..., 117, 47]),   train indices  for split 1
+#   array([114,  62, ...,  43,  10])), test  indices  "
+#  ...
+#  (array([ 54, 103, ...,  77, 100]),  " split 5
+#   array([ 15, 143, ...,  59, 118]))
+# ]
 
-cv = ShuffleSplit(n_splits=2, test_size=0.5, random_state=0)    # cross-validation iterator
+# %%
+cv = ShuffleSplit(n_splits=2, test_size=0.5, random_state=0)    # cross-validation "iterator" (not exactly iterator)
 cross_val_score(clf, X, y, cv=cv)
 
 [(train, test) for train, test in cv.split(X)]  #
+
+cv.split        # generator function
+                # <bound method _UnsupportedGroupCVMixin.split of ShuffleSplit(n_splits=2, random_state=0, test_size=0.5, train_size=None)>
+cv_x = cv.split(X)
+cv_x            # ! <generator object BaseShuffleSplit.split at 0x792690161540>
+next(cv_x)      # ! tuple[np.array(<train .iloc[] indices of X>), np.array(<test .iloc[] indices of X>)]
+next(cv_x)
+next(cv_x)      # StopIteration:  ok, only n_splits=2
+
+"""  !!!
+Hence  `cv`  is sth like  generator factory...:
+
+ShuffleSplit        –  split generator factory  class
+cv = ShuffleSplit(n_splits=2, test_size=0.5, random_state=0)  –  split generator factory  instance
+cv.split            –  split generator function
+cv_x = cv.split(X)  –  split generator
+"""
 
 # %%
 # Another option is to use an  iterable yielding (train, test) splits  as arrays of indices, for example:
@@ -151,7 +169,7 @@ def custom_cv_2folds(X):
     while i <= 2:
         idx = np.arange(n * (i - 1) / 2, n * i / 2, dtype=int)
         #! yield idx, idx  # ???  should be rather:
-        yield idx,  np.array(list(set(range(n)).difference(idx)))
+        yield idx, np.array(list(set(range(n)).difference(idx)))
         i += 1
 
 custom_cv = custom_cv_2folds(X)
@@ -160,6 +178,20 @@ cross_val_score(clf, X, y, cv=custom_cv)    # array([0.33333333, 0.30666667])   
 # %%
 custom_cv = custom_cv_2folds(X)
 [(train, test) for train, test in custom_cv]
+
+# %%
+# do similar split generator taking every second index:
+def oddeven_cv_2folds(X):
+    n = X.shape[0]
+    i = 0
+    while i <= 1:
+        idx = np.arange(i, n, 2, dtype=int)
+        #! yield idx, idx  # ???  should be rather:
+        yield idx, np.array(list(set(range(n)).difference(idx)))
+        i += 1
+
+custom_cv = oddeven_cv_2folds(X)
+cross_val_score(clf, X, y, cv=custom_cv)    # array([0.97333333, 0.97333333])    cool !!!
 
 # %% analogously with KFold
 from sklearn.model_selection import KFold
@@ -174,7 +206,8 @@ kfold5 = KFold(n_splits=5)
 
 cross_val_score(clf, X, y, cv=kfold5)    # array([1.        , 1.        , 0.86666667, 1.        , 0.86666667])
 
-# ! Very intriguing
+# ! intriguing results  but everything is OK
+#  bad models built on adjacent records and only half of them, but when taken 4/5 of all then it's much better
 
 # %%
 q = .3
@@ -203,7 +236,7 @@ clf = make_pipeline(preprocessing.StandardScaler(), svm.SVC(C=1))
 clf     # Pipeline(steps=[('standardscaler', StandardScaler()), ('svc', SVC(C=1))])
 cross_val_score(clf, X, y, cv=cv)
 
-# %% 3.1.1.1. The cross_validate function and multiple metric evaluation¶
+# %% 3.1.1.1. The cross_validate function and multiple metric evaluation
 """
 The  cross_validate  function differs from  cross_val_score  in two ways:
 
@@ -262,23 +295,50 @@ Note on inappropriate usage of cross_val_predict
 
 # %%
 # %%  3.1.2. Cross validation iterators
+""" [ak]
+In fact, as already pointed above,
+these are NOT Python iterators – they do not have methods __iter__ and __next__ !
+These are rather  split generator factories (classes).
 
+More on this below.
+"""
 KFold
 StratifiedKFold
 GroupKFold
 StratifiedGroupKFold
 
-RepeatedKFold
-RepeatedStratifiedKFold
-
 ShuffleSplit
 StratifiedShuffleSplit
 GroupShuffleSplit
 
-LeaveOneOut
-LeaveOneGroupOut
+"""
+                KFold       data divided into `n_splits` equal folds, each fold is wholly in test or train data
+                            and there are always `n_splits` splits generated;
+                    Group_
+                    -       +
+Stratified_  -      o       v
+             +      v       v
 
+                ShuffleSplit    data divided into test of `test_size` and train of `1 - test_size`;
+                                `n_splits` splits generated but default is 1;
+                    -       +
+Stratified_  -      o       v
+             +      v       ! only own primitive version  (and non-primitive would be very problematic)
+
+Stratified_  means that for categorical y each category is represented roughly in the same proportion in test and train
+    as in the whole data; i.e. each split is proportional within each category of y;
+Group_  means that there is additional grouping variable and each group is wholly either in the test or train data
+
+"""
+# some have repeated versions
+RepeatedKFold
+RepeatedStratifiedKFold
+
+# Leave  group is special version of ShuffleSplit
+LeaveOneOut
 LeavePOut
+
+LeaveOneGroupOut
 LeavePGroupOut
 
 # %%  3.1.2.1. Cross-validation iterators for i.i.d. data
@@ -290,8 +350,7 @@ from sklearn.model_selection import KFold
 X = ["a", "b", "c", "d"]
 kf = KFold(n_splits=2)
 
-for train, test in kf.split(X):
-    print("%s %s" % (train, test))
+[(train, test) for train, test in kf.split(X)]  # return sets of  indices
 
 # %%
 # one split
@@ -311,8 +370,10 @@ y[test]
 # %%
 # %%  !!!  digression on generators;
 # see `Functional/iterators_vs_generators.py`
+
+KFold                   # sklearn.model_selection._split.KFold                 – split generators factory  class
 kf = KFold(n_splits=3)
-kf                      # KFold(n_splits=3, random_state=None, shuffle=False)  ~= a factory of generators
+kf                      # KFold(n_splits=3, random_state=None, shuffle=False)  – a factory of (split) generators  – instance
 type(kf)                # sklearn.model_selection._split.KFold
 kf.split                # <bound method _BaseKFold.split of KFold(n_splits=3, random_state=None, shuffle=False)>
                         # !!! it is _generator function_ !!!
@@ -322,7 +383,8 @@ kf_gen                  # <generator object _BaseKFold.split at 0x7f5cddd34dd0>
 type(kf_gen)            # generator
 dir(kf_gen)             # it has  `__iter__` and `__next__` methods
                         # ! thus it is  _iterator_ !
-# BTW: Every  generator  is an  iterator.
+# ! Every  generator  is an  iterator !
+# generator  is an iterator produced by the  generator function  (i.e. containing `yield` expressions)
 
 next(kf_gen)            # (array([2, 3, 4, 5]), array([0, 1]))
 next(kf_gen)            # (array([0, 1, 4, 5]), array([2, 3]))
@@ -383,7 +445,6 @@ kf = KFold(n_splits=2)
 for train, test in kf.split(X):
     print("%s %s" % (train, test))
 
-
 # %% Repeated K-Fold
 """
 RepeatedKFold repeats K-Fold n times.
@@ -417,7 +478,7 @@ for train, test in loo.split(X):
 # %% Leave P Out (LPO)
 """
 For samples, this produces `math.comb(n, p)` train-test pairs.
-Unlike LeaveOneOut and KFold, the test sets will overlap for p > 1.
+Unlike LeaveOneOut and KFold, the test sets will  overlap for p > 1.
 """
 from sklearn.model_selection import LeavePOut
 
@@ -506,13 +567,14 @@ Imagine you have three subjects, each with an associated number from 1 to 3:
 from sklearn.model_selection import GroupKFold
 
 X = [0.1, 0.2, 2.2, 2.4, 2.3, 4.55, 5.8, 8.8, 9, 10]
-y = ["a", "b", "b", "b", "c", "c", "c", "d", "d", "d"]
-groups = [1, 1, 1, 2, 2, 2, 3, 3, 3, 3]
+y = ["a",  "b", "b", "b",  "c", "c", "c",  "d", "d", "d"]
+groups = [1, 1, 1,  2, 2, 2,  3, 3, 3, 3]
 
 gkf = GroupKFold(n_splits=3)
 
 for train, test in gkf.split(X, y, groups=groups):
-    print("%s %s" % (train, test))
+    print("indices: %s %s" % (train, test))
+    print("groups:  %s %s" % (np.array(groups)[train], np.array(groups)[test]))
 
 # %% StratifiedGroupKFold
 """
@@ -525,14 +587,16 @@ That might be useful when you have an unbalanced dataset so that using just Grou
 """
 from sklearn.model_selection import StratifiedGroupKFold
 
-X = list(range(18))
-y = [1] * 6 + [0] * 12
-groups = [1, 2, 3, 3, 4, 4, 1, 1, 2, 2, 3, 4, 5, 5, 5, 6, 6, 6]
+X = np.arange(18)
+y = np.array([1] * 6 + [0] * 12)
+groups = np.array([1, 2, 3, 3, 4, 4, 1, 1, 2, 2, 3, 4, 5, 5, 5, 6, 6, 6])
 
 sgkf = StratifiedGroupKFold(n_splits=3)
 
 for train, test in sgkf.split(X, y, groups=groups):
-    print("%s %s" % (train, test))
+    print("indices: %s %s" % (train, test))
+    print("groups:  %s %s" % (groups[train], groups[test]))
+    print("y:       %s %s" % (y[train], y[test]))
 
 """
 Implementation notes:
@@ -566,23 +630,24 @@ each split holds out samples belonging to one specific group.
 Group information is provided via an array that encodes the group of each sample.
 
 Each training set is thus constituted by all the samples except the ones related to a specific group.
-This is the same as LeavePGroupsOut with n_groups=1
-and the same as GroupKFold with n_splits equal to the number of unique labels passed to the groups parameter.
+This is the same as  LeavePGroupsOut  with  n_groups=1
+and the same as  GroupKFold  with  n_splits  equal to the number of unique labels passed to the groups parameter.
 
 For example, in the cases of multiple experiments,
-LeaveOneGroupOut can be used to create a cross-validation based on the different experiments:
+LeaveOneGroupOut  can be used to create a cross-validation based on the different experiments:
 we create a training set using the samples of all the experiments except one:
 """
 from sklearn.model_selection import LeaveOneGroupOut
 
-X = [1, 5, 10, 50, 60, 70, 80]
-y = [0, 1, 1, 2, 2, 2, 2]
-groups = [1, 1, 2, 2, 3, 3, 3]
+X = np.array([1, 5, 10, 50, 60, 70, 80])
+y = np.array([0, 1, 1, 2, 2, 2, 2])
+groups = np.array(list('aabbbcc'))
 
 logo = LeaveOneGroupOut()
 
 for train, test in logo.split(X, y, groups=groups):
-    print("%s %s" % (train, test))
+    print("indices: %s %s" % (train, test))
+    print("groups:  %s %s" % (groups[train], groups[test]))
 
 # %% Leave P Groups Out
 """
@@ -593,13 +658,25 @@ All possible combinations of P groups are left out, meaning test sets will overl
 from sklearn.model_selection import LeavePGroupsOut
 
 X = np.arange(6)
-y = [1, 1, 1, 2, 2, 2]
-groups = [1, 1, 2, 2, 3, 3]
+y = np.array([1, 1, 1, 2, 2, 2])
+groups = np.array(list('aabbcc'))
 
 lpgo = LeavePGroupsOut(n_groups=2)
 
 for train, test in lpgo.split(X, y, groups=groups):
-    print("%s %s" % (train, test))
+    print("indices: %s %s" % (train, test))
+    print("groups:  %s %s" % (groups[train], groups[test]))
+
+# %%
+X = np.random.sample(22)
+y = np.random.choice(list('pqr'), size=22)
+groups = np.random.choice(list('abcdef'), size=22)
+
+lpgo = LeavePGroupsOut(n_groups=2)
+
+for train, test in lpgo.split(X, y, groups=groups):
+    print("indices: %s %s" % (train, test))
+    print("groups:  %s %s" % (np.unique(groups[train]).tolist(), np.unique(groups[test]).tolist()))
 
 # %% Group Shuffle Split
 """
@@ -612,14 +689,16 @@ meaning there is no guaranteed relationship between successive test sets.
 """
 from sklearn.model_selection import GroupShuffleSplit
 
-X = [0.1, 0.2, 2.2, 2.4, 2.3, 4.55, 5.8, 0.001]
-y = ["a", "b", "b", "b", "c", "c", "c", "a"]
-groups = [1, 1, 2, 2, 3, 3, 4, 4]
+X = np.array([0.1, 0.2, 2.2, 2.4, 2.3, 4.55, 5.8, 0.001])
+y = np.array(list('pqqqrrrp'))
+groups = np.array([1, 1, 2, 2, 3, 3, 4, 4])
+groups = np.array(list('aabbccdd'))
 
 gss = GroupShuffleSplit(n_splits=4, test_size=0.5, random_state=0)
 
 for train, test in gss.split(X, y, groups=groups):
-    print("%s %s" % (train, test))
+    print("indices: %s %s" % (train, test))
+    print("groups:  %s %s" % (np.unique(groups[train]).tolist(), np.unique(groups[test]).tolist()))
 
 # %% 3.1.2.4. Predefined Fold-Splits / Validation-Sets
 
@@ -652,9 +731,9 @@ X = np.array([0.1, 0.2, 2.2, 2.4, 2.3, 4.55, 5.8, 0.001])
 y = np.array(["a", "b", "b", "b", "c", "c", "c", "a"])
 groups = np.array([1, 1, 2, 2, 3, 3, 4, 4])
 
-gss = GroupShuffleSplit(random_state=7)     # ~= generators' factory
-GroupShuffleSplit(random_state=7).split     # _generator function_
-gss_gen = GroupShuffleSplit(random_state=7).split(X, y, groups)     # generator
+gss = GroupShuffleSplit(random_state=7)     # generators' factory
+gss.split                                   # generator function
+gss_gen = gss.split(X, y, groups)           # generator
 
 train, test = next(gss_gen)
 
@@ -677,9 +756,9 @@ X
 y = X.pop("y")
 y
 
-gss = GroupShuffleSplit(random_state=7)     # ~= generators' factory
-GroupShuffleSplit(random_state=7).split     # _generator function_
-gss_gen = GroupShuffleSplit(random_state=7).split(X, y, X['g'])     # generator
+gss = GroupShuffleSplit(random_state=7)     # generators' factory
+gss.split                                   # generator function
+gss_gen = gss.split(X, y, X['g'])           # generator
 
 train, test = next(gss_gen)
 

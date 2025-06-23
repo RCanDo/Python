@@ -10,9 +10,9 @@ Logging Levels
      Level 	        Value
 logging.CRITICAL 	50
 logging.ERROR 	    40
-logging.WARNING 	30
+logging.WARNING 	    30
 logging.INFO 	    20
-logging.DEBUG   	10
+logging.DEBUG   	    10
 logging.NOTSET   	 0
 
 The log message is only emitted if the `handler` and `logger` are configured
@@ -27,10 +27,10 @@ import logging
 import sys
 
 LEVELS = {
-    'debug': logging.DEBUG,
-    'info': logging.INFO,
-    'warning': logging.WARNING,
-    'error': logging.ERROR,
+    'debug':    logging.DEBUG,
+    'info':     logging.INFO,
+    'warning':  logging.WARNING,
+    'error':    logging.ERROR,
     'critical': logging.CRITICAL,
 }
 

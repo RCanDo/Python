@@ -14,6 +14,10 @@ d       # datetime.date(2022, 2, 22)
 
 d = dt.datetime.fromisoformat('2022-02-22 02:22:12')
 d       # datetime.datetime(2022, 2, 22, 2, 22, 12)
+d.tzinfo        # None
+d.utcoffset()   # None
+d.isoformat()   # '2022-02-22T02:22:12'
+
 
 # %%
 d = dt.date.strptime('2022/12/13', '%Y/%m/%d')     #! AttributeError: type object 'datetime.date' has no attribute 'strptime'
@@ -38,5 +42,20 @@ d       # datetime.datetime(339, 1, 5, 0, 0)
 d = dt.date.fromordinal(123456)
 d       # datetime.date(339, 1, 5)
 
-
+# %%
 # %%    What about timezone ???
+
+d = dt.datetime.fromisoformat('2022-02-22 02:22:12+00:00')
+d
+d.tzinfo        # datetime.timezone.utc
+d.utcoffset()   # datetime.timezone.utc
+d.isoformat()   # '2022-02-22T02:22:12+00:00'
+
+d = dt.datetime.fromisoformat('2022-10-01 02:22:12+01:00')
+d.tzinfo        # datetime.timezone(datetime.timedelta(seconds=3600))
+d.utcoffset()   # datetime.timedelta(seconds=3600)
+d.isoformat()   # '2022-02-22T02:22:12+01:00'
+
+d.strftime('%Y/%m/%d - %H:%M:%S %z')    # '2022/10/01 - 02:22:12 +0100'
+
+# %%

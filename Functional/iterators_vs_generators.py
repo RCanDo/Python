@@ -21,6 +21,8 @@ any object whose class has a `next` method (`__next__` in Python 3)
 and an `__iter__` method that does return `self`.
 
 Every `generator` is an `iterator`, but not vice versa.
+
+!!!
 A generator __is built by__ calling a function that has one or more `yield` expressions
 (`yield` statements, in Python 2.5 and earlier),
 and is an object that meets the previous paragraph's definition of an iterator.
@@ -44,6 +46,7 @@ def squares(start, stop):
     for i in range(start, stop):
         yield i * i
 
+type(squares)       # function
 dir(squares)        #! no __next__ nor __iter__ because this is a _generator function_  !
 dir(squares(2, 5))  #! "__next__" and "__iter__"  !
 
@@ -72,14 +75,15 @@ next(gen)  # StopIteration
 
 #%% the simplest generator function:
 
-def gen0():
+def gen_fun():
     # generator function
     yield 1
     yield 2
     yield 4
 
-dir(gen0)   # no __next__ nor __iter__ because this is a _generator function_
-gen = gen0()
+type(gen_fun)  # function
+dir(gen_fun)   # no __next__ nor __iter__ because this is a _generator function_
+gen = gen_fun()
 dir(gen)    # __next__ and __iter__  present :)
 gen         # <generator object gen0 at ...>
 type(gen)   # generator
@@ -89,12 +93,12 @@ next(gen)  # 2
 next(gen)  # 4
 next(gen)  # StopIteration
 
-next(gen0())  # 1
-next(gen0())  # always 1 because we recreate gen0 this way
+next(gen_fun())  # 1
+next(gen_fun())  # always 1 because we recreate gen0 this way
 
-[k for k in gen0()]  # but here it is created only once
+[k for k in gen_fun()]  # but here it is created only once
 
-gen = gen0()
+gen = gen_fun()
 [k for k in gen]
 [k for k in gen]  # empty
 
@@ -126,6 +130,8 @@ def random_gen(seed=0):
     while True:      # infinite !!!  be carefull when using it !!!
         yield rnd.randint(0, 100)
 
+type(random_gen)    # function
+dir(random_gen)     # no __next__ nor __iter__ because this is a _generator function_
 rg = random_gen(0)
 rg          # <generator object squares at ...>
 type(rg)    # generator
@@ -157,13 +163,18 @@ def sqrt_gen(number):
         res = (res + number/res)/2
         yield res
 
-sqrt = sqrt_gen(9)
-next(sqrt)
+type(sqrt_gen)      # function
+dir(sqrt_gen)       # no __next__ nor __iter__ because this is a _generator function_
 
+sqrt = sqrt_gen(9)
 type(sqrt)      # generator
 dir(sqrt)       # __next__ and __iter__  present
 
+next(sqrt)
+
 [r for (k, r) in zip(range(10), sqrt_gen(2))]
+
+from itertools import islice
 [r for r in islice(sqrt_gen(2), 10)]  # the same but looks better
 [r for r in islice(sqrt_gen(2), 10, 11)]  # 11th element
 
@@ -224,25 +235,31 @@ class Squares(object):
 
     def __init__(self, start, stop):
        self.start = start
+       self._current = self.start
        self.stop = stop
 
     def __iter__(self): return self     #!!!
 
     def __next__(self): # next in Python 2
-       if self.start >= self.stop:
+       if self._current >= self.stop:
            raise StopIteration
-       current = self.start * self.start
-       self.start += 1
-       return current
+       res = self._current * self._current
+       self._current += 1
+       return res
 
     """
     But, of course, with class Squares you could easily offer extra methods, e.g.
     """
     def current(self):
-       return self.start
+       return self._current
+
+    def restart(self):
+        # as seen in examples above this in not standard
+        self._current = self.start
     """
     if you have any actual need for such extra functionality in your application.
     """
+
 
 iterator = Squares(2, 5)
 
@@ -254,13 +271,19 @@ next(iterator)
 [k for k in iterator]
 next(iterator)  # StopIteration
 
+iterator.restart()
+iterator.current()
+next(iterator)
+[k for k in iterator]
+next(iterator)  # StopIteration
 
 #%% 2.
 #%%
 """
 In summary: Iterators are objects that have an __iter__ and a __next__
 (next in Python 2) method.
-Generators provide an easy, built-in way to create instances of Iterators.
+Generators are Iterators created by functions containing  `yield` expressions.
+Such functions are called  __generator functions__.
 ...
 """
 

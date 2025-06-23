@@ -107,6 +107,8 @@ axs[0, 0].plot([1,2,3], [3,1,2])
 ...
 
 # see below for exact example on OO style
+# %%
+dir(fig)
 
 #%%
 fig = mpl.figure.Figure()

@@ -1,0 +1,12 @@
+name: packaging
+channels:
+  - conda-forge
+dependencies:
+  - pytest
+  - pytest-cov
+  - python==3.10.*
+  - mypy
+  - flake8
+  - pip:
+      - build
+      - twine

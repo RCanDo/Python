@@ -21,6 +21,8 @@ sources:
       link: https://matplotlib.org/stable/tutorials/colors/colormap-manipulation.html#creating-colormaps-in-matplotlib
     - title: Colormap Refernece
       link: https://matplotlib.org/stable/gallery/color/colormap_reference.html
+    - title: Colors Refernece
+      link: https://matplotlib.org/stable/gallery/color/named_colors.html
 file:
     usage:
         interactive: True   # if the file is intended to be run interactively e.g. in Spyder
@@ -86,6 +88,8 @@ viridis = mpl.cm.get_cmap('viridis', 8)
 viridis
 type(viridis)   # matplotlib.colors.ListedColormap
 viridis.colors
+mpl.cm.get_cmap('viridis', 5)
+mpl.cm.get_cmap('viridis', 11)
 mpl.cm.get_cmap('viridis', 111)
 mpl.cm.get_cmap('viridis', 111).colors
 """
@@ -572,7 +576,7 @@ plot_examples([cmap1, cmap2])
 
 #%%
 #%%  leveled luminosity from  TABLEAU_COLORS  (which is default cycler)
-"""this colormap have well leveled luminosity
+"""this colormap has well leveled luminosity
 what is a big problem for all other predifined colormaps (in  mpl.cm)
 see https://matplotlib.org/stable/tutorials/colors/colormaps.html#lightness-of-matplotlib-colormaps
 """

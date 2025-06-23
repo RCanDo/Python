@@ -26,16 +26,20 @@ file:
 # %%
 import numpy as np
 import pandas as pd
-pd.set_option("display.max_columns", None)
-pd.set_option("display.max_rows", None)
-# pd.options.display.max_rows = 500         # the same
-pd.set_option('display.max_seq_items', None)
+from quantup_utils.config import pandas_options
+pandas_options()
 
-pd.set_option('display.expand_frame_repr', False)
-pd.set_option('display.precision', 3)
+# %% XXX
+# pd.set_option("display.max_columns", None)
+# pd.set_option("display.max_rows", None)
+# # pd.options.display.max_rows = 500         # the same
+# pd.set_option('display.max_seq_items', None)
 
-pd.set_option('display.width', 1000)
-pd.set_option('max_colwidth', None)
+# pd.set_option('display.expand_frame_repr', False)
+# pd.set_option('display.precision', 3)
+
+# pd.set_option('display.width', 1000)
+# pd.set_option('max_colwidth', None)
 
 # %%
 """

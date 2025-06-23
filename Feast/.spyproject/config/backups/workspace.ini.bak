@@ -1,0 +1,12 @@
+[workspace]
+restore_data_on_startup = True
+save_data_on_exit = True
+save_history = True
+save_non_project_files = False
+project_type = 'empty-project-type'
+recent_files = ['env-hist.yml', 'ak0/feature_repo/feature_store.yaml', 'examples_0.py', 'ak0/feature_repo/example_repo.py', 'ak0/feature_repo/test_workflow.py', 'test_workflow_ak0.py']
+
+[main]
+version = 0.2.0
+recent_files = []
+

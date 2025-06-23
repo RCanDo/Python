@@ -35,26 +35,15 @@ file:
 """
 
 #%%
-from utils.ak.builtin import flatten, paste
-from utils.ak.nppd import data_frame
 import os
 
-#PYWORKS = "D:/ROBOCZY/Python"
-PYWORKS = "/home/arek/Roboczy/Python"
-
-os.chdir(PYWORKS + "/Pandas/User Guide/")
-print(os.getcwd())
-
-#%%
 import numpy as np
 import pandas as pd
 import datetime as dt     #!!!
-
-pd.set_option("display.max_columns", None)
-pd.set_option("display.max_rows", None)
-pd.set_option('display.max_seq_items', None)
-
-pd.set_option('display.expand_frame_repr', False)
+from pycando.builtin import flatten, paste
+from pycando.ak.nppd import data_frame
+from pycando.config import pandas_options
+pandas_options()
 
 #%%
 #%% Intro
@@ -122,12 +111,18 @@ pd.to_datetime(dr) == dr    # array([ True,  True,  True])
 # ???
 
 #%%
-dti = pd.to_datetime(['2018-01-21', '21/1/2018',
-                      np.datetime64('2018-01-21'),
-                      dt.datetime(2018, 1, 21)])
+dti = pd.to_datetime(['2018-01-21', '2018-01-18', np.datetime64('2018-01-21'), dt.datetime(2018, 1, 21)])
 dti     # DatetimeIndex(['2018-01-21', '2018-01-21', '2018-01-21', '2018-01-21'], dtype='datetime64[ns]', freq=None)
 
-dti = pd.date_range('2018-01-01', periods=3, freq='H')
+# !!!  '21/1/2018' and '2018/01/18' possible but problematic:
+# ValueError: time data "21/1/2018" doesn't match format "%Y-%m-%d", at position 1. You might want to try:
+#     - passing `format` if your strings have a consistent format;
+#     - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+#     - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+dti = pd.date_range('2018-01-01', periods=3, freq='H')  # FutureWarning: 'H' is deprecated and will be removed in a future version,
+                                                        # please use 'h' instead.
+dti = pd.date_range('2018-01-01', periods=3, freq='h')
 dti
 
 dti = dti.tz_localize('UTC')
@@ -154,10 +149,13 @@ idx     # DatetimeIndex(['2018-01-01 00:00:00', '2018-01-01 03:00:00', '2018-01-
 idx = pd.date_range('2018-01-01', periods=5, freq='3D')
 idx
 
-idx = pd.date_range('2018-01-01', periods=5, freq='3M')
+idx = pd.date_range('2018-01-01', periods=5, freq='3M')     # FutureWarning: 'M' is deprecated and will be removed in a future version,
+                                                            # please use 'ME' instead.
+idx = pd.date_range('2018-01-01', periods=5, freq='3ME')
 idx
 
-idx = pd.date_range('2018-01-01', periods=5, freq='5m')
+idx = pd.date_range('2018-01-01', periods=5, freq='5m')     # FutureWarning: 'm' is deprecated and will be removed in a future version,
+                                                            # please use 'ME' instead.
 idx
 
 help(pd.date_range)

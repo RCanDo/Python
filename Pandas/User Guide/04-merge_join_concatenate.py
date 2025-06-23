@@ -36,17 +36,10 @@ file:
 
 #%%
 #%%
-from rcando.ak.builtin import flatten, paste
-from rcando.ak.nppd import data_frame
+from pycando.builtin import flatten, paste
+from pycando.ak import data_frame
 import os, json
 
-ROOTS = json.load(open('roots.json'))
-WD = os.path.join(ROOTS['Works'], "Python/Pandas/User Guide/")
-os.chdir(WD)
-
-print(os.getcwd())
-
-#%%
 import numpy as np
 import pandas as pd
 
@@ -152,13 +145,18 @@ pd.concat([df1, df4], axis=0, ignore_index=True)
 pd.concat([df1, df4], axis=0, join='inner')
 
 pd.concat([df1, df4], axis=1)
-pd.concat([df1, df4], 1)
-pd.concat([df1, df4], 1, ignore_index=True)
-pd.concat([df1, df4], 1, 'inner')
-pd.concat([df1, df4], 1, 'left') #! ValueError: Only can inner (intersect) or outer (union) join the other axis
+pd.concat([df1, df4], 1)    # ! TypeError: concat() takes 1 positional argument but 2 were given
+pd.concat([df1, df4], axis=1, ignore_index=True)
 pd.concat([df1, df4], axis=1, join='inner')
+pd.concat([df1, df4], axis=1, join='left') # ! ValueError: Only can inner (intersect) or outer (union) join the other axis
+pd.concat([df1, df4], axis=1, join='outer')
 pd.concat([df1, df4], axis=1, sort=False)       ## default in future versions
 pd.concat([df1, df4], axis=1, sort=True)
+
+# %%
+pd.concat([df4, df4])
+pd.concat([df1, pd.concat([df4, df4])], axis=1)     # ! InvalidIndexError: Reindexing only valid with uniquely valued Index objects
+df1.join(pd.concat([df4, df4]), rsuffix='_')
 
 #%% !!! .reindex(), .reindex_like()  vs  df.indx = new_index_labels
 
@@ -176,7 +174,7 @@ pd.concat([df1, df4], axis=1).reindex(df1.index)   # "
 df4.index = df1.index
 df4 # all vaues retained -- ony labels of index changed!
 # now
-pd.concat([df1, df4], 1)
+pd.concat([df1, df4], axis=1)
 
 #%% .append() == .concat(., axis=0)         # Pandas < 2.
 df1.append(df2)

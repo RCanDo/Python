@@ -5,7 +5,7 @@
 # This is YAML, see: https://yaml.org/spec/1.2/spec.html#Preview
 # !!! YAML message always begin with ---
 
-title:
+title: Categorical data
 subtitle:
 version: 1.0
 type: tutorial
@@ -14,9 +14,9 @@ description: |
 remarks:
 todo:
 sources:
-    - title: Pandas 1.1 User Guide
+    - title: Pandas 2.2 User Guide
       chapter:
-      link: https://pandas.pydata.org/pandas-docs/stable/user_guide/___.html
+      link: https://pandas.pydata.org/docs/user_guide/categorical.html
       usage: |
           not only copy
 file:
@@ -25,38 +25,22 @@ file:
         terminal: False     # if the file is intended to be run in a terminal
     name: "..py"
     path: "D:/ROBOCZY/Python/Pandas/User Guide/"
-    date: 2020-08-17
+    date: 2024-12-28
     authors:
-        - nick: kasprark
+        - nick: rcando
           fullname: Arkadiusz Kasprzyk
           email:
-              - akasp666@google.com
+              - rcando@int.com
               - arek@staart.pl
 """
-
-#%%
-from rcando.ak.builtin import flatten, paste
-from rcando.ak.nppd import data_frame
-import os
-
-"""
-PYWORKS = "D:/ROBOCZY/Python"
-PYWORKS = "/home/arek/Works/Python"
-"""
-
-os.chdir(PYWORKS + "/Pandas/User Guide/")
-print(os.getcwd())
-
 
 #%%
 import numpy as np
 import pandas as pd
 
-pd.set_option("display.max_columns", None)
-pd.set_option("display.max_rows", None)
-pd.set_option('display.max_seq_items', None)
-
-pd.set_option('display.expand_frame_repr', False)
+from pycando.builtin import flatten, paste
+from pycando.ak import data_frame
+from pycando.config import pandas_options
 
 #%%
 

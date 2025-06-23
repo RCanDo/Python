@@ -1,0 +1,37 @@
+name: feast
+channels:
+  - conda-forge
+dependencies:
+  # - celery
+  # - dvc-s3
+  # - fastapi
+  - python==3.10.*
+  - joblib
+  - flake8
+  - flake8-nb
+  - pytest
+  - pytest-cov
+  # - luigi
+  - feast
+  - dask
+  - numpy
+  - pandas
+  - scikit-learn
+  - jupyter
+  - matplotlib
+  # - pydantic
+  - spyder
+  - spyder-notebook
+  # - redis-py
+  # - uvicorn
+  # - pandas-stubs
+  # - seaborn
+  # - types-requests
+  # - mypy
+  # - openpyxl
+  # - hyperopt
+  # - pycountry
+  - pip:
+      - 'feast[gcp]'
+      # - celery-stubs
+      # - flake8-todos

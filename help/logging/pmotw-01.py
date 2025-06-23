@@ -2,7 +2,7 @@
 01 Rotating Log Files
 
 Running the script repeatedly causes more messages to be appended to the file.
-To create a new file each time the program runs, pass a filemode argument to basicConfig() with a value of 'w'.
+To create a new file each time the program runs, pass a `filemode` argument to basicConfig() with a value of 'w'.
 Rather than managing the creation of files this way, though, it is better to use a RotatingFileHandler,
 which creates new files automatically and preserves the old log file at the same time.
 """
